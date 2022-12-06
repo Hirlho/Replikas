@@ -19,19 +19,35 @@ echo -e "${CYAN}Installing dependencies on server...${NC}"
 sshpass ssh $SERVER_USER@$SERVER_IP "cd $DEPLOY_PATH && npm install" &> /dev/null
 
 echo -e "${CYAN}Building project on server...${NC}"
-sshpass ssh $SERVER_USER@$SERVER_IP "cd $DEPLOY_PATH && npm run build" &> /dev/null
+sshpass ssh $SERVER_USER@$SERVER_IP "cd $DEPLOY_PATH && npx astro build --host 0.0.0.0" &> /dev/null
 
-echo -e "${CYAN}Starting server...${NC}"
-sshpass ssh $SERVER_USER@$SERVER_IP "cd $DEPLOY_PATH && npm run preview"
-
-out=$?
-
-if [ $out -ne 0 ] && [ $out -ne 255 ]; then
-    echo -e "${RED}Failed to start server.${NC}"
-    exit 1
-fi
-
-echo -en "\r${CYAN}Stopping server...${NC}\n"
-sshpass ssh $SERVER_USER@$SERVER_IP "netstat -tulpn | grep :8080 | awk '{print \$7}' | cut -d/ -f1 | xargs kill" &> /dev/null
-
-echo -e "${GREEN}Done!${NC}"
+start_server() {
+    echo -e "${CYAN}Starting server...${NC}"
+    sshpass ssh $SERVER_USER@$SERVER_IP "cd $DEPLOY_PATH && npm run preview"
+    out=$?
+    if [ $out -ne 0 ] && [ $out -ne 255 ]; then
+        echo -e "${RED}Failed to start server.${NC}"
+        sleep 1
+        echo -e "${RED}Trying to stop already running server...${NC}"
+        sshpass ssh $SERVER_USER@$SERVER_IP "netstat -tulpn | grep :8080 | awk '{print \$7}' | cut -d/ -f1 | xargs kill" &> /dev/null
+        if [ $? -ne 0 ]; then
+            echo -e "${RED}Failed to stop server.${NC}"
+            exit 1
+        else
+            echo -e "${GREEN}Killed previous server${NC}"
+            echo -e "${BOLD}${CYAN}Try to start server again ? (Y/n)${NC}${NORMAL}"
+            read -r answer
+            if [ "$answer" != "${answer#[Yy]}" ] || [ -z "$answer" ]; then
+                start_server
+            else
+                exit 1
+            fi
+        fi
+        exit 1
+    fi
+    echo -en "\r${CYAN}Stopping server...${NC}\n"
+    sshpass ssh $SERVER_USER@$SERVER_IP "netstat -tulpn | grep :8080 | awk '{print \$7}' | cut -d/ -f1 | xargs kill" &> /dev/null
+    echo -e "${BOLD}${GREEN}Done!${NC}${NORMAL}"
+}
+start_server
+unset -f start_server

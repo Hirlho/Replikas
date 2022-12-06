@@ -9,3 +9,6 @@ PURPLE='\e[0;35m'
 CYAN='\e[0;36m'
 WHITE='\e[0;37m'
 NC='\e[0m' # No Color
+
+NORMAL='\e[0m'
+BOLD='\e[1m'
