@@ -8,7 +8,8 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "deploy": "./scripts/deploy.sh"
   },
   "dependencies": {
     "@astrojs/node": "^3.1.0",
