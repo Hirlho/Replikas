@@ -1,0 +1,50 @@
+---
+import NavigationItem from "./NavigationItem.astro";
+import SquareLink from "./SquareLink.astro";
+
+
+
+---
+<header>
+    <img src="./img/logo.png"/>
+    <nav>
+        <NavigationItem href="/" text="ROMANCE"/>
+        <NavigationItem href="/" text="ACTION" selected/>
+        <NavigationItem href="/" text="AVENTURE"/>
+    </nav>
+    <div>
+        <SquareLink href="/login" text="LOG IN"/>
+        <SquareLink href="/register" text="SIGN UP" theme="orange"/>
+    </div>
+</header>
+
+<style>
+    header {
+        position: absolute;
+        display: flex;
+        justify-content: space-between;
+        background-color: #252E38;
+        padding-inline: 1rem;
+        color: whitesmoke;
+
+        left: 0px;
+        top: 0px;
+        right: 0px;
+        height: 6rem;
+    }
+
+    header img {
+        height: 100%;
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+    }
+
+    div {
+        display: flex;
+        align-items: center;
+    }
+        
+</style>
