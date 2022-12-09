@@ -19,7 +19,7 @@ echo -e "${CYAN}Installing dependencies on server...${NC}"
 sshpass ssh $SERVER_USER@$SERVER_IP "cd $DEPLOY_PATH && npm install" &> /dev/null
 
 echo -e "${CYAN}Building project on server...${NC}"
-sshpass ssh $SERVER_USER@$SERVER_IP "cd $DEPLOY_PATH && npx astro build --host 0.0.0.0" &> /dev/null
+sshpass ssh $SERVER_USER@$SERVER_IP "cd $DEPLOY_PATH && npx astro build --host 0.0.0.0 --port 8080" &> /dev/null
 
 start_server() {
     echo -e "${CYAN}Starting server...${NC}"
