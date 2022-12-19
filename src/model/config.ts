@@ -20,7 +20,7 @@ export default class Config {
     private static _instance: Config;
     private _config: ConfigType;
 
-    constructor() {
+    private constructor() {
         this._config = {
             tmdb: {
                 apiKey: getEnv('TMDB_API_KEY'),
