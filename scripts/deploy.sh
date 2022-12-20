@@ -22,10 +22,16 @@ echo -e "${CYAN}Building project on server...${NC}"
 sshpass ssh $SERVER_USER@$SERVER_IP "cd $DEPLOY_PATH && npx astro build" &> /dev/null
 
 start_server() {
+    
+    sleep 5 && xdg-open http://$SERVER_IP:8080 &> /dev/null &
+    bopen_pid=$!
+    
     echo -e "${CYAN}Starting server...${NC}"
     sshpass ssh $SERVER_USER@$SERVER_IP "cd $DEPLOY_PATH && npx astro preview --host 0.0.0.0 --port 8080"
     out=$?
+
     if [ $out -ne 0 ] && [ $out -ne 255 ]; then
+        kill $bopen_pid &> /dev/null
         echo -e "${RED}Failed to start server.${NC}"
         sleep 1
         echo -e "${RED}Trying to stop already running server...${NC}"
