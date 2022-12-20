@@ -35,7 +35,8 @@ type TMDBMovie = {
 
 export default class TMDB {
     private static _apiKey: string = Config.get().tmdb.apiKey;
-    private static _baseUrl: string = Config.get().tmdb.baseUrl;
+    private static _baseUrl: string = "https://api.themoviedb.org/3";
+    private static _imageBaseUrl: string = "https://image.tmdb.org/t/p";
 
     constructor() {
         throw new Error('This class is not meant to be instantiated.');
@@ -45,5 +46,10 @@ export default class TMDB {
         const response = await fetch(`${this._baseUrl}/movie/${id}?api_key=${this._apiKey}`);
         const data = await response.json();
         return data;
+    }
+
+    public static async getMoviePosterURL(id: number): Promise<string> {
+        const movie = await this.getMovie(id);
+        return `${this._imageBaseUrl}/original${movie.poster_path}`
     }
 }

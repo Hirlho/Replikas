@@ -12,7 +12,6 @@ function getEnv(key: string): string {
 type ConfigType = {
     tmdb: {
         apiKey: string;
-        baseUrl: string;
     };
 };
 
@@ -24,7 +23,6 @@ export default class Config {
         this._config = {
             tmdb: {
                 apiKey: getEnv('TMDB_API_KEY'),
-                baseUrl: getEnv('TMDB_BASE_URL'),
             },
         };   
     }
