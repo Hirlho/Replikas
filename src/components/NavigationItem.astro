@@ -11,6 +11,10 @@ const { text, href, selected } = Astro.props;
 
 <style>
     @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap");
+    :root {
+        --selected-color: #F2BB13;
+    }
+
     a {
         text-decoration: none;
         color: whitesmoke;
@@ -23,8 +27,12 @@ const { text, href, selected } = Astro.props;
         font-family: 'Open Sans', sans-serif;
     }
 
+    a:hover {
+        color: var(--selected-color);
+    }
+
     .selected {
-        color: #F2BB13;
+        color: var(--selected-color);
     }
 
     .selected::after {
@@ -32,7 +40,7 @@ const { text, href, selected } = Astro.props;
         display: block;
         width: 100%;
         height: 2px;
-        background-color: #F2BB13;
+        background-color: var(--selected-color);
         margin-top: 5px;
     }
 </style>
