@@ -1,0 +1,53 @@
+---
+export interface Props {
+	text?: string;
+}
+
+const { text } = Astro.props;
+---
+
+<form method="get" action="/search">
+	<img src="/img/search.svg" alt="search" />
+	<input
+		type="text"
+		placeholder="Rechercher un article..."
+		value={text}
+		name="article"
+		id="article"
+	/>
+</form>
+<style>
+	form {
+		display: flex;
+		align-items: center;
+		background-color: whitesmoke;
+		border-radius: 15px;
+		padding: 0.5rem;
+		margin-right: 3rem;
+		min-width: 400px;
+	}
+	img {
+		width: 2rem;
+		height: 2rem;
+	}
+	input {
+		border: none;
+		background-color: transparent;
+		padding: 0.5rem;
+		font-size: 1rem;
+		width: 100%;
+	}
+	input:focus {
+		outline: none;
+	}
+</style>
+<script>
+	document.addEventListener("DOMContentLoaded", () => {
+		const queryString = window.location.search;
+		const urlParams = new URLSearchParams(queryString);
+		if (urlParams.has("article")) {
+			const article = document.getElementById("article");
+			(article as HTMLInputElement).value = urlParams.get("article");
+		}
+	});
+</script>

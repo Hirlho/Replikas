@@ -1,15 +1,26 @@
 ---
 import Logo from "../components/Logo.astro";
+import SearchBar from "../components/SearchBar.astro";
+
+export interface Props {
+	page_name?: string;
+	search_bar?: boolean;
+}
+
+const { page_name } = Astro.props;
 ---
 
 <header>
 	<Logo />
 
+	<h2>{page_name}</h2>
+
 	<nav>
 		<slot />
 	</nav>
 
-	<div id="account-buttons">
+	<div id="right">
+		{Astro.props.search_bar && <SearchBar />}
 		<a class="button" id="signup"> CREER UN COMPTE</a>
 		<a class="button" id="login"> CONNECTEZ VOUS</a>
 	</div>
@@ -30,31 +41,18 @@ import Logo from "../components/Logo.astro";
 		align-items: center;
 		justify-content: space-between;
 		background-color: var(--background-color);
-		padding-inline: 1rem;
 		color: whitesmoke;
 
-		width: 100%;
-		margin: 0px;
+		max-width: 100%;
 		padding-block: 1rem;
-		padding-inline-start: 3rem;
+		padding-inline: 2rem;
 
 		z-index: 1;
 	}
 
-	nav {
+	#right {
 		display: flex;
 		align-items: center;
-	}
-
-	div {
-		display: flex;
-		align-items: center;
-	}
-
-	#account-buttons {
-		display: flex;
-		align-items: center;
-		padding-inline-end: 2rem;
 	}
 
 	.button {
