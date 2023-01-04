@@ -1,4 +1,5 @@
 ---
+import Footer from "../components/Footer.astro";
 import Navbar from "./Navbar.astro";
 
 export interface Props {
@@ -18,13 +19,34 @@ const { title } = Astro.props;
 		<title>{title}</title>
 	</head>
 	<body>
-		<Navbar search_bar />
-		<slot />
+		<main>
+			<Navbar search_bar />
+			<section>
+				<slot />
+			</section>
+			<Footer />
+		</main>
 	</body>
 	<style>
+		html,
+		body {
+			box-sizing: border-box;
+			height: 100%;
+			padding: 0;
+			margin: 0;
+		}
 		body {
 			background-color: #4b4e6d;
 			font-family: system-ui, sans-serif;
+		}
+		main {
+			box-sizing: border-box;
+			min-height: 100%;
+			display: flex;
+			flex-direction: column;
+		}
+		section {
+			flex-grow: 1;
 		}
 	</style>
 </html>

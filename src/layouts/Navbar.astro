@@ -21,8 +21,8 @@ const { page_name } = Astro.props;
 
 	<div id="right">
 		{Astro.props.search_bar && <SearchBar />}
-		<a class="button" id="signup"> CREER UN COMPTE</a>
-		<a class="button" id="login"> CONNECTEZ VOUS</a>
+		<a class="button" id="signup"> Creer un compte</a>
+		<a class="button" id="login"> Connectez-vous</a>
 	</div>
 </header>
 
@@ -48,6 +48,9 @@ const { page_name } = Astro.props;
 		padding-inline: 2rem;
 
 		z-index: 1;
+
+		flex-grow: 0;
+		flex-shrink: 0;
 	}
 
 	#right {
