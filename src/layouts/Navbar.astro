@@ -1,0 +1,69 @@
+---
+import Logo from "../components/Logo.astro";
+---
+
+<header>
+	<Logo />
+
+	<nav>
+		<slot />
+	</nav>
+
+	<div id="account-buttons">
+		<a class="button" id="signup"> CREER UN COMPTE</a>
+		<a class="button" id="login"> CONNECTEZ VOUS</a>
+	</div>
+</header>
+
+<style>
+	body {
+		margin: 0px;
+		padding: 0px;
+	}
+
+	:root {
+		--background-color: #222222;
+	}
+
+	header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background-color: var(--background-color);
+		padding-inline: 1rem;
+		color: whitesmoke;
+
+		width: 100%;
+		margin: 0px;
+		padding-block: 1rem;
+		padding-inline-start: 3rem;
+
+		z-index: 1;
+	}
+
+	nav {
+		display: flex;
+		align-items: center;
+	}
+
+	div {
+		display: flex;
+		align-items: center;
+	}
+
+	#account-buttons {
+		display: flex;
+		align-items: center;
+		padding-inline-end: 2rem;
+	}
+
+	.button {
+		color: whitesmoke;
+		text-decoration: none;
+		font-size: 1.5rem;
+		padding: 0.5rem 1rem;
+		margin: 0.5rem;
+		border-radius: 0.5rem;
+		background-color: #4b4e6d;
+	}
+</style>
