@@ -9,7 +9,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "deploy": "./scripts/deploy.sh",
-    "test": "jest"
+    "test": "jest",
+    "test-playwright": "npx playwright test"
   },
   "dependencies": {
     "@astrojs/node": "^3.1.0",
