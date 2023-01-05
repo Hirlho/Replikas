@@ -1,8 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Card from "../components/Card.astro";
-import Navbar from "../layouts/Navbar.astro";
-import SearchBar from "../components/SearchBar.astro";
+import Article from "../components/Article.astro";
 ---
 
 <Layout title="Replikas">
@@ -11,7 +9,14 @@ import SearchBar from "../components/SearchBar.astro";
 			<h1>Les plus attendus</h1>
 
 			<ul>
-				
+				<Article titre="Chapeau de Gandalf" image="../public/img/article/chapeau_de_gandalf.jpeg" date={new Date()} prix={690}></Article>
+				<Article titre="Chapeau de Gandalf" image="../public/img/article/chapeau_de_gandalf.jpeg" date={new Date()} prix={690}></Article>
+				<Article titre="Chapeau de Gandalf" image="../public/img/article/chapeau_de_gandalf.jpeg" date={new Date()} prix={690}></Article>
+				<Article titre="Chapeau de Gandalf" image="../public/img/article/chapeau_de_gandalf.jpeg" date={new Date()} prix={690}></Article>
+				<Article titre="Chapeau de Gandalf" image="../public/img/article/chapeau_de_gandalf.jpeg" date={new Date()} prix={690}></Article>
+				<Article titre="Chapeau de Gandalf" image="../public/img/article/chapeau_de_gandalf.jpeg" date={new Date()} prix={690}></Article>
+				<Article titre="Chapeau de Gandalf" image="../public/img/article/chapeau_de_gandalf.jpeg" date={new Date()} prix={690}></Article>
+				<Article titre="Chapeau de Gandalf" image="../public/img/article/chapeau_de_gandalf.jpeg" date={new Date()} prix={690}></Article>
 			</ul>
 			
 		</div>
@@ -31,17 +36,25 @@ import SearchBar from "../components/SearchBar.astro";
 
 	div	{
 		background-color: #222222;
-		width: 80%;
+		width: 85%;
 		margin: 0;
 		padding: 20px;
+		border-radius: 20px;
 	}
 
 	h1 {
 		font-size: 3rem;
 		font-weight: 800;
-		margin: 0;
+		margin: 50px;
 		text-align: center;
 		color: whitesmoke;
+	}
+
+	ul{
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		padding: 0;
 	}
 	
 </style>

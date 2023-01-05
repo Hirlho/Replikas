@@ -7,7 +7,7 @@ export interface Props {
 	search_bar?: boolean;
 }
 
-const { page_name } = Astro.props;
+const { page_name, search_bar } = Astro.props;
 ---
 
 <header>
@@ -20,7 +20,7 @@ const { page_name } = Astro.props;
 	</nav>
 
 	<div id="right">
-		{Astro.props.search_bar && <SearchBar />}
+		{search_bar && <SearchBar />}
 		<a class="button" id="signup" href="/register"> Creer un compte</a>
 		<a class="button" id="login" href="/login"> Connectez-vous</a>
 	</div>
