@@ -1,5 +1,5 @@
 import { Client } from "pg";
-import Config from "./config.js";
+import Config from "./Config";
 
 export default class Database {
 	private static _instance: Database;
@@ -12,7 +12,7 @@ export default class Database {
 			port: config.port,
 			user: config.user,
 			password: config.password,
-			database: config.database,
+			database: config.name,
 		});
 
 		this._client.connect((err) => {
@@ -29,5 +29,11 @@ export default class Database {
 			Database._instance = new Database();
 		}
 		return Database._instance._client;
+	}
+
+	public static async close(): Promise<void> {
+		if (Database._instance) {
+			await Database._instance._client.end();
+		}
 	}
 }
