@@ -18,7 +18,7 @@ type ConfigType = {
 		port: number;
 		user: string;
 		password: string;
-		database: string;
+		name: string;
 	};
 };
 
@@ -36,7 +36,7 @@ export default class Config {
 				port: parseInt(getEnv("DB_PORT")),
 				user: getEnv("DB_USER"),
 				password: getEnv("DB_PASS"),
-				database: getEnv("DB_NAME"),
+				name: getEnv("DB_NAME"),
 			},
 		};
 	}
