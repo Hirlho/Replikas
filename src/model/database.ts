@@ -19,7 +19,6 @@ export default class Database {
 			if (err) {
 				throw err;
 			} else {
-				this._client.connected = true;
 				console.info("Connected to database");
 			}
 		});

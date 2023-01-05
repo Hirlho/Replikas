@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("homepage has title and links to intro page", async ({ page }) => {
+test("Search bar sets value to article URLParameter", async ({ page }) => {
 	await page.goto("/?article=Dark%20Vador");
 
 	await page.screenshot({ path: "example.png" });
