@@ -2,12 +2,13 @@ import Database from "../Database";
 import shajs from "sha.js";
 
 export default class Acheteur {
-	static TABLE_NAME = "acheteurs";
+	static TABLE_NAME = "acheteur";
 
 	private id: number;
 	private email: string;
 	private nom: string;
 	private prenom: string;
+	private date_creation: Date;
 
 	private constructor() {
 		this.email = "";
@@ -28,8 +29,9 @@ export default class Acheteur {
 		}
 		user.id = result.rows[0].a_id;
 		user.email = result.rows[0].a_mail;
-		user.nom = result.rows[0].nom;
-		user.prenom = result.rows[0].prenom;
+		user.nom = result.rows[0].a_nom;
+		user.prenom = result.rows[0].a_prenom;
+		user.date_creation = result.rows[0].a_date_creation_compte;
 
 		return user;
 	}
@@ -45,8 +47,8 @@ export default class Acheteur {
 		const hash = shajs("sha256").update(password).digest("hex");
 		const result = await database
 			.query(
-				`INSERT INTO ${this.TABLE_NAME} (a_mail, a_password, nom, prenom) VALUES ($1::text, $2::text, $3::text, $4::text) RETURNING a_id`,
-				[email, hash, nom, prenom]
+				`INSERT INTO ${this.TABLE_NAME} (a_mail, a_password, a_nom, a_prenom, a_date_creation_compte) VALUES ($1::text, $2::text, $3::text, $4::text, $5::date) RETURNING a_id`,
+				[email, hash, nom, prenom, new Date()]
 			)
 			.catch((err) => {
 				// If the email is already in use, throw a more specific error
