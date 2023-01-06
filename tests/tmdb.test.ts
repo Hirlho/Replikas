@@ -1,4 +1,4 @@
-import TMDB from "../src/model/tmdb";
+import TMDB from "../src/model/TMDB";
 
 test("TMDB API works fine", async () => {
 	const data = await TMDB.getMovie(550);
