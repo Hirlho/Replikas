@@ -1,6 +1,6 @@
 CREATE TABLE test (id int, name varchar(255));
 
-CREATE TABLE acheteurs (
+CREATE TABLE acheteur (
     a_id SERIAL PRIMARY KEY,
     a_mail varchar(50) UNIQUE NOT NULL,
     a_password varchar(50) NOT NULL,
@@ -30,20 +30,20 @@ CREATE TABLE article (
 );
 
 CREATE TABLE encheri (
-    a_id INTEGER REFERENCES acheteurs (a_id),
+    a_id INTEGER REFERENCES acheteur (a_id),
     art_id INTEGER REFERENCES article (art_id),
     montant INTEGER NOT NULL,
     PRIMARY KEY(a_id, art_id)
 );
 
 CREATE TABLE interesse (
-    a_id INTEGER REFERENCES acheteurs (a_id),
+    a_id INTEGER REFERENCES acheteur (a_id),
     art_id INTEGER REFERENCES article (art_id),
     PRIMARY KEY(a_id, art_id)
 );
 
 CREATE TABLE acqueri (
-    a_id INTEGER REFERENCES acheteurs (a_id),
+    a_id INTEGER REFERENCES acheteur (a_id),
     art_id INTEGER REFERENCES article (art_id),
     est_paye BOOLEAN NOT NULL,
     PRIMARY KEY(a_id, art_id)
