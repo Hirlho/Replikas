@@ -23,7 +23,7 @@ sshpass ssh $SERVER_USER@$SERVER_IP "cd $DEPLOY_PATH && npx astro build" &> /dev
 
 start_server() {
     
-    sleep 5 && xdg-open https://$SERVER_HOSTNAME:8080 &> /dev/null &
+    sleep 5 && xdg-open https://$SERVER_HOSTNAME &> /dev/null &
     bopen_pid=$!
     
     echo -e "${CYAN}Starting server...${NC}"
