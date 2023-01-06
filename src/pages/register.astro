@@ -1,11 +1,61 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Article from "../components/Article.astro";
-
+import TextField from "../components/TextField.astro";
 ---
 
-<Layout title="Replikas" no_searchbar>
+<Layout title="Register" no_searchbar>
     <main>
+        
+        <form action="" class="formlist">
+            <h1>créer votre compte</h1>
+            <table>
+                <TextField text="" placeholder="Nom"/>
+                <TextField text="" placeholder="Prenom"/> 
+                <TextField text="" placeholder="Email"/>
+                <TextField text="" placeholder="Mot de passe"/>
+                <TextField text="" placeholder="Confirmer mot de passe"/>
+                <tr>
+                    <td colspan="2">
+                        <input type="checkbox"> <span>J'accepte les conditions d'utilisation</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="submit" value="S'inscrire">
+                    </td>
+
+             </table>
+
+        </form>
         
     </main>
 </Layout>
+
+<style>
+    .formlist {
+		padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+        padding-left: 3rem;
+        padding-right: 3rem;
+		max-width: 80ch;
+        background-color: #353A4D;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    h1 {
+        text-align: center;
+        margin: 2rem 0;
+        color: whitesmoke;
+    }
+    .formlist table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .formlist span{
+        color: whitesmoke;
+    }
+
+
+</style>
