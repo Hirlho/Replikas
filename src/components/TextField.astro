@@ -7,32 +7,17 @@ export interface Props {
 const { text, placeholder } = Astro.props;
 ---
 
-<form method="get" action="">
 	<input type="text" placeholder={placeholder} value={text} name="" id="" />
-</form>
+
 <br>
 <style>
-	form {
-		display: flex;
-		align-items: center;
-		background-color: #353A4D;
-		padding: 0.4rem;
-		margin-bottom: 1rem;
-	}
-	label{
-		color: whitesmoke;
-	}
 	input {
-		border-top: none;
-		border-left: none;
-		border-right: none;
-		background-color: transparent;
-		padding: 1rem;
+		border: none;
+		background-color: whitesmoke;
+		border-radius: 5px;
+		margin: 1rem;
+		padding: 0.7rem;
 		font-size: 0.8rem;
-		color: white;
-	}
-	input::placeholder{
-		color: #EFEFEF;
 	}
 	input:focus {
 		outline: none;
