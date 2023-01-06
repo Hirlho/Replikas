@@ -2,7 +2,7 @@ CREATE TABLE test (id int, name varchar(255));
 
 CREATE TABLE acheteur (
     a_id SERIAL PRIMARY KEY,
-    a_mail varchar(50) UNIQUE NOT NULL,
+    a_mail varchar(100) UNIQUE NOT NULL,
     a_password varchar(50) NOT NULL,
     a_nom varchar(50) NOT NULL,
     a_prenom varchar(50) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE acheteur (
 CREATE TABLE entreprise (
     e_id SERIAL PRIMARY KEY,
     e_name varchar(50) NOT NULL,
-    e_mail varchar(50) UNIQUE NOT NULL,
+    e_mail varchar(100) UNIQUE NOT NULL,
     e_password varchar(50) UNIQUE NOT NULL,
     a_date_creation_compte DATE NOT NULL
 );
