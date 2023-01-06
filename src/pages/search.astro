@@ -4,21 +4,21 @@ import SearchBar from "../components/SearchBar.astro";
 
 export interface Props {
 	text?: string;
-    enCour?: boolean;
+	enCour?: boolean;
 }
 
 const { text } = Astro.props;
 ---
 
 <Layout title="Replikas" no_searchbar>
-    <div class="searchBar">
-        <SearchBar text={text}></SearchBar>
-    </div>
+	<div class="searchBar">
+		<SearchBar text={text} />
+	</div>
 </Layout>
 
 <style>
-    .searchBar{
-        margin: 0 20%;
-        width: 60%;
-    }
+	.searchBar {
+		margin: 0 20%;
+		width: 60%;
+	}
 </style>

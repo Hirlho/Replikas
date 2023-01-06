@@ -5,45 +5,42 @@ import Button from "../components/Button.astro";
 ---
 
 <Layout title="login" no_searchbar>
-    <main>
-        <h1>Connectez-vous à votre compte</h1>
-            
-        <form method="get" action="/">
-            <TextField text="" placeholder="Login"/>
-            <TextField text="" placeholder="Password"/>
-            <Button text="Se connecter"/>
-        </form>
-        <p>Vous n'êtes pas encore inscrit ? <a href="register">S'inscrire</a></p>
+	<main>
+		<h1>Connectez-vous à votre compte</h1>
 
-    </main>
-    
-
+		<form method="get" action="/">
+			<TextField text="" placeholder="Login" />
+			<TextField text="" placeholder="Password" />
+			<Button text="Se connecter" />
+		</form>
+		<p>Vous n'êtes pas encore inscrit ? <a href="register">S'inscrire</a></p>
+	</main>
 </Layout>
 <style>
-    main {
-        margin: auto;
+	main {
+		margin: auto;
 		padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
-        padding-left: 3rem;
-        padding-right: 3rem;
+		padding-bottom: 1.5rem;
+		padding-left: 3rem;
+		padding-right: 3rem;
 		max-width: 80ch;
-        background-color: #222222;
-        border-radius: 15px;
-    }
-    h1 {
+		background-color: #222222;
+		border-radius: 15px;
+	}
+	h1 {
 		font-size: 2rem;
 		font-weight: 650;
 		margin: 0;
-        margin-bottom: 1.5rem;
-        color: whitesmoke;
+		margin-bottom: 1.5rem;
+		color: whitesmoke;
 	}
-    p {
-        color: whitesmoke;
-    }
-    a {
-        color: blue;
-    }
-    a:hover {
-        color: purple;
-    }
+	p {
+		color: whitesmoke;
+	}
+	a {
+		color: blue;
+	}
+	a:hover {
+		color: purple;
+	}
 </style>
