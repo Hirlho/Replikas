@@ -8,12 +8,13 @@ import Button from "../components/Button.astro";
     <main>
         <h1>Connectez-vous à votre compte</h1>
             
-        <form method="get" action="" class="formList">
+        <form method="get" action="/">
             <TextField text="" placeholder="Login"/>
             <TextField text="" placeholder="Password"/>
             <Button text="Se connecter"/>
-            <Button text="Créer un compte"/>
         </form>
+        <p>Vous n'êtes pas encore inscrit ? <a href="register">S'inscrire</a></p>
+
     </main>
     
 
@@ -38,4 +39,13 @@ import Button from "../components/Button.astro";
         margin-bottom: 1.5rem;
         color: #EFEFEF;
 	}
+    p {
+        color: whitesmoke;
+    }
+    a {
+        color: blue;
+    }
+    a:hover {
+        color: purple;
+    }
 </style>
