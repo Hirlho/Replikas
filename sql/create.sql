@@ -2,25 +2,25 @@ CREATE TABLE test (id int, name varchar(255));
 
 CREATE TABLE acheteur (
     a_id SERIAL PRIMARY KEY,
-    a_mail varchar(100) UNIQUE NOT NULL,
-    a_password varchar(50) NOT NULL,
-    a_nom varchar(50) NOT NULL,
-    a_prenom varchar(50) NOT NULL,
+    a_mail varchar(128) UNIQUE NOT NULL,
+    a_password varchar(128) NOT NULL,
+    a_nom varchar(128) NOT NULL,
+    a_prenom varchar(128) NOT NULL,
     a_date_creation_compte DATE NOT NULL
 );
 
 CREATE TABLE entreprise (
     e_id SERIAL PRIMARY KEY,
-    e_name varchar(50) NOT NULL,
-    e_mail varchar(100) UNIQUE NOT NULL,
-    e_password varchar(50) UNIQUE NOT NULL,
+    e_name varchar(128) NOT NULL,
+    e_mail varchar(128) UNIQUE NOT NULL,
+    e_password varchar(128) UNIQUE NOT NULL,
     a_date_creation_compte DATE NOT NULL
 );
 
 CREATE TABLE article (
     art_id SERIAL PRIMARY KEY,
-    art_name varchar(50) NOT NULL,
-    art_description varchar(300) NOT NULL,
+    art_name varchar(128) NOT NULL,
+    art_description varchar(512) NOT NULL,
     art_prix INTEGER NOT NULL,
     art_encherissement_min INTEGER NOT NULL,
     art_debut_vente DATE NOT NULL,
@@ -48,3 +48,12 @@ CREATE TABLE acqueri (
     est_paye BOOLEAN NOT NULL,
     PRIMARY KEY(a_id, art_id)
 );
+
+
+-- PERMISSONS
+ALTER TABLE acheteur OWNER TO replikas_usr;
+ALTER TABLE entreprise OWNER TO replikas_usr;
+ALTER TABLE article OWNER TO replikas_usr;
+ALTER TABLE encheri OWNER TO replikas_usr;
+ALTER TABLE interesse OWNER TO replikas_usr;
+ALTER TABLE acqueri OWNER TO replikas_usr;
