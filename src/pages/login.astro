@@ -7,13 +7,13 @@ import Layout from "../layouts/Layout.astro";
     <main>
         <h1>Connectez-vous à votre compte</h1>
             
-        <form action="" class="formList">
-            <table>
-                <TextField text="" placeholder="Login"/>
-                <TextField text="" placeholder="Password"/>
-            </table>
-            
+        <form method="get" action="/">
+            <TextField text="" placeholder="Login"/>
+            <TextField text="" placeholder="Password"/>
+            <Button text="Se connecter"/>
         </form>
+        <p>Vous n'êtes pas encore inscrit ? <a href="register">S'inscrire</a></p>
+
     </main>
     
 
@@ -35,4 +35,13 @@ import Layout from "../layouts/Layout.astro";
         margin-bottom: 1.5rem;
         color: #EFEFEF;
 	}
+    p {
+        color: whitesmoke;
+    }
+    a {
+        color: blue;
+    }
+    a:hover {
+        color: purple;
+    }
 </style>
