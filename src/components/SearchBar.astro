@@ -7,7 +7,9 @@ const { text } = Astro.props;
 ---
 
 <form method="get" action="/search">
-	<img src="/img/icons/search.svg" alt="search" />
+	<button type="submit">
+		<img src="/img/icons/search.svg" alt="search" />
+	</button>
 	<input
 		type="text"
 		placeholder="Rechercher un article..."
@@ -26,9 +28,13 @@ const { text } = Astro.props;
 		margin-right: 3rem;
 		min-width: 400px;
 	}
+	button{
+		background-color: transparent;
+		border: none;
+	}
 	img {
-		width: 2rem;
-		height: 2rem;
+		width: 3rem;
+		height: 3rem;
 	}
 	input {
 		border: none;
