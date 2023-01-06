@@ -1,18 +1,18 @@
 ---
 import TextField from "../components/TextField.astro";
 import Layout from "../layouts/Layout.astro";
-import Button from "../components/Button.astro";
 ---
 
 <Layout title="login" no_searchbar>
     <main>
         <h1>Connectez-vous à votre compte</h1>
             
-        <form method="get" action="" class="formList">
-            <TextField text="" placeholder="Login"/>
-            <TextField text="" placeholder="Password"/>
-            <Button text="Se connecter"/>
-            <Button text="Créer un compte"/>
+        <form action="" class="formList">
+            <table>
+                <TextField text="" placeholder="Login"/>
+                <TextField text="" placeholder="Password"/>
+            </table>
+            
         </form>
     </main>
     
@@ -20,10 +20,7 @@ import Button from "../components/Button.astro";
 </Layout>
 <style>
     main {
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
+        margin: auto;
 		padding-top: 1.5rem;
         padding-bottom: 1.5rem;
         padding-left: 3rem;

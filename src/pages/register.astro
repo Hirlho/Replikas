@@ -1,6 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import TextField from "../components/TextField.astro";
+import Button from "../components/Button.astro";
+
 ---
 
 <Layout title="Register" no_searchbar>
@@ -14,18 +16,15 @@ import TextField from "../components/TextField.astro";
                 <TextField text="" placeholder="Email"/>
                 <TextField text="" placeholder="Mot de passe"/>
                 <TextField text="" placeholder="Confirmer mot de passe"/>
-                <tr>
-                    <td colspan="2">
-                        <input type="checkbox"> <span>J'accepte les conditions d'utilisation</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="submit" value="S'inscrire">
-                    </td>
-
+           
              </table>
-
+             
+             <div class="button">
+                <div>
+                    <input type="checkbox" <span> J'accepte les conditions générales d'utilisation</span> </input>
+                </div>
+                <Button text="S'inscrire"/>
+            </div>
         </form>
         
     </main>
@@ -38,7 +37,7 @@ import TextField from "../components/TextField.astro";
         padding-left: 3rem;
         padding-right: 3rem;
 		max-width: 80ch;
-        background-color: #353A4D;
+        background-color: #222222;
         margin-top: 1rem;
         margin-bottom: 1rem;
         margin-left: auto;
@@ -52,10 +51,19 @@ import TextField from "../components/TextField.astro";
     .formlist table {
         width: 100%;
         border-collapse: collapse;
+        display: flex;
+        flex-direction: column;
+
     }
-    .formlist span{
+    .button {
         color: whitesmoke;
     }
+    .button{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+  
 
 
 </style>
