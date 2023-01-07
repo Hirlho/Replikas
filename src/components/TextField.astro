@@ -2,12 +2,19 @@
 export interface Props {
 	text?: string;
 	placeholder?: string;
+	name?: string;
+	type?: any;
 }
 
-const { text, placeholder } = Astro.props;
+const { text, placeholder, name, type } = Astro.props;
 ---
 
-<input type="text" placeholder={placeholder} value={text} name="" id="" />
+<input
+	placeholder={placeholder}
+	value={text}
+	name={name}
+	type={type || "text"}
+/>
 
 <br />
 <style>
