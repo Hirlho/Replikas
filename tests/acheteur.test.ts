@@ -1,15 +1,8 @@
 import Database from "../src/model/Database";
-import Acheteur, {
-	UtilisateurOuMotDePasseInvalideError,
-} from "../src/model/users/Acheteur";
+import Acheteur, { UtilisateurOuMotDePasseInvalideError } from "../src/model/users/Acheteur";
 
 test("Crée un utilisateur et lui assigne un id automatiquement", async () => {
-	const user = await Acheteur.create(
-		"elon.musk@teslamotors.com",
-		"ILoveTesla",
-		"Musk",
-		"Elon"
-	);
+	const user = await Acheteur.create("elon.musk@teslamotors.com", "ILoveTesla", "Musk", "Elon");
 	expect(user.getId()).toBeGreaterThan(0);
 });
 
@@ -30,13 +23,32 @@ test("Renvoie une erreur si le mot de passe est incorrect", async () => {
 	}).rejects.toThrowError(UtilisateurOuMotDePasseInvalideError);
 });
 
+test("Crée le token de session", async () => {
+	const user = await Acheteur.get("elon.musk@teslamotors.com", "ILoveTesla");
+	const token = await user.createSession();
+
+	const database = Database.get();
+	const result = await database.query(`SELECT * FROM session WHERE s_token = $1::text`, [token]);
+	expect(result.rowCount).toBe(1);
+});
+
+test("Récupère l'utilisateur à partir du token de session", async () => {
+	const user = await Acheteur.get("elon.musk@teslamotors.com", "ILoveTesla");
+	const token = await user.createSession();
+	const user2 = await Acheteur.getBySession(token);
+	expect(user2.getId()).toBe(user.getId());
+});
+
 afterAll(async () => {
 	const database = Database.get();
 
-	await database.query(
-		`DELETE FROM ${Acheteur.TABLE_NAME} WHERE a_mail = $1::text`,
-		["elon.musk@teslamotors.com"]
-	);
+	const elon_ids = await database.query(`SELECT a_id FROM ${Acheteur.TABLE_NAME} WHERE a_mail = $1::text`, [
+		"elon.musk@teslamotors.com",
+	]);
+	for (const elon_id of elon_ids.rows) {
+		await database.query(`DELETE FROM session WHERE a_id = $1::int`, [elon_id.a_id]);
+	}
+	await database.query(`DELETE FROM ${Acheteur.TABLE_NAME} WHERE a_mail = $1::text`, ["elon.musk@teslamotors.com"]);
 
 	await database.end();
 });

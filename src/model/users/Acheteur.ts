@@ -3,6 +3,7 @@ import shajs from "sha.js";
 
 export default class Acheteur {
 	static TABLE_NAME = "acheteur";
+	static SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days
 
 	private id: number;
 	private email: string;
@@ -36,12 +37,7 @@ export default class Acheteur {
 		return user;
 	}
 
-	public static async create(
-		email: string,
-		password: string,
-		nom: string,
-		prenom: string
-	): Promise<Acheteur> {
+	public static async create(email: string, password: string, nom: string, prenom: string): Promise<Acheteur> {
 		const database = Database.get();
 		const user = new Acheteur();
 		const hash = shajs("sha256").update(password).digest("hex");
@@ -62,6 +58,46 @@ export default class Acheteur {
 		user.email = email;
 		user.nom = nom;
 		user.prenom = prenom;
+
+		return user;
+	}
+
+	public async createSession(): Promise<string> {
+		const database = Database.get();
+		const token = shajs("sha256")
+			.update("" + this.getId() + Date.now())
+			.digest("hex");
+		const dateCreation = new Date();
+		const dateExpiration = new Date(dateCreation.getTime() + Acheteur.SESSION_DURATION * 1000);
+
+		return database
+			.query(
+				`INSERT INTO session (s_token, s_date_creation, s_date_expiration, a_id) VALUES ($1::text, $2::date, $3::date, $4::int)`,
+				[token, dateCreation, dateExpiration, this.getId()]
+			)
+			.then(() => token);
+	}
+
+	public static async getBySession(token: string): Promise<Acheteur> {
+		const database = Database.get();
+		const user = new Acheteur();
+		const result = await database.query(
+			`SELECT * FROM ${this.TABLE_NAME} INNER JOIN session ON ${this.TABLE_NAME}.a_id = session.a_id WHERE s_token = $1::text`,
+			[token]
+		);
+		if (result.rowCount === 0) {
+			throw new SessionTokenInvalideError();
+		} else if (result.rows[0].s_date_expiration < new Date()) {
+			throw new SessionTokenInvalideError();
+		} else if (result.rowCount > 1) {
+			throw new CaCestVraimentPasDeBolError(); // Supprimer dans la version finale
+		}
+
+		user.id = result.rows[0].a_id;
+		user.email = result.rows[0].a_mail;
+		user.nom = result.rows[0].a_nom;
+		user.prenom = result.rows[0].a_prenom;
+		user.date_creation = result.rows[0].a_date_creation_compte;
 
 		return user;
 	}
@@ -92,5 +128,17 @@ export class UtilisateurOuMotDePasseInvalideError extends Error {
 export class EmailDejaUtiliseError extends Error {
 	constructor() {
 		super("Email déjà utilisé");
+	}
+}
+
+export class SessionTokenInvalideError extends Error {
+	constructor() {
+		super("Token  de session invalide invalide");
+	}
+}
+
+export class CaCestVraimentPasDeBolError extends Error {
+	constructor() {
+		super("C'est vraiment pas de bol");
 	}
 }
