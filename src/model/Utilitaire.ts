@@ -31,3 +31,19 @@ function dateDiff(date1: Date, date2: Date) {
 
 	return diff;
 }
+
+/**
+ * Ajoute un cookie aux headers d'une réponse
+ * @param headers Les headers de la réponse où ajouter le cookie
+ * @param cookie Le cookie à ajouter
+ */
+export function addCookie(
+	headers: Headers,
+	cookie: { name: string; value: string; maxAge?: number; secure?: boolean; path?: string }
+) {
+	let val = `${cookie.name}=${cookie.value};`;
+	val += cookie.maxAge ? ` Max-Age=${cookie.maxAge};` : "";
+	val += cookie.secure ? ` Secure;` : "";
+	val += cookie.path ? ` Path=${cookie.path};` : "";
+	headers.append("Set-Cookie", val);
+}
