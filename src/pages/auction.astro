@@ -1,0 +1,157 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { dateDiff } from "../model/Utilitaire";
+
+const enCour = Astro.url.searchParams.get("enCour");
+const prix = 250;
+const encherissement_min = 10;
+
+const date_enchere = new Date(2023, 0, 20);
+const diff = dateDiff(date_enchere, new Date());
+---
+
+<Layout title="Replikas" no_searchbar>
+  <main>
+    <h2>
+      {
+        enCour
+          ? "Se termine dans " +
+            diff.day +
+            "j " +
+            diff.hour +
+            "h " +
+            diff.min +
+            "min"
+          : "Commence dans " +
+            diff.day +
+            "j " +
+            diff.hour +
+            "h " +
+            diff.min +
+            "min"
+      }
+    </h2>
+    <article>
+      <div class="img">
+        <img src="/img/article/sabre_laser.jpeg" alt="" />
+      </div>
+      <div class="informations">
+        <h2>Sabre laser</h2>
+        <p>
+          {enCour ? "Valeur actuelle :" : "Valeur de départ : "}
+        </p>
+        <h2>{prix} €</h2>
+        <p>Placer une offre :</p>
+        <form>
+          <div>
+            <input
+              class="button"
+              type="submit"
+              value={prix + encherissement_min + " €"}
+            />
+            <input
+              class="button"
+              type="submit"
+              value={prix + encherissement_min * 3 + " €"}
+            />
+            <input
+              class="button"
+              type="submit"
+              value={prix + encherissement_min * 5 + " €"}
+            />
+          </div>
+          <input
+            type="number"
+            min="260"
+            placeholder={prix + encherissement_min + " ou plus"}
+          />
+          <input
+            id="placerOffre"
+            class="button"
+            type="submit"
+            value="Placer l'offre"
+          />
+        </form>
+        <h3>Vendu par une entreprise</h3>
+        <p>
+          La réplique du sabre laser que Dark Vador utilise dans Star Wars :
+          L'empire contre-attaque.
+        </p>
+      </div>
+    </article>
+  </main>
+</Layout>
+
+<style>
+  h2,
+  h3,
+  p {
+    color: whitesmoke;
+  }
+
+  h2 {
+    margin-top: 0;
+  }
+
+  main {
+    margin: 20px auto;
+    padding: 40px 4%;
+    width: 80%;
+
+    border-radius: 20px;
+
+    background-color: #222222;
+  }
+
+  article {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .img {
+    position: sticky;
+    width: 25%;
+    margin-left: 1%;
+  }
+
+  .img > img {
+    width: 100%;
+  }
+
+  .informations {
+    margin-left: 10%;
+  }
+
+  form {
+    width: 200px;
+    margin-left: 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  form > div {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  form > * {
+    margin: 10px 0;
+  }
+
+  #placerOffre {
+    width: 120px;
+  }
+
+  .button {
+    background-color: #4b4e6d;
+    color: whitesmoke;
+
+    border: none;
+    border-radius: 5px;
+
+    padding: 5px;
+  }
+</style>
