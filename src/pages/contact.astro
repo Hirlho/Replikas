@@ -1,0 +1,108 @@
+---
+import Layout from "../layouts/Layout.astro";
+import TextField from "../components/TextField.astro";
+import Button from "../components/Button.astro";
+---
+
+<Layout title="contact">
+    <main>
+        <h1>Rejoignez-nous sur nos réseaux sociaux</h1>
+        <div class="hbox">
+			<a href="https://fr-fr.facebook.com/DonaldTrump"
+				><img
+					src="/img/icons/socials/facebook.svg"
+					width="80px"
+					height="80px"
+					alt="Facebook"
+				/>
+			</a>
+			<a href="https://twitter.com/elonmusk"
+				><img
+					src="/img/icons/socials/twitter.svg"
+					width="80px"
+					height="80px"
+					alt="Twitter"
+				/>
+			</a>
+			<a href="https://www.instagram.com/hugodecrypte"
+				><img
+					src="/img/icons/socials/instagram.svg"
+					width="80px"
+					height="80px"
+					alt="Instagram"
+				/>
+			</a>
+			<a href="https://fr.linkedin.com/in/herv%C3%A9-blanchon-4851b02"
+				><img
+					src="/img/icons/socials/linkedin.svg"
+					width="80px"
+					height="80px"
+					alt="Linkedin"
+				/>
+			</a>
+			<a href="https://r.mtdv.me/replikas"
+				><img
+					src="/img/icons/socials/youtube.svg"
+					width="80px"
+					height="80px"
+					alt="Youtube"
+				/>
+			</a>
+		</div>
+        <h1>Contactez-nous</h1>
+		<form method="get" action="/" class="formlist">
+            <div id = "champs">
+                    <p>Nom Complet</p> <TextField text="" placeholder="Nom Complet" />
+                    <p>Sujet</p> <TextField text="" placeholder="Sujet" />
+                    <p>Email</p> <TextField text="" placeholder="Email" />
+                    <div id = "message">
+                        <p>Message</p> <TextField text="" placeholder="Message" />
+                    </div>
+
+            </div>
+            <div id = "button">
+                <Button text="Envoyer" />
+            </div>
+
+        </form>
+
+    </main>
+
+</Layout>
+
+<style>
+    h1{
+        font-size: 2rem;
+        color: whitesmoke;
+    }
+    p{
+        font-size: 1rem;
+        color: whitesmoke;
+        display: inline;
+        justify-content: center;
+        align-items: center;
+    }
+    .formlist {
+		padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+        padding-left: 3rem;
+        padding-right: 3rem;
+		max-width: 80ch;
+        background-color: #222222;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 1rem;
+    }
+    #button{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    ::placeholder #message{
+        width: auto;
+    }
+
+
+</style>
