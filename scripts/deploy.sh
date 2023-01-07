@@ -23,11 +23,11 @@ sshpass ssh $SERVER_USER@$SERVER_IP "cd $DEPLOY_PATH && npx astro build" &> /dev
 
 start_server() {
     
-    sleep 5 && xdg-open http://$SERVER_IP:8080 &> /dev/null &
+    sleep 5 && xdg-open https://$SERVER_HOSTNAME &> /dev/null &
     bopen_pid=$!
     
     echo -e "${CYAN}Starting server...${NC}"
-    sshpass ssh $SERVER_USER@$SERVER_IP "cd $DEPLOY_PATH && npx astro preview --host 0.0.0.0 --port 8080"
+    sshpass ssh $SERVER_USER@$SERVER_IP "cd $DEPLOY_PATH && SERVER_KEY_PATH=$SERVER_SSL_KEYS_PATH/privkey.pem SERVER_CERT_PATH=$SERVER_SSL_KEYS_PATH/fullchain.pem npx astro preview --host 0.0.0.0 --port 8080"
     out=$?
 
     if [ $out -ne 0 ] && [ $out -ne 255 ]; then

@@ -32,9 +32,11 @@ test("Renvoie une erreur si le mot de passe est incorrect", async () => {
 
 afterAll(async () => {
 	const database = Database.get();
-	await database.query("DELETE FROM acheteurs WHERE a_mail = $1::text", [
-		"elon.musk@teslamotors.com",
-	]);
+
+	await database.query(
+		`DELETE FROM ${Acheteur.TABLE_NAME} WHERE a_mail = $1::text`,
+		["elon.musk@teslamotors.com"]
+	);
 
 	await database.end();
 });
