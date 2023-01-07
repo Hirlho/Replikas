@@ -9,7 +9,7 @@ import Button from "../components/Button.astro";
     <main>
         
         <form action="" class="formlist">
-            <h1>créer votre compte</h1>
+            <h1>Créer votre compte</h1>
             <table>
                 <TextField text="" placeholder="Nom"/>
                 <TextField text="" placeholder="Prenom"/> 
@@ -43,8 +43,10 @@ import Button from "../components/Button.astro";
         margin-bottom: 1rem;
         margin-left: auto;
         margin-right: auto;
+        border-radius: 1rem;
     }
     h1 {
+        font-size: 2rem;
         text-align: center;
         margin: 2rem 0;
         color: whitesmoke;
@@ -54,17 +56,20 @@ import Button from "../components/Button.astro";
         border-collapse: collapse;
         display: flex;
         flex-direction: column;
-
     }
     .button {
         color: whitesmoke;
-    }
-    .button{
         display: flex;
         flex-direction: column;
         align-items: center;
     }
-  
+    .button div {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    table input {
 
 
+    }
 </style>
