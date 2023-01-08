@@ -9,3 +9,14 @@ test("Search bar sets value to article URLParameter", async ({ page }) => {
 	// assert the value
 	expect(value).toBe("Dark Vador");
 });
+
+test("Connection utilisateur", async ({ page }) => {
+	await page.goto("/");
+	await page.click("id=login");
+	expect(page).toHaveURL("/login");
+	await page.fill("input[name=email]", "gaspard@replikas.com");
+	await page.fill("input[name=password]", "password");
+	await page.click("input[type=submit]");
+	await new Promise((r) => setTimeout(r, 1000));
+	await page.waitForSelector("a[href='/settings']");
+});
