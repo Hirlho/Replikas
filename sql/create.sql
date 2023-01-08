@@ -29,12 +29,18 @@ CREATE TABLE article (
     art_id SERIAL PRIMARY KEY,
     art_name varchar(128) NOT NULL,
     art_description varchar(2000) NOT NULL,
-    art_prix INTEGER NOT NULL,
+    art_film_name varchar(128) NOT NULL,
+    art_prix_base INTEGER NOT NULL,
     art_encherissement_min INTEGER NOT NULL,
     art_debut_vente DATE NOT NULL,
     art_fin_vente DATE NOT NULL,
     e_id INTEGER REFERENCES entreprise (e_id),
     f_id INTEGER NOT NULL
+);
+
+CREATE TABLE article_image (
+    art_id INTEGER REFERENCES article (art_id),
+    img_path varchar(255) NOT NULL,
 );
 
 CREATE TABLE encheri (
@@ -64,6 +70,7 @@ ALTER TABLE acheteur OWNER TO replikas_usr;
 ALTER TABLE session OWNER TO replikas_usr;
 ALTER TABLE entreprise OWNER TO replikas_usr;
 ALTER TABLE article OWNER TO replikas_usr;
+ALTER TABLE article_image OWNER TO replikas_usr;
 ALTER TABLE encheri OWNER TO replikas_usr;
 ALTER TABLE interesse OWNER TO replikas_usr;
 ALTER TABLE acqueri OWNER TO replikas_usr;
