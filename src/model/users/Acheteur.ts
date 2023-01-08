@@ -2,7 +2,6 @@ import Database from "../Database";
 import shajs from "sha.js";
 
 export default class Acheteur {
-	static TABLE_NAME = "acheteur";
 	static SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days
 
 	private id: number;
@@ -21,18 +20,16 @@ export default class Acheteur {
 		const database = Database.get();
 		const user = new Acheteur();
 		const hash = shajs("sha256").update(password).digest("hex");
-		const result = await database.query(
-			`SELECT * FROM ${this.TABLE_NAME} WHERE a_mail = $1::text AND a_password = $2::text`,
-			[email, hash]
-		);
-		if (result.rowCount === 0) {
+		const result = await database`
+			SELECT * FROM acheteur WHERE a_mail = ${email} AND a_password = ${hash}`;
+		if (result.count === 0) {
 			throw new UtilisateurOuMotDePasseInvalideError();
 		}
-		user.id = result.rows[0].a_id;
-		user.email = result.rows[0].a_mail;
-		user.nom = result.rows[0].a_nom;
-		user.prenom = result.rows[0].a_prenom;
-		user.date_creation = result.rows[0].a_date_creation_compte;
+		user.id = result[0].a_id;
+		user.email = result[0].a_mail;
+		user.nom = result[0].a_nom;
+		user.prenom = result[0].a_prenom;
+		user.date_creation = result[0].a_date_creation_compte;
 
 		return user;
 	}
@@ -41,20 +38,18 @@ export default class Acheteur {
 		const database = Database.get();
 		const user = new Acheteur();
 		const hash = shajs("sha256").update(password).digest("hex");
-		const result = await database
-			.query(
-				`INSERT INTO ${this.TABLE_NAME} (a_mail, a_password, a_nom, a_prenom, a_date_creation_compte) VALUES ($1::text, $2::text, $3::text, $4::text, $5::date) RETURNING a_id`,
-				[email, hash, nom, prenom, new Date()]
-			)
-			.catch((err) => {
+		const result = await database`
+			INSERT INTO acheteur (a_mail, a_password, a_nom, a_prenom, a_date_creation_compte) VALUES (${email}, ${hash}, ${nom}, ${prenom}, ${new Date()}) RETURNING a_id`.catch(
+			(err) => {
 				// If the email is already in use, throw a more specific error
 				if (err.code === "23505") {
 					throw new EmailDejaUtiliseError();
 				}
 				throw err;
-			});
-		console.info("Created user with id " + result.rows[0].a_id);
-		user.id = result.rows[0].a_id;
+			}
+		);
+		console.info("Created user with id " + result[0].a_id);
+		user.id = result[0].a_id;
 		user.email = email;
 		user.nom = nom;
 		user.prenom = prenom;
@@ -70,34 +65,30 @@ export default class Acheteur {
 		const dateCreation = new Date();
 		const dateExpiration = new Date(dateCreation.getTime() + Acheteur.SESSION_DURATION * 1000);
 
-		return database
-			.query(
-				`INSERT INTO session (s_token, s_date_creation, s_date_expiration, a_id) VALUES ($1::text, $2::date, $3::date, $4::int)`,
-				[token, dateCreation, dateExpiration, this.getId()]
-			)
-			.then(() => token);
+		return database`
+			INSERT INTO session (s_token, s_date_creation, s_date_expiration, a_id) VALUES (${token}, ${dateCreation}, ${dateExpiration}, ${this.getId()})`.then(
+			() => token
+		);
 	}
 
 	public static async getBySession(token: string): Promise<Acheteur> {
 		const database = Database.get();
 		const user = new Acheteur();
-		const result = await database.query(
-			`SELECT * FROM ${this.TABLE_NAME} INNER JOIN session ON ${this.TABLE_NAME}.a_id = session.a_id WHERE s_token = $1::text`,
-			[token]
-		);
-		if (result.rowCount === 0) {
+		const result = await database`
+			SELECT * FROM acheteur INNER JOIN session ON acheteur.a_id = session.a_id WHERE s_token = ${token}`;
+		if (result.count === 0) {
 			throw new SessionTokenInvalideError();
-		} else if (result.rows[0].s_date_expiration < new Date()) {
+		} else if (result[0].s_date_expiration < new Date()) {
 			throw new SessionTokenInvalideError();
-		} else if (result.rowCount > 1) {
+		} else if (result.count > 1) {
 			throw new CaCestVraimentPasDeBolError(); // Supprimer dans la version finale
 		}
 
-		user.id = result.rows[0].a_id;
-		user.email = result.rows[0].a_mail;
-		user.nom = result.rows[0].a_nom;
-		user.prenom = result.rows[0].a_prenom;
-		user.date_creation = result.rows[0].a_date_creation_compte;
+		user.id = result[0].a_id;
+		user.email = result[0].a_mail;
+		user.nom = result[0].a_nom;
+		user.prenom = result[0].a_prenom;
+		user.date_creation = result[0].a_date_creation_compte;
 
 		return user;
 	}

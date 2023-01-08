@@ -28,8 +28,8 @@ test("Crée le token de session", async () => {
 	const token = await user.createSession();
 
 	const database = Database.get();
-	const result = await database.query(`SELECT * FROM session WHERE s_token = $1::text`, [token]);
-	expect(result.rowCount).toBe(1);
+	const result = await database`SELECT * FROM session WHERE s_token = ${token}`;
+	expect(result.count).toBe(1);
 });
 
 test("Récupère l'utilisateur à partir du token de session", async () => {
@@ -42,13 +42,11 @@ test("Récupère l'utilisateur à partir du token de session", async () => {
 afterAll(async () => {
 	const database = Database.get();
 
-	const elon_ids = await database.query(`SELECT a_id FROM ${Acheteur.TABLE_NAME} WHERE a_mail = $1::text`, [
-		"elon.musk@teslamotors.com",
-	]);
-	for (const elon_id of elon_ids.rows) {
-		await database.query(`DELETE FROM session WHERE a_id = $1::int`, [elon_id.a_id]);
+	const elon_ids = await database`SELECT a_id FROM acheteur WHERE a_mail = 'elon.musk@teslamotors.com'`;
+	for (const elon_id of elon_ids) {
+		await database`DELETE FROM session WHERE a_id = ${elon_id.a_id}`;
 	}
-	await database.query(`DELETE FROM ${Acheteur.TABLE_NAME} WHERE a_mail = $1::text`, ["elon.musk@teslamotors.com"]);
+	await database`DELETE FROM acheteur WHERE a_mail = 'elon.musk@teslamotors.com'`;
 
 	await database.end();
 });
