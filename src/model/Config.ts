@@ -41,6 +41,10 @@ export default class Config {
 		};
 	}
 
+	/**
+	 * Recupere le singleton de la classe Config
+	 * @returns L'instance de la classe Config
+	 */
 	public static get(): ConfigType {
 		if (!Config._instance) {
 			Config._instance = new Config();

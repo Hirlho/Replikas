@@ -1,14 +1,12 @@
 export { dateDiff };
 
 /**
- *
+ * Retourne la difference entre 2 dates
  * @param date1
  * @param date2
- * @returns {day: number, hour: number, min: number, sec: number} The difference between date1 and date2 in days, hours, minutes and seconds
+ * @returns La difference entre les 2 dates en jour, heure, minute et seconde
  */
-function dateDiff(date1: Date, date2: Date) {
-	// This function calculates the time between date1 and date2
-
+function dateDiff(date1: Date, date2: Date): { day: number; hour: number; min: number; sec: number } {
 	var diff = {
 		sec: 0,
 		min: 0,

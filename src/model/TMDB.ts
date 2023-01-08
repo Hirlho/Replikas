@@ -43,27 +43,23 @@ export default class TMDB {
 	}
 
 	/**
-	 *
+	 * Recupere les donnees d'un film à partir de son ID
 	 * @param id The movie ID
 	 * @returns The movie data
 	 */
 	public static async getMovie(id: number): Promise<TMDBMovie> {
-		const response = await fetch(
-			`${this._baseUrl}/movie/${id}?api_key=${this._apiKey}`
-		);
+		const response = await fetch(`${this._baseUrl}/movie/${id}?api_key=${this._apiKey}`);
 		const data = await response.json();
 		return data;
 	}
 
 	/**
-	 *
+	 * Recupere l'URL de l'affiche d'un film à partir de son ID
 	 * @param id The movie ID
 	 * @returns Absolute URL to the movie poster or empty string if no poster is available
 	 */
 	public static async getMoviePosterURL(id: number): Promise<string> {
 		const movie = await this.getMovie(id);
-		return movie.poster_path
-			? `${this._imageBaseUrl}/original${movie.poster_path}`
-			: "";
+		return movie.poster_path ? `${this._imageBaseUrl}/original${movie.poster_path}` : "";
 	}
 }

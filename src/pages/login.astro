@@ -5,20 +5,24 @@ import Button from "../components/Button.astro";
 import Acheteur, { UtilisateurOuMotDePasseInvalideError } from "../model/users/Acheteur";
 import { addCookie } from "../model/Utilitaire";
 
+// Si on a reçu un formulaire
 if (Astro.request.method == "POST") {
 	const formData = await Astro.request.formData();
 	if (!(formData.has("email") && formData.has("password")))
+		// On vérifie que les champs sont bien remplis
 		return Astro.response.status(400).send("Missing email or password");
 
 	const email = formData.get("email").toString();
 	const password = formData.get("password").toString();
 
 	try {
+		// On récupère l'utilisateur, ou on lève une erreur si les identifiants sont invalides
 		const user = await Acheteur.get(email, password);
 		// On crée un token
 		const token = await user.createSession();
-		// On ajoute le cookie avec le token
+		// On crée les headers de la réponse
 		const headers = new Headers();
+		// On ajoute le token de session aux cookies du client
 		addCookie(headers, {
 			name: "token",
 			value: token,
@@ -34,8 +38,10 @@ if (Astro.request.method == "POST") {
 		});
 	} catch (e) {
 		if (e instanceof UtilisateurOuMotDePasseInvalideError) {
+			// Si les identifiants sont invalides
 			return Astro.redirect("/login?error=invalid_credentials");
 		} else {
+			// Si une autre erreur non prevue est survenue
 			console.error(e);
 			return Astro.response.status(500).send("Internal server error");
 		}

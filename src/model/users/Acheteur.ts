@@ -16,6 +16,13 @@ export default class Acheteur {
 		this.prenom = "";
 	}
 
+	/**
+	 * Récupère un utilisateur à partir de son email et de son mot de passe.
+	 * @param email L'email de l'utilisateur sert de login
+	 * @param password Le mot de passe de l'utilisateur non haché
+	 * @returns L'utilisateur correspondant à l'email et au mot de passe
+	 * @throws {UtilisateurOuMotDePasseInvalideError} Si l'email ou le mot de passe est invalide
+	 */
 	public static async get(email: string, password: string): Promise<Acheteur> {
 		const database = Database.get();
 		const user = new Acheteur();
@@ -34,6 +41,15 @@ export default class Acheteur {
 		return user;
 	}
 
+	/**
+	 * Crée un nouvel utilisateur.
+	 * @param email L'email de l'utilisateur sert de login
+	 * @param password Le mot de passe de l'utilisateur, il sera haché en SHA-256 dans la base de données
+	 * @param nom Le nom de l'utilisateur
+	 * @param prenom Le prénom de l'utilisateur
+	 * @returns L'utilisateur nouvellement créé
+	 * @throws {EmailDejaUtiliseError} Si l'email est déjà utilisé
+	 */
 	public static async create(email: string, password: string, nom: string, prenom: string): Promise<Acheteur> {
 		const database = Database.get();
 		const user = new Acheteur();
@@ -57,6 +73,10 @@ export default class Acheteur {
 		return user;
 	}
 
+	/**
+	 * Crée une session pour l'utilisateur permettant de s'authentifier sur le site sans avoir à renseigner son mot de passe grâce à la méthode {@link Acheteur.getBySession}.
+	 * @returns Le token de la session
+	 */
 	public async createSession(): Promise<string> {
 		const database = Database.get();
 		const token = shajs("sha256")
@@ -71,6 +91,13 @@ export default class Acheteur {
 		);
 	}
 
+	/**
+	 * Récupère un utilisateur à partir de son token de session.
+	 * @param token Le token de session
+	 * @returns L'utilisateur correspondant au token de session
+	 * @throws {SessionTokenInvalideError} Si le token de session est invalide ou expiré
+	 * @throws {CaCestVraimentPasDeBolError} Si plusieurs sessions sont créées pour un même utilisateur avec le même token
+	 */
 	public static async getBySession(token: string): Promise<Acheteur> {
 		const database = Database.get();
 		const user = new Acheteur();

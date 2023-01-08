@@ -14,11 +14,11 @@ const { page_name, search_bar } = Astro.props;
 let user: Acheteur;
 const cookies = Astro.request.headers.get("cookie");
 if (cookies) {
-	const token = (cookies.endsWith(";") ? cookies : cookies + ";").match(/token=([^;]*);/);
+	const token = (cookies.endsWith(";") ? cookies : cookies + ";").match(/token=([^;]*);/); // Recuperer le token de session
 	try {
-		user = await Acheteur.getBySession(token[1]);
+		user = await Acheteur.getBySession(token[1]); // Recuperer l'utilisateur
 	} catch (SessionTokenInvalideError) {
-		user = null;
+		user = null; // Si le token est invalide, on ne recupere pas l'utilisateur
 	}
 }
 ---
@@ -35,7 +35,7 @@ if (cookies) {
 	<div id="right">
 		{search_bar && <SearchBar />}
 		{
-			user ? (
+			user ? ( // Si l'utilisateur est connecte
 				<a class="button hbox" href="/settings" style="align-items: center;">
 					<div class="user_icon_container">
 						<img src="/img/icons/user.svg" alt="User" />
@@ -43,6 +43,7 @@ if (cookies) {
 					{user.getPrenom() + " " + user.getNom()}
 				</a>
 			) : (
+				// Si l'utilisateur n'est pas connecte
 				<>
 					<a class="button" id="signup" href="/register">
 						{" "}
