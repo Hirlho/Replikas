@@ -21,7 +21,6 @@ if (cookies) {
 		user = null;
 	}
 }
-
 ---
 
 <header>
@@ -37,8 +36,11 @@ if (cookies) {
 		{search_bar && <SearchBar />}
 		{
 			user ? (
-				<a class="button" href="/settings"> <!-- @TODO faire comme dans le figma -->
-					{user.getPrenom()}
+				<a class="button hbox" href="/settings" style="align-items: center;">
+					<div class="user_icon_container">
+						<img src="/img/icons/user.svg" alt="User" />
+					</div>
+					{user.getPrenom() + " " + user.getNom()}
 				</a>
 			) : (
 				<>
@@ -100,5 +102,23 @@ if (cookies) {
 
 	.button:hover {
 		background-color: #6b6e8d;
+	}
+
+	.user_icon_container {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		background-color: whitesmoke;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-right: 1rem;
+		overflow: hidden;
+	}
+
+	.user_icon_container img {
+		width: 50px;
+		height: 50px;
+		transform: translateY(8px);
 	}
 </style>
