@@ -4,4 +4,5 @@ DROP TABLE encheri;
 DROP TABLE article;
 DROP TABLE entreprise;
 DROP TABLE acheteur;
+DROP TABLE session;
 DROP TABLE test;

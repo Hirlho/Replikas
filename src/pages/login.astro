@@ -2,15 +2,54 @@
 import TextField from "../components/TextField.astro";
 import Layout from "../layouts/Layout.astro";
 import Button from "../components/Button.astro";
+import Acheteur, { UtilisateurOuMotDePasseInvalideError } from "../model/users/Acheteur";
+import { addCookie } from "../model/Utilitaire";
+
+if (Astro.request.method == "POST") {
+	const formData = await Astro.request.formData();
+	if (!(formData.has("email") && formData.has("password")))
+		return Astro.response.status(400).send("Missing email or password");
+
+	const email = formData.get("email").toString();
+	const password = formData.get("password").toString();
+
+	try {
+		const user = await Acheteur.get(email, password);
+		// On crée un token
+		const token = await user.createSession();
+		// On ajoute le cookie avec le token
+		const headers = new Headers();
+		addCookie(headers, {
+			name: "token",
+			value: token,
+			maxAge: Acheteur.SESSION_DURATION,
+			secure: import.meta.env.MODE == "production",
+		});
+		// Redirection vers la page d'accueil
+		headers.append("Location", "/");
+		// Envoi de la réponse
+		return new Response("", {
+			status: 302,
+			headers,
+		});
+	} catch (e) {
+		if (e instanceof UtilisateurOuMotDePasseInvalideError) {
+			return Astro.redirect("/login?error=invalid_credentials");
+		} else {
+			console.error(e);
+			return Astro.response.status(500).send("Internal server error");
+		}
+	}
+}
 ---
 
 <Layout title="login" no_searchbar>
 	<main>
 		<h1>Connectez-vous à votre compte</h1>
 
-		<form method="get" action="/">
-			<TextField text="" placeholder="Login" />
-			<TextField text="" placeholder="Password" />
+		<form method="post" action="/login">
+			<TextField placeholder="Email" name="email" />
+			<TextField text="" placeholder="Mot de passe" name="password" type="password" />
 			<Button text="Se connecter" />
 		</form>
 		<p>Vous n'êtes pas encore inscrit ? <a href="register">S'inscrire</a></p>

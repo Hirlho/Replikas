@@ -1,6 +1,8 @@
 ---
 import Logo from "../components/Logo.astro";
 import SearchBar from "../components/SearchBar.astro";
+import Acheteur from "../model/users/Acheteur";
+import { SessionTokenInvalideError } from "../model/users/Acheteur";
 
 export interface Props {
 	page_name?: string;
@@ -8,6 +10,18 @@ export interface Props {
 }
 
 const { page_name, search_bar } = Astro.props;
+// Recuperer les infos de l'utilisateur
+let user: Acheteur;
+const cookies = Astro.request.headers.get("cookie");
+if (cookies) {
+	const token = (cookies.endsWith(";") ? cookies : cookies + ";").match(/token=([^;]*);/);
+	try {
+		user = await Acheteur.getBySession(token[1]);
+	} catch (SessionTokenInvalideError) {
+		user = null;
+	}
+}
+
 ---
 
 <header>
@@ -21,8 +35,24 @@ const { page_name, search_bar } = Astro.props;
 
 	<div id="right">
 		{search_bar && <SearchBar />}
-		<a class="button" id="signup" href="/register"> Creer un compte</a>
-		<a class="button" id="login" href="/login"> Connectez-vous</a>
+		{
+			user ? (
+				<a class="button" href="/settings"> <!-- @TODO faire comme dans le figma -->
+					{user.getPrenom()}
+				</a>
+			) : (
+				<>
+					<a class="button" id="signup" href="/register">
+						{" "}
+						Creer un compte
+					</a>
+					<a class="button" id="login" href="/login">
+						{" "}
+						Connectez-vous
+					</a>
+				</>
+			)
+		}
 	</div>
 </header>
 

@@ -9,6 +9,14 @@ CREATE TABLE acheteur (
     a_date_creation_compte DATE NOT NULL
 );
 
+CREATE TABLE session (
+    a_id INTEGER REFERENCES acheteur (a_id),
+    s_token varchar(64) NOT NULL,
+    s_date_creation DATE NOT NULL,
+    s_date_expiration DATE NOT NULL,
+    PRIMARY KEY(a_id, s_token)
+);
+
 CREATE TABLE entreprise (
     e_id SERIAL PRIMARY KEY,
     e_name varchar(50) NOT NULL,
@@ -53,6 +61,7 @@ CREATE TABLE acqueri (
 -- PERMISSONS
 ALTER TABLE test OWNER TO replikas_usr;
 ALTER TABLE acheteur OWNER TO replikas_usr;
+ALTER TABLE session OWNER TO replikas_usr;
 ALTER TABLE entreprise OWNER TO replikas_usr;
 ALTER TABLE article OWNER TO replikas_usr;
 ALTER TABLE encheri OWNER TO replikas_usr;
