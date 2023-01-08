@@ -5,70 +5,65 @@ import Button from "../components/Button.astro";
 ---
 
 <Layout title="Register" no_searchbar>
-    <main>
-        
-        <form action="" class="formlist">
-            <h1>Créer votre compte</h1>
-            <table>
-                <TextField text="" placeholder="Nom"/>
-                <TextField text="" placeholder="Prenom"/> 
-                <TextField text="" placeholder="Email"/>
-                <TextField text="" placeholder="Mot de passe"/>
-                <TextField text="" placeholder="Confirmer mot de passe"/>
-           
-             </table>
-             
-             <div class="button">
-                <div>
-                    <input type="checkbox">
-                    <span> J'accepte les conditions générales d'utilisation</span> 
-                </div>
-                <Button text="S'inscrire"/>
-            </div>
-        </form>
-        
-    </main>
+	<main>
+		<form action="" class="formlist">
+			<h1>Créer votre compte</h1>
+			<table>
+				<TextField text="" placeholder="Nom" />
+				<TextField text="" placeholder="Prenom" />
+				<TextField text="" placeholder="Email" type="email" />
+				<TextField text="" placeholder="Mot de passe" type="password" />
+				<TextField text="" placeholder="Confirmer mot de passe" type="password" />
+			</table>
+
+			<div class="button">
+				<div>
+					<input type="checkbox" />
+					<span> J'accepte les conditions générales d'utilisation</span>
+				</div>
+				<Button text="S'inscrire" />
+			</div>
+		</form>
+	</main>
 </Layout>
 
 <style>
-    .formlist {
+	.formlist {
 		padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
-        padding-left: 3rem;
-        padding-right: 3rem;
+		padding-bottom: 1.5rem;
+		padding-left: 3rem;
+		padding-right: 3rem;
 		max-width: 80ch;
-        background-color: #222222;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-        margin-left: auto;
-        margin-right: auto;
-        border-radius: 1rem;
-    }
-    h1 {
-        font-size: 2rem;
-        text-align: center;
-        margin: 2rem 0;
-        color: whitesmoke;
-    }
-    .formlist table {
-        width: 100%;
-        border-collapse: collapse;
-        display: flex;
-        flex-direction: column;
-    }
-    .button {
-        color: whitesmoke;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .button div {
-        display: flex;
-        align-items: center;
-        margin-bottom: 1rem;
-    }
-    table input {
-
-
-    }
+		background-color: #222222;
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+		margin-left: auto;
+		margin-right: auto;
+		border-radius: 1rem;
+	}
+	h1 {
+		font-size: 2rem;
+		text-align: center;
+		margin: 2rem 0;
+		color: whitesmoke;
+	}
+	.formlist table {
+		width: 100%;
+		border-collapse: collapse;
+		display: flex;
+		flex-direction: column;
+	}
+	.button {
+		color: whitesmoke;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.button div {
+		display: flex;
+		align-items: center;
+		margin-bottom: 1rem;
+	}
+	table input {
+	}
 </style>
