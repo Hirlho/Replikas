@@ -48,5 +48,5 @@ afterAll(async () => {
 	}
 	await database`DELETE FROM acheteur WHERE a_mail = 'elon.musk@teslamotors.com'`;
 
-	await database.end();
+	await Database.close();
 });

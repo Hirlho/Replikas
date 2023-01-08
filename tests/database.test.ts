@@ -14,3 +14,7 @@ test("Connecting to the database works", async () => {
 		expect(result.count).toBe(1);
 	}
 });
+
+afterAll(async () => {
+	await Database.close();
+});
