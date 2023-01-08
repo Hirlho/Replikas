@@ -29,7 +29,6 @@ CREATE TABLE article (
     art_id SERIAL PRIMARY KEY,
     art_name varchar(128) NOT NULL,
     art_description varchar(2000) NOT NULL,
-    art_film_name varchar(128) NOT NULL,
     art_prix_base INTEGER NOT NULL,
     art_encherissement_min INTEGER NOT NULL,
     art_debut_vente DATE NOT NULL,
@@ -40,7 +39,7 @@ CREATE TABLE article (
 
 CREATE TABLE article_image (
     art_id INTEGER REFERENCES article (art_id),
-    img_path varchar(255) NOT NULL,
+    img_path varchar(255) NOT NULL
 );
 
 CREATE TABLE encheri (
