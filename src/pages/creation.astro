@@ -3,194 +3,239 @@ import Button from "../components/Button.astro";
 import TextField from "../components/TextField.astro";
 import Layout from "../layouts/Layout.astro";
 ---
+
 <Layout title="Création article" no_searchbar>
-	<main>
-		<h1>Création d'un article</h1>
-		<h2>Ici vous pourrez personnaliser votre produit à votre guise afin de satisfaire la demande des clients</h2>
-		<div class="info_produit">
-			<h2>Informations principales du produit</h2>
-			<form method="get" action="/">
-				<div style="display:flex;">
-					<div style="flex:1;">
-						<label for="intitule">Intitulé :</label>
-						<br>
-						<textarea id="intitule" name="intitule" placeholder="Ex : Sabre Laser..." style="width:85%; margin-bottom:15px;padding-bottom:5px;margin-top: 10px;"></textarea>
-						<br>
-						<label for="oeuvres">Œuvre(s) d'origine (film/série) :</label>
-						<br>
-						<textarea id="oeuvres" name="oeuvres" placeholder="Ex : Star Wars : Un Nouvel Espoir" style="width:85%; margin-bottom:10px;padding-bottom:5px;margin-top: 10px;"></textarea>
-					</div>
-					<div style="flex:1;">
-						<label for="description">Description du produit :</label>
-						<br>
-						<textarea id="description" placeholder="Ex : Réplique du sabre de Dark Vador utilisé lors du tournage du film “Star Wars : Un Nouvel Espoir” Note : Les effets lumineux sont indisponibles (rajoutés via effets spéciaux)" name="description" style="width:100%; margin-bottom:10px; padding-bottom:90px; margin-top: 10px;"></textarea>					</div>
-				</div>
-			</form>
+  <main>
+    <h1>Création d'un article</h1>
+    <h2>
+      Ici vous pourrez personnaliser votre produit à votre guise afin de
+      satisfaire la demande des clients
+    </h2>
+    <div class="info_produit">
+      <h2>Informations principales du produit</h2>
+      <form method="get" action="/">
+        <div style="display:flex;">
+          <div style="flex:1;">
+            <label for="intitule">Intitulé :</label>
+            <br />
+            <textarea
+              id="intitule"
+              name="intitule"
+              placeholder="Ex : Sabre Laser..."
+              style="width:85%; margin-bottom:15px;padding-bottom:5px;margin-top: 10px;"
+            ></textarea>
+            <br />
+            <label for="oeuvres">Œuvre(s) d'origine (film/série) :</label>
+            <br />
+            <textarea
+              id="oeuvres"
+              name="oeuvres"
+              placeholder="Ex : Star Wars : Un Nouvel Espoir"
+              style="width:85%; margin-bottom:10px;padding-bottom:5px;margin-top: 10px;"
+            ></textarea>
+          </div>
+          <div style="flex:1;">
+            <label for="description">Description du produit :</label>
+            <br />
+            <textarea
+              id="description"
+              placeholder="Ex : Réplique du sabre de Dark Vador utilisé lors du tournage du film “Star Wars : Un Nouvel Espoir” Note : Les effets lumineux sont indisponibles (rajoutés via effets spéciaux)"
+              name="description"
+              style="width:100%; margin-bottom:10px; padding-bottom: 99px; margin-top: 10px;"
+            ></textarea>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="info_produit">
+      <h2>Date de l'enchère</h2>
+      <form method="get" action="/">
+        <label for="start_date"
+          >Sélectionner la date de début de l’enchère :</label
+        >
+        <br />
+        <input
+          type="date"
+          id="start_date"
+          name="start_date"
+          style="margin-top: 10px;font-size: 20px;border-radius: 5px;"
+        />
+        <input
+          type="time"
+          id="start_time"
+          name="start_time"
+          style="font-size: 20px;border-radius: 5px;"
+        />
+        <br />
+        <br />
+        <label for="end_date">Sélectionner une date de fin de l’enchère :</label
+        >
+        <br />
+        <input
+          type="date"
+          id="end_date"
+          name="end_date"
+          style="margin-top: 10px;font-size: 20px;border-radius: 5px;"
+        />
+        <input
+          type="time"
+          id="end_time"
+          name="end_time"
+          style="font-size: 20px;border-radius: 5px;"
+        />
+      </form>
+    </div>
 
-	
-		</div>
-		<div class="info_produit">
-			<h2>Date de l'enchère</h2>
-			<form method="get" action="/">
-			  <label for="start_date">Sélectionner la date de début de l’enchère :</label>
-			  <br>
-			  <input type="date" id="start_date" name="start_date" style="margin-top: 10px;font-size: 20px;border-radius: 5px;">
-			  <input type="time" id="start_time" name="start_time" style="font-size: 20px;border-radius: 5px;">
-			  <br>
-			  <br>
-			  <label for="end_date">Sélectionner une date de fin de l’enchère :</label>
-			  <br>
-			  <input type="date" id="end_date" name="end_date" style="margin-top: 10px;font-size: 20px;border-radius: 5px;">
-			  <input type="time" id="end_time" name="end_time" style="font-size: 20px;border-radius: 5px;">
-			</form>
-		  </div>
+    <div class="info_produit">
+      <h2>Choix du prix du produit</h2>
+      <form method="get" action="/">
+        <div style="display:flex;">
+          <div style="flex:1;">
+            <label for="base_price">Prix de base du produit :</label>
+            <br />
+            <textarea
+              id="base_price"
+              name="base_price"
+              placeholder="Ex : 120, 2300,..."
+              style="width:85%; margin-bottom:15px;padding-bottom:5px;margin-top: 10px;"
+            ></textarea>
+          </div>
+          <div style="flex:1;">
+            <label for="min_bid">Enchérissement minimum :</label>
+            <br />
+            <textarea
+              id="min_bid"
+              name="min_bid"
+              placeholder="Ex : 1, 5, 10, 20, 50,..."
+              style="width:85%; margin-bottom:10px;padding-bottom:5px;margin-top: 10px;"
+            ></textarea>
+          </div>
+        </div>
+      </form>
+    </div>
 
-		  <div class="info_produit">
-			<h2>Choix du prix du produit</h2>
-			<form method="get" action="/">
-			  <div style="display:flex;">
-				<div style="flex:1;">
-				  <label for="base_price">Prix de base du produit :</label>
-				  <br>
-				  <textarea id="base_price" name="base_price" placeholder="Ex : 120, 2300,..." style="width:85%; margin-bottom:15px;padding-bottom:5px;margin-top: 10px;"></textarea>
-				</div>
-				<div style="flex:1;">
-				  <label for="min_bid">Enchérissement minimum :</label>
-				  <br>
-				  <textarea id="min_bid" name="min_bid" placeholder="Ex : 1, 5, 10, 20, 50,..." style="width:85%; margin-bottom:10px;padding-bottom:5px;margin-top: 10px;"></textarea>
-				</div>
-			  </div>
-			</form>
-		  </div>
-
-		  <div class="info_produit">
-			<h2>Ajout de tags à l’article</h2>
-			<form method="get" action="/">
-			  <label for="tags">Abandonnée</label>
-			</form>
-		  </div>
-
-		  <div class="info_produit">
-			<h2>Ajout d’images à l’article (max 3)</h2>
-			<form method="get" action="/">
-			  <div style="display:flex;">
-				<button type="button" class="button_search" style="margin-right:40px;">Chercher une image</button>
-				<input type="text" id="image_search" name="image_search" placeholder="Rechercher une image" style="text-align: center;font-size:16px;">
-			  </div>
-			  <div id="image_display">
-				<!-- Afficher les images ici -->
-				<p style="text-align: center;">----Afficher les images ici----</p>
-			  </div>
-			</form>
-			
-		  </div>
-		  <div class="div_buton_create">
-			<button type="button" class="buton_create">Créer l’article</button>
-		  </div>
-
-
-		  
-					 
-	</main>
-
-
+    <div class="info_produit">
+      <h2>Ajout d’images à l’article (max 3)</h2>
+      <form method="get" action="/">
+        <div style="display:flex;">
+          <button type="button" class="button_search" style="margin-right:40px;"
+            >Chercher une image</button
+          >
+          <input
+            type="text"
+            id="image_search"
+            name="image_search"
+            placeholder="Rechercher une image"
+            style="text-align: center;font-size:16px;"
+          />
+        </div>
+        <div id="image_display">
+          <!-- Afficher les images ici -->
+          <p style="text-align: center;">----Afficher les images ici----</p>
+        </div>
+      </form>
+    </div>
+    <div class="div_buton_create">
+      <button type="button" class="buton_create">Créer l’article</button>
+    </div>
+  </main>
 </Layout>
 
-
 <style>
-	textarea{
-		resize: none;
-		border-radius: 5px;
+  textarea {
+    resize: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 650;
+  }
+  .button_search {
+    background-color: #1b1e25;
+    color: whitesmoke;
+    border-radius: 5px;
+    font-family: Arial;
+    font-size: 16px;
+    width: 200px;
+  }
+  .buton_create {
+    background-color: #353a4d;
+    color: whitesmoke;
+    border-radius: 5px;
+    font-family: Arial;
+    font-size: 20px;
+    width: 200px;
+    padding: 10px;
+    margin-bottom: 20px;
+    margin-left: 75%;
+  }
+  input[type="text"] {
+    background-color: whitesmoke;
+    color: #353a4d;
+    border-radius: 5px;
+    font-family: Arial;
+    font-size: 15px;
+    width: 70%;
+  }
+  label {
+    color: whitesmoke;
+  }
 
-	}
-	.button_search {
-		background-color: #1b1e25;
-		color: whitesmoke;
-		border-radius: 5px;
-		font-family: Arial;
-		font-size: 16px;
-		width: 200px;
-	}
-	.buton_create {
-		background-color: #353A4D;
-		color: whitesmoke;
-		border-radius: 5px;
-		font-family: Arial;
-		font-size: 20px;
-		width: 200px;
-		padding: 10px;
-		margin-bottom: 20px;
-		margin-left: 75%;
-	}
-	input[type=text] {
-		background-color: whitesmoke;
-		color: #353A4D;
-		border-radius: 5px;
-		font-family: Arial;
-		font-size: 15px;
-		width: 70%;
-	}
-	label {
-		color: whitesmoke;
-	}
-	
-	main {
-		margin: auto;
-		padding-top: 1.5rem;
-		padding-bottom: 1.5rem;
-		padding-left: 3rem;
-		padding-right: 3rem;
-		max-width: 80ch;
-		background-color: #222222;
-		border-radius: 15px;
-	}
-	.info_produit {
-		margin: auto;
-		margin-top: 25px;
-		padding-top: 1.5rem;
-		padding-bottom: 1.5rem;
-		padding-left: 3rem;
-		padding-right: 3rem;
-		max-width: 80ch;
-		background-color: #353A4D;
-		border-radius: 15px;
-	}
+  main {
+    margin: auto;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    max-width: 80ch;
+    background-color: #222222;
+    border-radius: 15px;
+  }
+  .info_produit {
+    margin: auto;
+    margin-top: 25px;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    max-width: 80ch;
+    background-color: #353a4d;
+    border-radius: 15px;
+  }
 
-	.div_buton_create {
-		margin: auto;
-		margin-top: 25px;
-		padding-top: 1.5rem;
-		padding-bottom: 1.5rem;
-		padding-left: 3rem;
-		padding-right: 3rem;
-		max-width: 80ch;
+  .div_buton_create {
+    margin: auto;
+    margin-top: 25px;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    max-width: 80ch;
 
-		border-radius: 15px;
-	}
-	
-	h1 {
-		font-size: 2rem;
-		font-weight: 650;
-		margin: 0;
-		margin-bottom: 1.5rem;
-		color: whitesmoke;
-		text-align: center;
-	}
-	h2 {
-		font-size: 1.25rem;
-		font-weight: 650;
-		margin: 0;
-		margin-bottom: 1.5rem;
-		color: whitesmoke;
-		text-align: center;
-	}
-	p {
-		color: whitesmoke;
-	}
-	a {
-		color: blue;
-	}
-	a:hover {
-		color: purple;
-	}
+    border-radius: 15px;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 650;
+    margin: 0;
+    margin-bottom: 1.5rem;
+    color: whitesmoke;
+    text-align: center;
+  }
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 650;
+    margin: 0;
+    margin-bottom: 1.5rem;
+    color: whitesmoke;
+    text-align: center;
+  }
+  p {
+    color: whitesmoke;
+  }
+  a {
+    color: blue;
+  }
+  a:hover {
+    color: purple;
+  }
 </style>

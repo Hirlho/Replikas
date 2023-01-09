@@ -13,7 +13,7 @@ test("Search bar sets value to article URLParameter", async ({ page }) => {
 test("Connection utilisateur", async ({ page }) => {
 	await page.goto("/");
 	await page.click("id=login");
-	expect(page).toHaveURL("/login");
+	await expect(page).toHaveURL("/login");
 	await page.fill("input[name=email]", "gaspard@replikas.com");
 	await page.fill("input[name=password]", "password");
 	await page.click("input[type=submit]");
