@@ -45,3 +45,9 @@ export function addCookie(
 	val += cookie.path ? ` Path=${cookie.path};` : "";
 	headers.append("Set-Cookie", val);
 }
+
+export class EtatInnatenduError extends Error {
+	constructor(description: string) {
+		super(`[Etat innatendu] ${description}`);
+	}
+}

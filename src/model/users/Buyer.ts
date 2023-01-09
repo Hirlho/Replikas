@@ -55,19 +55,19 @@ export default class Buyer extends Account {
 		const account = await super.getBySession(token);
 		const database = Database.get();
 		const result = await database`
-			SELECT * FROM acheteur WHERE u_id = ${account.getId()}`;
+			SELECT * FROM buyer WHERE a_id = ${account.getId()}`;
 		if (result.count === 0) {
 			throw new EtatInnatenduError("L'utilisateur n'a pas d'acheteur associé");
 		}
-		const acheteur = new Buyer();
-		acheteur.id = account.getId();
-		acheteur.email = account.getEmail();
-		acheteur.created_at = account.getDateCreation();
-		acheteur.is_company = false;
-		acheteur.last_name = result[0].b_last_name;
-		acheteur.first_name = result[0].b_first_name;
+		const buyer = new Buyer();
+		buyer.id = account.getId();
+		buyer.email = account.getEmail();
+		buyer.created_at = account.getDateCreation();
+		buyer.is_company = false;
+		buyer.last_name = result[0].b_last_name;
+		buyer.first_name = result[0].b_first_name;
 
-		return acheteur;
+		return buyer;
 	}
 
 	public getNom(): string {

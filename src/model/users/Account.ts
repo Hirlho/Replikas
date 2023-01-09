@@ -100,7 +100,7 @@ export default class Account {
 			SELECT * FROM account INNER JOIN session ON account.a_id = session.a_id WHERE s_token = ${token}`;
 		if (result.count === 0) {
 			throw new SessionTokenInvalideError();
-		} else if (result[0].s_expires_at > new Date()) {
+		} else if (result[0].s_expires_at < new Date()) {
 			throw new SessionTokenInvalideError();
 		} else if (result.count > 1) {
 			throw new CaCestVraimentPasDeBolError(); // Supprimer dans la version finale
