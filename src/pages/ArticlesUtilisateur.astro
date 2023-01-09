@@ -1,0 +1,104 @@
+---
+import Article from "../components/Article.astro";
+import SearchBar from "../components/SearchBar.astro";
+import Layout from "../layouts/Layout.astro";
+
+export interface Props {
+  typeArticles?: string;
+}
+
+const { typeArticles } = Astro.props;
+---
+
+<Layout title="ArticlesUtilisateur" no_searchbar>
+    <section class="sectionSearchBar">
+        <SearchBar/>
+    </section>
+    <section class="sectionArticles">
+        <h1>Vos Articles</h1>
+        <form method="post" action="/ArticlesUtilisateur">
+            <input type="submit" value="À payer" name="" id="" />
+            <input type="submit" value="Possédés" name="" id="" />
+		</form>
+        <p>Si 3 jours après avoir gagné une enchère, vous n'avez pas payé l'article celui-ci ne vous appartiendra plus.</p>
+        <div>
+            <Article
+			    titre="Chapeau de Gandalf"
+			    image="chapeau_de_gandalf.jpeg"
+			    date={new Date()}
+			    prix={690}
+		    />
+            <Article
+			    titre="Chapeau de Gandalf"
+			    image="chapeau_de_gandalf.jpeg"
+			    date={new Date()}
+			    prix={690}
+		    />
+            <Article
+			    titre="Chapeau de Gandalf"
+			    image="chapeau_de_gandalf.jpeg"
+			    date={new Date()}
+			    prix={690}
+		    />
+            <Article
+			    titre="Chapeau de Gandalf"
+			    image="chapeau_de_gandalf.jpeg"
+			    date={new Date()}
+			    prix={690}
+		    />
+            <Article
+			    titre="Chapeau de Gandalf"
+			    image="chapeau_de_gandalf.jpeg"
+			    date={new Date()}
+			    prix={690}
+		    />
+            <Article
+			    titre="Chapeau de Gandalf"
+			    image="chapeau_de_gandalf.jpeg"
+			    date={new Date()}
+			    prix={690}
+		    />
+        </div>
+    </section>
+</Layout>
+<style>
+    .sectionSearchBar{
+        padding-right: 20%;
+        padding-left: 20%;
+    }
+    .sectionArticles{
+        display: flex;
+        flex-wrap: wrap;
+        background-color: #222222;
+        border-radius: 5px;
+        padding-left: 3rem;
+        padding-right: 3rem;
+        margin: 2rem;
+    }
+    div{
+        display: flex;
+        flex-wrap: wrap;
+    }
+    h1{
+        color: whitesmoke;
+        font-size: 2.5rem;
+    }
+    form{
+        margin-left: 35%;
+    }
+    input{
+        color: whitesmoke;
+        background-color: #222222;
+        margin: 2rem;
+        font-size: 2rem;
+        border-top: transparent;
+        border-left: transparent;
+        border-right: transparent;
+        border-color: whitesmoke;
+    }
+    p {
+        color: whitesmoke;
+        padding-left: 3rem;
+        font-size: 1.5rem;
+    }
+</style>

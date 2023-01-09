@@ -10,7 +10,7 @@ if (Astro.request.method == "POST") {
 	const formData = await Astro.request.formData();
 	if (!(formData.has("email") && formData.has("password")))
 		// On vérifie que les champs sont bien remplis
-		return Astro.response.status(400).send("Missing email or password");
+		return Astro.redirect("/login?error=missing_field");
 
 	const email = formData.get("email").toString();
 	const password = formData.get("password").toString();
@@ -28,6 +28,7 @@ if (Astro.request.method == "POST") {
 			value: token,
 			maxAge: Acheteur.SESSION_DURATION,
 			secure: import.meta.env.MODE == "production",
+			path: "/",
 		});
 		// Redirection vers la page d'accueil
 		headers.append("Location", "/");
@@ -55,6 +56,8 @@ if (Astro.url.searchParams.has("error")) {
 	const error = Astro.url.searchParams.get("error");
 	if (error == "invalid_credentials") {
 		error_msg = "Identifiants invalides";
+	} else if (error == "missing_field") {
+		error_msg = "Veuillez remplir tous les champs";
 	}
 }
 ---
