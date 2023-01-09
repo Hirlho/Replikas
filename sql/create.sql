@@ -15,7 +15,7 @@ CREATE TABLE buyer (
 );
 
 CREATE TABLE session (
-    a_id INTEGER REFERENCES account (a_id),
+    a_id INTEGER REFERENCES account (a_id) ON DELETE CASCADE,
     s_token varchar(64) NOT NULL,
     s_created_at TIMESTAMP NOT NULL,
     s_expires_at TIMESTAMP NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE article (
     art_id SERIAL PRIMARY KEY,
     art_name varchar(128) NOT NULL,
     art_description varchar(2000) NOT NULL,
-    art_floor_price INTEGER NOT NULL,
+    art_price INTEGER NOT NULL,
     art_min_bidding INTEGER NOT NULL,
     art_auction_start TIMESTAMP NOT NULL,
     art_auction_end TIMESTAMP NOT NULL,
