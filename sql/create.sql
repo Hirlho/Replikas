@@ -2,7 +2,7 @@ CREATE TABLE test (id int, name varchar(255));
 
 CREATE TABLE account (
     a_id SERIAL PRIMARY KEY,
-    a_login varchar(255) NOT NULL,
+    a_login varchar(255) NOT NULL UNIQUE,
     a_password varchar(255) NOT NULL,
     a_created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     a_is_company BOOLEAN NOT NULL DEFAULT FALSE /* TRUE if company account, FALSE if acheteur */

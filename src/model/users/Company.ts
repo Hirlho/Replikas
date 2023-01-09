@@ -7,10 +7,10 @@ export default class Company extends Account {
 
 	public static async get(email: string, password: string): Promise<Company> {
 		const account = await super.get(email, password);
-		return this.getFromUtilisateur(account);
+		return this.getFromAccount(account);
 	}
 
-	public static async getFromUtilisateur(account: Account): Promise<Company> {
+	public static async getFromAccount(account: Account): Promise<Company> {
 		if (!account.isCompany()) {
 			throw new AccountTypeMismatch("company");
 		}
@@ -62,6 +62,10 @@ export default class Company extends Account {
 	}
 
 	public getNom(): string {
+		return this.name;
+	}
+
+	public toString(): string {
 		return this.name;
 	}
 }

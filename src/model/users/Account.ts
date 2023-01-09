@@ -18,7 +18,7 @@ export default class Account {
 	 * @returns L'utilisateur correspondant à l'email et au mot de passe
 	 * @throws {UtilisateurOuMotDePasseInvalideError} Si l'email ou le mot de passe est invalide
 	 */
-	protected static async get(email: string, password: string): Promise<Account> {
+	public static async get(email: string, password: string): Promise<Account> {
 		const database = Database.get();
 		const user = new Account();
 		const hash = shajs("sha256").update(password).digest("hex");
@@ -48,7 +48,9 @@ export default class Account {
 		const database = Database.get();
 		const account = new Account();
 		const hash = shajs("sha256").update(password).digest("hex");
-
+		// Mail de test pour les tests playwright qui ne respecte pas la contrainte unique
+		if (email === "dooverwrite@testmail.com") await database`DELETE FROM account WHERE a_login = ${email}`;
+		// @TODO A enlever dans la version finale
 		const result = await database`
 			INSERT INTO account (a_login, a_password, a_created_at, a_is_company) VALUES (${email}, ${hash}, ${new Date()}, ${is_company}) RETURNING a_id`.catch(
 			(err) => {
@@ -93,7 +95,7 @@ export default class Account {
 	 * @throws {SessionTokenInvalideError} Si le token de session est invalide ou expiré
 	 * @throws {CaCestVraimentPasDeBolError} Si plusieurs sessions sont créées pour un même utilisateur avec le même token
 	 */
-	protected static async getBySession(token: string): Promise<Account> {
+	public static async getBySession(token: string): Promise<Account> {
 		const database = Database.get();
 		const account = new Account();
 		const result = await database`

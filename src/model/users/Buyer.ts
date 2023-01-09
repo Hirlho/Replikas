@@ -77,4 +77,8 @@ export default class Buyer extends Account {
 	public getPrenom(): string {
 		return this.first_name;
 	}
+
+	public toString(): string {
+		return `${this.first_name} ${this.last_name}`;
+	}
 }
