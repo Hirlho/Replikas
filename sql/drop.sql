@@ -6,4 +6,5 @@ DROP TABLE article;
 DROP TABLE entreprise;
 DROP TABLE session;
 DROP TABLE acheteur;
+DROP TABLE utilisateur;
 DROP TABLE test;
