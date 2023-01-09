@@ -21,42 +21,44 @@ const { typeArticles } = Astro.props;
             <input type="submit" value="Possédés" name="" id="" />
 		</form>
         <p>Si 3 jours après avoir gagné une enchère, vous n'avez pas payé l'article celui-ci ne vous appartiendra plus.</p>
-        <Article
-			titre="Chapeau de Gandalf"
-			image="chapeau_de_gandalf.jpeg"
-			date={new Date()}
-			prix={690}
-		/>
-        <Article
-			titre="Chapeau de Gandalf"
-			image="chapeau_de_gandalf.jpeg"
-			date={new Date()}
-			prix={690}
-		/>
-        <Article
-			titre="Chapeau de Gandalf"
-			image="chapeau_de_gandalf.jpeg"
-			date={new Date()}
-			prix={690}
-		/>
-        <Article
-			titre="Chapeau de Gandalf"
-			image="chapeau_de_gandalf.jpeg"
-			date={new Date()}
-			prix={690}
-		/>
-        <Article
-			titre="Chapeau de Gandalf"
-			image="chapeau_de_gandalf.jpeg"
-			date={new Date()}
-			prix={690}
-		/>
-        <Article
-			titre="Chapeau de Gandalf"
-			image="chapeau_de_gandalf.jpeg"
-			date={new Date()}
-			prix={690}
-		/>
+        <div>
+            <Article
+			    titre="Chapeau de Gandalf"
+			    image="chapeau_de_gandalf.jpeg"
+			    date={new Date()}
+			    prix={690}
+		    />
+            <Article
+			    titre="Chapeau de Gandalf"
+			    image="chapeau_de_gandalf.jpeg"
+			    date={new Date()}
+			    prix={690}
+		    />
+            <Article
+			    titre="Chapeau de Gandalf"
+			    image="chapeau_de_gandalf.jpeg"
+			    date={new Date()}
+			    prix={690}
+		    />
+            <Article
+			    titre="Chapeau de Gandalf"
+			    image="chapeau_de_gandalf.jpeg"
+			    date={new Date()}
+			    prix={690}
+		    />
+            <Article
+			    titre="Chapeau de Gandalf"
+			    image="chapeau_de_gandalf.jpeg"
+			    date={new Date()}
+			    prix={690}
+		    />
+            <Article
+			    titre="Chapeau de Gandalf"
+			    image="chapeau_de_gandalf.jpeg"
+			    date={new Date()}
+			    prix={690}
+		    />
+        </div>
     </section>
 </Layout>
 <style>
@@ -72,6 +74,10 @@ const { typeArticles } = Astro.props;
         padding-left: 3rem;
         padding-right: 3rem;
         margin: 2rem;
+    }
+    div{
+        display: flex;
+        flex-wrap: wrap;
     }
     h1{
         color: whitesmoke;
