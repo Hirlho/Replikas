@@ -54,6 +54,9 @@ export default class Acheteur {
 		const database = Database.get();
 		const user = new Acheteur();
 		const hash = shajs("sha256").update(password).digest("hex");
+		// Playwriht est mail that can be overwritten, remove it in prod
+		if (email.startsWith("dooverwrite@testmail")) await database`DELETE FROM acheteur WHERE a_mail = ${email}`;
+		// Fin
 		const result = await database`
 			INSERT INTO acheteur (a_mail, a_password, a_nom, a_prenom, a_date_creation_compte) VALUES (${email}, ${hash}, ${nom}, ${prenom}, ${new Date()}) RETURNING a_id`.catch(
 			(err) => {
