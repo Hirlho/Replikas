@@ -8,98 +8,98 @@ const firstName = "unPrénom";
 ---
 
 <Layout title="Replikas" no_searchbar>
-  <div class="main-wrapper">
-    <aside class="sideBar">
-      <h2>Paramètres utilisateur</h2>
-      <ul>
-        <li><a href="#monCompte">Mon compte</a></li>
-        <li><a href="#accessibilite">Accessibilité</a></li>
-      </ul>
-      <form action="">
-        <input id="deconnection" type="submit" value="Se déconnecter" />
-      </form>
-    </aside>
-    <main class="parameters">
-      <h2 id="monCompte">Mon compte</h2>
-      <UserSetting parametre="Nom" value={lastName} />
-      <UserSetting parametre="Prénom" value={firstName} />
-      <UserSetting parametre="Adresse mail" value={mail} />
-      <UserSetting parametre="Mot de passe" />
-      <h2 id="accessibilite">Accessibilité</h2>
-      <UserSetting parametre="Taille de la police" value="x1" />
-    </main>
-    <aside class="notifications">
-      <h2>Notifications</h2>
-    </aside>
-  </div>
+	<div class="main-wrapper">
+		<aside class="sideBar">
+			<h2>Paramètres utilisateur</h2>
+			<ul>
+				<li><a href="#monCompte">Mon compte</a></li>
+				<li><a href="#accessibilite">Accessibilité</a></li>
+			</ul>
+			<form action="/action/disconnect">
+				<input id="deconnection" type="submit" value="Se déconnecter" />
+			</form>
+		</aside>
+		<main class="parameters">
+			<h2 id="monCompte">Mon compte</h2>
+			<UserSetting parametre="Nom" value={lastName} />
+			<UserSetting parametre="Prénom" value={firstName} />
+			<UserSetting parametre="Adresse mail" value={mail} />
+			<UserSetting parametre="Mot de passe" />
+			<h2 id="accessibilite">Accessibilité</h2>
+			<UserSetting parametre="Taille de la police" value="x1" />
+		</main>
+		<aside class="notifications">
+			<h2>Notifications</h2>
+		</aside>
+	</div>
 </Layout>
 
 <style>
-  * {
-    color: whitesmoke;
-    text-decoration: none;
-    list-style: none;
-    padding: 0;
-  }
+	* {
+		color: whitesmoke;
+		text-decoration: none;
+		list-style: none;
+		padding: 0;
+	}
 
-  .main-wrapper {
-    display: grid;
-    grid-template-areas: "sidebar main notifications";
-    grid-template-columns: minmax(0, 20rem) minmax(0, 2.5fr) minmax(0, 30rem);
-    gap: 20px;
-  }
+	.main-wrapper {
+		display: grid;
+		grid-template-areas: "sidebar main notifications";
+		grid-template-columns: minmax(0, 20rem) minmax(0, 2.5fr) minmax(0, 30rem);
+		gap: 20px;
+	}
 
-  .main-wrapper > * {
-    background-color: #353a4d;
+	.main-wrapper > * {
+		background-color: #353a4d;
 
-    margin: 10px;
+		margin: 10px;
 
-    text-align: center;
-  }
+		text-align: center;
+	}
 
-  /*-------------------Side bar---------------------*/
+	/*-------------------Side bar---------------------*/
 
-  .sideBar {
-    position: sticky;
-    top: 0;
+	.sideBar {
+		position: sticky;
+		top: 0;
 
-    grid-area: sidebar;
-    overflow: auto;
+		grid-area: sidebar;
+		overflow: auto;
 
-    max-height: 100vh;
-  }
+		max-height: 100vh;
+	}
 
-  .sideBar li {
-    padding: 5px 0;
-    margin: 10px 0;
-  }
+	.sideBar li {
+		padding: 5px 0;
+		margin: 10px 0;
+	}
 
-  #deconnection {
-    background-color: transparent;
-    border: none;
+	#deconnection {
+		background-color: transparent;
+		border: none;
 
-    color: rgb(216, 34, 34);
-    font-size: 22px;
-    font-weight: bold;
-  }
+		color: rgb(216, 34, 34);
+		font-size: 22px;
+		font-weight: bold;
+	}
 
-  /*-------------------Parametres---------------------*/
+	/*-------------------Parametres---------------------*/
 
-  .parameters {
-    grid-area: main;
+	.parameters {
+		grid-area: main;
 
-    padding: 0 20% 50px 20%;
-  }
+		padding: 0 20% 50px 20%;
+	}
 
-  /*-------------------Notifications---------------------*/
+	/*-------------------Notifications---------------------*/
 
-  .notifications {
-    position: sticky;
-    top: 0;
+	.notifications {
+		position: sticky;
+		top: 0;
 
-    grid-area: notifications;
-    overflow: auto;
+		grid-area: notifications;
+		overflow: auto;
 
-    max-height: 100vh;
-  }
+		max-height: 100vh;
+	}
 </style>

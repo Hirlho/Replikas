@@ -28,6 +28,7 @@ if (Astro.request.method == "POST") {
 			value: token,
 			maxAge: Acheteur.SESSION_DURATION,
 			secure: import.meta.env.MODE == "production",
+			path: "/",
 		});
 		// Redirection vers la page d'accueil
 		headers.append("Location", "/");
