@@ -2,10 +2,10 @@ CREATE TABLE test (id int, name varchar(255));
 
 CREATE TABLE account (
     a_id SERIAL PRIMARY KEY,
-    u_login varchar(255) NOT NULL,
-    u_password varchar(255) NOT NULL,
-    u_created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    u_is_company BOOLEAN NOT NULL DEFAULT FALSE /* TRUE if company account, FALSE if acheteur */
+    a_login varchar(255) NOT NULL,
+    a_password varchar(255) NOT NULL,
+    a_created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    a_is_company BOOLEAN NOT NULL DEFAULT FALSE /* TRUE if company account, FALSE if acheteur */
 );
 
 CREATE TABLE buyer (
