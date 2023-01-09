@@ -65,8 +65,8 @@ if (Astro.url.searchParams.has("error")) {
 
 		{error_msg && <p class="error_msg">{error_msg}</p>}
 		<form method="post" action="/login">
-			<TextField placeholder="Email" type="email" />
-			<TextField text="" placeholder="Mot de passe" type="password" />
+			<TextField placeholder="Email" name="email" type="email" />
+			<TextField text="" placeholder="Mot de passe" name="password" type="password" />
 			<Button text="Se connecter" />
 		</form>
 		<p>Vous n'êtes pas encore inscrit ? <a href="register">S'inscrire</a></p>
