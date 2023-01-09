@@ -4,9 +4,10 @@ export interface Props {
 	placeholder?: string;
 	name?: string;
 	type?: any;
+	length?: string;
 }
 
-const { text, placeholder, name, type } = Astro.props;
+const { text, placeholder, name, type, length } = Astro.props;
 ---
 
 <input
@@ -17,7 +18,7 @@ const { text, placeholder, name, type } = Astro.props;
 />
 
 <br />
-<style>
+<style define:vars={{ length }}>
 	input {
 		border: none;
 		background-color: whitesmoke;
@@ -25,6 +26,7 @@ const { text, placeholder, name, type } = Astro.props;
 		margin: 1rem;
 		padding: 0.7rem;
 		font-size: 0.8rem;
+		width: var(--length);
 	}
 	input:focus {
 		outline: none;
