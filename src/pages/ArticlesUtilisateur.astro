@@ -19,6 +19,8 @@ const { typeArticles } = Astro.props;
         <form method="post" action="/ArticlesUtilisateur">
             <input type="submit" value="À payer" name="" id="" />
             <input type="submit" value="Possédés" name="" id="" />
+            <input type="submit" value="Aimés" name="" id="" />
+            <input type="submit" value="Participe" name="" id="" />
 		</form>
         <p>Si 3 jours après avoir gagné une enchère, vous n'avez pas payé l'article celui-ci ne vous appartiendra plus.</p>
         <div>
@@ -84,12 +86,13 @@ const { typeArticles } = Astro.props;
         font-size: 2.5rem;
     }
     form{
-        margin-left: 35%;
+        margin-left: 10rem;
     }
     input{
         color: whitesmoke;
         background-color: #222222;
-        margin: 2rem;
+        margin: 1rem;
+        margin-top: 2rem;
         font-size: 2rem;
         border-top: transparent;
         border-left: transparent;
