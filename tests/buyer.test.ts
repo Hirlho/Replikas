@@ -44,4 +44,6 @@ afterAll(async () => {
 	const database = Database.get();
 
 	await database`DELETE FROM account WHERE a_login = 'elon.musk@teslamotors.com'`;
+
+	await Database.close();
 });
