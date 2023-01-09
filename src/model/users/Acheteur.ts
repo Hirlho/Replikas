@@ -120,6 +120,11 @@ export default class Acheteur {
 		return user;
 	}
 
+	public async delete(): Promise<void> {
+		const database = Database.get();
+		await database`DELETE FROM acheteur WHERE a_id = ${this.getId()}`;
+	}
+
 	public getId(): number {
 		return this.id;
 	}
