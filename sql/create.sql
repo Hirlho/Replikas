@@ -29,7 +29,7 @@ CREATE TABLE company (
 
 CREATE TABLE movie (
     m_id INTEGER PRIMARY KEY,
-    f_title varchar(255) NOT NULL
+    m_title varchar(255) NOT NULL
 );
 
 CREATE TABLE article (
