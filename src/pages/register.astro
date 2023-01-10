@@ -3,8 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import TextField from "../components/TextField.astro";
 import Button from "../components/Button.astro";
 import Buyer from "../model/users/Buyer";
-import {EmailDejaUtiliseError } from "../model/users/Account";
----
+import { EmailDejaUtiliseError } from "../model/users/Account";
 
 if (Astro.request.method == "POST") {
 	const formData = await Astro.request.formData();
@@ -168,5 +167,4 @@ if (Astro.url.searchParams.has("error")) {
 		color: red;
 		text-align: center;
 	}
-
 </style>
