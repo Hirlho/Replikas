@@ -71,7 +71,7 @@ export default class Article {
 		return article;
 	}
 
-	public static async getBySearch(search: string, params: { limit: 20; offset: 0 }): Promise<Article[]> {
+	public static async getBySearch(search: string, params = { limit: 20, offset: 0 }): Promise<Article[]> {
 		const database = Database.get();
 		// Cherche les articles dont le nom ou la description contient le mot recherché (ts_query, ts_vector, plainto_tsquery), triés par pertinence (ts_rank)
 		const result = await database`
