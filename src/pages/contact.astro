@@ -7,7 +7,7 @@ import Button from "../components/Button.astro";
 <Layout title="contact">
   <main>
     <h1>Rejoignez-nous sur nos réseaux sociaux</h1>
-    <div class="hbox">
+    <div class="socials">
       <a href="https://fr-fr.facebook.com/DonaldTrump"
         ><img
           src="/img/icons/socials/facebook.svg"
@@ -54,26 +54,37 @@ import Button from "../components/Button.astro";
       <div>
         <table>
           <tr>
-            <td>Nom Complet</td>
-            <td><TextField text="" placeholder="Nom Complet" length="12rem" /></td>
+            <th>E-mail :</th>
+            <td>
+              <TextField
+                placeholder="Entrez votre e-mail"
+                name="email"
+                type="email"
+                length="20rem"
+              />
+            </td>
           </tr>
           <tr>
-            <td>Sujet</td>
-            <td><TextField text="" placeholder="Sujet" length="12rem"/></td>
+            <th>Sujet :</th>
+            <td
+              ><TextField
+                text=""
+                placeholder="Entrez le sujet"
+                length="20rem"
+              /></td
+            >
           </tr>
           <tr>
-            <td>Email</td>
-            <td><TextField text="" placeholder="Email"length="12rem" /></td>
-          </tr>
-          <tr>
-            <td id="message">Message</td>
+            <th id="message">Message :</th>
             <td>
               <textarea
                 name="Message"
                 id=""
                 cols="80"
                 rows="15"
-                placeholder="Message"></textarea>
+                placeholder="Message"
+              >
+              </textarea>
             </td>
           </tr>
         </table>
@@ -86,35 +97,65 @@ import Button from "../components/Button.astro";
 </Layout>
 
 <style>
+  main {
+    width: 80%;
+    padding: 1.5rem 3rem;
+    margin: 1rem auto;
+
+    border-radius: 1rem;
+
+    background-color: #222222;
+  }
+
+  /*---------Réseaux sociaux------------*/
+  .socials {
+    display: flex;
+    justify-content: space-around;
+
+    margin: auto;
+    max-width: 500px;
+  }
+
+  /*----------Table-----------*/
+
+  table {
+    width: 80%;
+    margin: auto;
+
+    color: whitesmoke;
+  }
+
+  th {
+    width: 20%;
+    text-align: end;
+  }
+
+  #message {
+    vertical-align: top;
+    padding-top: 1.5rem;
+  }
+
+  textarea {
+    border: none;
+    background-color: whitesmoke;
+    border-radius: 5px;
+    margin: 1rem;
+    padding: 0.7rem;
+  }
+
+  textarea:focus {
+    outline: none;
+  }
+
+  /*------------Bouton envoyer---------------*/
+  #button {
+    text-align: center;
+  }
+
+  /*--------Texts-----------*/
+
   h1 {
     font-size: 2rem;
     color: whitesmoke;
-  }
-  td {
-    font-size: 1rem;
-    color: whitesmoke;
-  }
-  form {
-    padding: 1.5rem 3rem;
-    margin: 1rem auto;
-    max-width: 80ch;
-    background-color: #222222;
-
-    border-radius: 1rem;
-  }
-
-  table tr td textarea {
-    width: 100%;
-    height: 100%;
-    border-radius: 1rem;
-    border: 1px solid #222222;
-    color: #222222;
-    padding: 1rem;
-  }
-  #message {
-    vertical-align: top;
-  }
-  #button {
-    text-align: center;
   }
 </style>

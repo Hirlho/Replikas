@@ -2,7 +2,7 @@
 import TextField from "../components/TextField.astro";
 import Layout from "../layouts/Layout.astro";
 import Button from "../components/Button.astro";
-import Acheteur, { UtilisateurOuMotDePasseInvalideError } from "../model/users/Acheteur";
+import Account, { UtilisateurOuMotDePasseInvalideError } from "../model/users/Account";
 import { addCookie } from "../model/Utilitaire";
 
 // Si on a reçu un formulaire
@@ -17,7 +17,7 @@ if (Astro.request.method == "POST") {
 
 	try {
 		// On récupère l'utilisateur, ou on lève une erreur si les identifiants sont invalides
-		const user = await Acheteur.get(email, password);
+		const user = await Account.get(email, password);
 		// On crée un token
 		const token = await user.createSession();
 		// On crée les headers de la réponse
@@ -26,7 +26,7 @@ if (Astro.request.method == "POST") {
 		addCookie(headers, {
 			name: "token",
 			value: token,
-			maxAge: Acheteur.SESSION_DURATION,
+			maxAge: Account.SESSION_DURATION,
 			secure: import.meta.env.MODE == "production",
 			path: "/",
 		});
@@ -68,9 +68,23 @@ if (Astro.url.searchParams.has("error")) {
 
 		{error_msg && <p class="error_msg">{error_msg}</p>}
 		<form method="post" action="/login">
-			<TextField placeholder="Email" name="email" type="email" />
-			<TextField text="" placeholder="Mot de passe" name="password" type="password" />
-			<Button text="Se connecter" />
+			<table>
+				<tr>
+					<th>E-mail :</th>
+					<td>
+						<TextField placeholder="Entrez votre e-mail" name="email" type="email" length="20rem" />
+					</td>
+				</tr>
+				<tr>
+					<th>Mot de passe :</th>
+					<td>
+						<TextField placeholder="Entrez votre mot de passe" name="password" type="password" length="20rem" />
+					</td>
+				</tr>
+			</table>
+			<div id="button">
+				<Button text="Se connecter" />
+			</div>
 		</form>
 		<p>Vous n'êtes pas encore inscrit ? <a href="register">S'inscrire</a></p>
 	</main>
@@ -86,19 +100,49 @@ if (Astro.url.searchParams.has("error")) {
 		background-color: #222222;
 		border-radius: 15px;
 	}
+
+	/*-----------------Table--------------------*/
+	table {
+		width: 80%;
+		margin: auto;
+
+		color: whitesmoke;
+	}
+
+	th {
+		text-align: end;
+	}
+
+	td {
+		text-align: center;
+	}
+
+	/*-----------------Bouton s'inscrire--------------------*/
+	#button {
+		/* centre le bouton */
+		text-align: center;
+	}
+
+	/*-----------------Texts--------------------*/
 	h1 {
 		font-size: 2rem;
 		font-weight: 650;
-		margin: 0;
+
+		text-align: center;
 		margin-bottom: 1.5rem;
+
 		color: whitesmoke;
 	}
+
 	p {
 		color: whitesmoke;
+		text-align: center;
 	}
+
 	.error_msg {
 		color: red;
 	}
+
 	a {
 		color: blue;
 	}

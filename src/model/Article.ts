@@ -4,10 +4,11 @@ export default class Article {
 	private id: number;
 	private name: string;
 	private description: string;
-	private prix_base: number;
-	private encherissement_min: number;
-	private debut_vente: Date;
-	private fin_vente: Date;
+	private price: number;
+	private min_bidding: number;
+	private auction_start: Date;
+	private auction_end: Date;
+	private img_paths: string[];
 	private tmdb_movie_id: number;
 
 	private constructor() {}
@@ -23,35 +24,50 @@ export default class Article {
 		article.id = result[0].art_id;
 		article.name = result[0].art_name;
 		article.description = result[0].art_description;
-		article.prix_base = result[0].art_prix_base;
-		article.encherissement_min = result[0].art_encherissement_min;
-		article.debut_vente = result[0].art_debut_vente;
-		article.fin_vente = result[0].art_fin_vente;
+		article.price = result[0].art_price;
+		article.min_bidding = result[0].art_min_bidding;
+		article.auction_start = result[0].art_auction_start;
+		article.auction_end = result[0].art_auction_end;
 		article.tmdb_movie_id = result[0].f_id;
+
+		const imgs = await database`
+			SELECT * FROM article_image WHERE art_id = ${id}`;
+		for (const image of imgs) {
+			article.img_paths.push(image.img_path);
+		}
+
 		return article;
 	}
 
 	public static async create(
 		name: string,
 		description: string,
-		prix: number,
-		encherissement_min: number,
-		debut_vente: Date,
-		fin_vente: Date,
+		price: number,
+		min_bidding: number,
+		auction_start: Date,
+		auction_end: Date,
+		img_paths: string[],
 		tmdb_movie_id: number
 	): Promise<Article> {
 		const database = Database.get();
 		const article = new Article();
 		const result = await database`
-            INSERT INTO article (art_name, art_description, art_prix_base, art_encherissement_min, art_debut_vente, art_fin_vente, f_id) VALUES (${name}, ${description}, ${prix}, ${encherissement_min}, ${debut_vente}, ${fin_vente}, ${tmdb_movie_id}) RETURNING art_id`;
+            INSERT INTO article (art_name, art_description, art_price, art_min_bidding, art_auction_start, art_auction_end, f_id) VALUES (${name}, ${description}, ${price}, ${min_bidding}, ${auction_start}, ${auction_end}, ${tmdb_movie_id}) RETURNING art_id`;
 		article.id = result[0].art_id;
 		article.name = name;
 		article.description = description;
-		article.prix_base = prix;
-		article.encherissement_min = encherissement_min;
-		article.debut_vente = debut_vente;
-		article.fin_vente = fin_vente;
+		article.price = price;
+		article.min_bidding = min_bidding;
+		article.auction_start = auction_start;
+		article.auction_end = auction_end;
+		article.img_paths = img_paths;
 		article.tmdb_movie_id = tmdb_movie_id;
+
+		for (const img_path of img_paths) {
+			await database`
+				INSERT INTO article_image (art_id, img_path) VALUES (${article.id}, ${img_path})`;
+		}
+
 		return article;
 	}
 
@@ -82,11 +98,53 @@ export default class Article {
 			art.id = article.art_id;
 			art.name = article.art_name;
 			art.description = article.art_description;
-			art.prix_base = article.art_prix_base;
-			art.encherissement_min = article.art_encherissement_min;
-			art.debut_vente = article.art_debut_vente;
-			art.fin_vente = article.art_fin_vente;
+			art.price = article.art_price;
+			art.min_bidding = article.art_min_bidding;
+			art.auction_start = article.art_auction_start;
+			art.auction_end = article.art_auction_end;
 			art.tmdb_movie_id = article.f_id;
+
+			const imgs = await database`
+			SELECT * FROM article_image WHERE art_id = ${art.id}`;
+			for (const image of imgs) {
+				art.img_paths.push(image.img_path);
+			}
+
+			articles.push(art);
+		}
+		return articles;
+	}
+
+	public static async mostBids(): Promise<Article[]> {
+		const database = Database.get();
+		const result = await database`
+				SELECT * 
+				FROM article
+				WHERE art_id IN (
+					SELECT art_id
+					FROM bid
+					GROUP BY art_id
+					ORDER BY count(art_id) DESC
+					LIMIT 8
+					)`;
+		const articles: Article[] = [];
+		for (const article of result) {
+			const art = new Article();
+			art.id = article.art_id;
+			art.name = article.art_name;
+			art.description = article.art_description;
+			art.price = article.art_prix_base;
+			art.min_bidding = article.art_encherissement_min;
+			art.auction_start = article.art_debut_vente;
+			art.auction_end = article.art_fin_vente;
+			art.tmdb_movie_id = article.f_id;
+
+			const imgs = await database`
+				  SELECT * FROM article_image WHERE art_id = ${art.id}`;
+			for (const image of imgs) {
+				art.img_paths.push(image.img_path);
+			}
+
 			articles.push(art);
 		}
 		return articles;
@@ -95,6 +153,7 @@ export default class Article {
 	public async delete(): Promise<void> {
 		const database = Database.get();
 		await database`DELETE FROM article WHERE art_id = ${this.id}`;
+		await database`DELETE FROM article_image WHERE art_id = ${this.id}`;
 	}
 
 	public getId(): number {
@@ -110,23 +169,27 @@ export default class Article {
 	}
 
 	public getPrixBase(): number {
-		return this.prix_base;
+		return this.price;
 	}
 
 	public getEncherissementMin(): number {
-		return this.encherissement_min;
+		return this.min_bidding;
 	}
 
 	public getDebutVente(): Date {
-		return this.debut_vente;
+		return this.auction_start;
 	}
 
 	public getFinVente(): Date {
-		return this.fin_vente;
+		return this.auction_end;
 	}
 
 	public getTmdbMovieId(): number {
 		return this.tmdb_movie_id;
+	}
+
+	public getImages(): string[] {
+		return this.img_paths;
 	}
 }
 

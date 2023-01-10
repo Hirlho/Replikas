@@ -1,41 +1,41 @@
 CREATE TABLE test (id int, name varchar(255));
 
-CREATE TABLE utilisateur (
-    u_id SERIAL PRIMARY KEY,
-    u_login varchar(255) NOT NULL,
-    u_password varchar(255) NOT NULL,
-    u_created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    u_entreprise BOOLEAN NOT NULL DEFAULT FALSE /* TRUE if entreprise account, FALSE if acheteur */
+CREATE TABLE account (
+    a_id SERIAL PRIMARY KEY,
+    a_login varchar(255) NOT NULL UNIQUE,
+    a_password varchar(255) NOT NULL,
+    a_created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    a_is_company BOOLEAN NOT NULL DEFAULT FALSE /* TRUE if company account, FALSE if acheteur */
 );
 
-CREATE TABLE acheteur (
-    u_id INTEGER REFERENCES utilisateur (u_id) ON DELETE CASCADE PRIMARY KEY,
-    a_nom varchar(50) NOT NULL,
-    a_prenom varchar(50) NOT NULL
+CREATE TABLE buyer (
+    a_id INTEGER REFERENCES account (a_id) ON DELETE CASCADE PRIMARY KEY,
+    b_last_name varchar(50) NOT NULL,
+    b_first_name varchar(50) NOT NULL
 );
 
 CREATE TABLE session (
-    u_id INTEGER REFERENCES acheteur (u_id),
+    a_id INTEGER REFERENCES account (a_id) ON DELETE CASCADE,
     s_token varchar(64) NOT NULL,
-    s_date_creation TIMESTAMP NOT NULL,
-    s_date_expiration TIMESTAMP NOT NULL,
-    PRIMARY KEY(u_id, s_token)
+    s_created_at TIMESTAMP NOT NULL,
+    s_expires_at TIMESTAMP NOT NULL,
+    PRIMARY KEY(a_id, s_token)
 );
 
-CREATE TABLE entreprise (
-    u_id INTEGER REFERENCES utilisateur (u_id) ON DELETE CASCADE PRIMARY KEY,
-    e_name varchar(50) NOT NULL
+CREATE TABLE company (
+    a_id INTEGER REFERENCES account (a_id) ON DELETE CASCADE PRIMARY KEY,
+    c_name varchar(50) NOT NULL
 );
 
 CREATE TABLE article (
     art_id SERIAL PRIMARY KEY,
     art_name varchar(128) NOT NULL,
     art_description varchar(2000) NOT NULL,
-    art_prix_base INTEGER NOT NULL,
-    art_encherissement_min INTEGER NOT NULL,
-    art_debut_vente TIMESTAMP NOT NULL,
-    art_fin_vente TIMESTAMP NOT NULL,
-    e_id INTEGER REFERENCES entreprise (u_id),
+    art_price INTEGER NOT NULL,
+    art_min_bidding INTEGER NOT NULL,
+    art_auction_start TIMESTAMP NOT NULL,
+    art_auction_end TIMESTAMP NOT NULL,
+    c_id INTEGER REFERENCES company (a_id),
     f_id INTEGER NOT NULL
 );
 
@@ -44,35 +44,35 @@ CREATE TABLE article_image (
     img_path varchar(255) NOT NULL
 );
 
-CREATE TABLE encheri (
-    a_id INTEGER REFERENCES acheteur (u_id),
+CREATE TABLE bid (
+    b_id INTEGER REFERENCES buyer (a_id),
     art_id INTEGER REFERENCES article (art_id),
-    montant INTEGER NOT NULL,
-    PRIMARY KEY(a_id, art_id)
+    amount INTEGER NOT NULL,
+    PRIMARY KEY(b_id, art_id)
 );
 
-CREATE TABLE interesse (
-    a_id INTEGER REFERENCES acheteur (u_id),
+CREATE TABLE interests (
+    b_id INTEGER REFERENCES buyer (a_id),
     art_id INTEGER REFERENCES article (art_id),
-    PRIMARY KEY(a_id, art_id)
+    PRIMARY KEY(b_id, art_id)
 );
 
-CREATE TABLE acqueri (
-    a_id INTEGER REFERENCES acheteur (u_id),
+CREATE TABLE aquired (
+    b_id INTEGER REFERENCES buyer (a_id),
     art_id INTEGER REFERENCES article (art_id),
-    est_paye BOOLEAN NOT NULL,
-    PRIMARY KEY(a_id, art_id)
+    is_paid BOOLEAN NOT NULL,
+    PRIMARY KEY(b_id, art_id)
 );
 
 
 -- PERMISSONS
 ALTER TABLE test OWNER TO replikas_usr;
-ALTER TABLE utilisateur OWNER TO replikas_usr;
-ALTER TABLE acheteur OWNER TO replikas_usr;
+ALTER TABLE account OWNER TO replikas_usr;
+ALTER TABLE buyer OWNER TO replikas_usr;
 ALTER TABLE session OWNER TO replikas_usr;
-ALTER TABLE entreprise OWNER TO replikas_usr;
+ALTER TABLE company OWNER TO replikas_usr;
 ALTER TABLE article OWNER TO replikas_usr;
 ALTER TABLE article_image OWNER TO replikas_usr;
-ALTER TABLE encheri OWNER TO replikas_usr;
-ALTER TABLE interesse OWNER TO replikas_usr;
-ALTER TABLE acqueri OWNER TO replikas_usr;
+ALTER TABLE bid OWNER TO replikas_usr;
+ALTER TABLE interests OWNER TO replikas_usr;
+ALTER TABLE aquired OWNER TO replikas_usr;

@@ -2,7 +2,9 @@
 import Layout from "../layouts/Layout.astro";
 import TextField from "../components/TextField.astro";
 import Button from "../components/Button.astro";
-import Acheteur, { EmailDejaUtiliseError } from "../model/users/Acheteur";
+import Buyer from "../model/users/Buyer";
+import {EmailDejaUtiliseError } from "../model/users/Account";
+---
 
 if (Astro.request.method == "POST") {
 	const formData = await Astro.request.formData();
@@ -25,7 +27,7 @@ if (Astro.request.method == "POST") {
 		return Astro.redirect("/register?error=weak_password");
 
 	try {
-		await Acheteur.create(email, password, last_name, first_name);
+		await Buyer.createBuyer(email, password, last_name, first_name);
 	} catch (e) {
 		if (e instanceof EmailDejaUtiliseError) {
 			return Astro.redirect("/register?error=already_exists");
@@ -63,14 +65,45 @@ if (Astro.url.searchParams.has("error")) {
 		<form method="post" class="formlist">
 			<h1>Créer votre compte</h1>
 			<table>
-				<TextField text="" placeholder="Nom" length="15rem"/>
-				<TextField text="" placeholder="Prenom" length="15rem"/>
-				<TextField text="" placeholder="Email" type="email" length="15rem"/>
-				<TextField text="" placeholder="Mot de passe" type="password" length="15rem"/>
-				<TextField text="" placeholder="Confirmer mot de passe" type="password" length="15rem"/>
+				<tr>
+					<th>Nom :</th>
+					<td>
+						<TextField text="" placeholder="Entrez votre nom" length="15rem" name="last_name" />
+					</td>
+				</tr>
+				<tr>
+					<th>Prénom :</th>
+					<td>
+						<TextField text="" placeholder="Entrez votre prénom" length="15rem" name="first_name" />
+					</td>
+				</tr>
+				<tr>
+					<th>E-mail :</th>
+					<td>
+						<TextField text="" placeholder="Entrez votre e-mail" type="email" length="15rem" name="email" />
+					</td>
+				</tr>
+				<tr>
+					<th>Mot de passe :</th>
+					<td>
+						<TextField text="" placeholder="Entrez votre mot de passe" type="password" length="15rem" name="password" />
+					</td>
+				</tr>
+				<tr>
+					<th>Nom :</th>
+					<td>
+						<TextField
+							text=""
+							placeholder="Confirmer le mot de passe"
+							type="password"
+							length="15rem"
+							name="password_confirm"
+						/>
+					</td>
+				</tr>
 			</table>
 
-			<div class="button">
+			<div id="button">
 				<div>
 					<input type="checkbox" required />
 					<span> J'accepte les conditions générales d'utilisation</span>
@@ -84,41 +117,52 @@ if (Astro.url.searchParams.has("error")) {
 
 <style>
 	.formlist {
-		padding-top: 1.5rem;
-		padding-bottom: 1.5rem;
-		padding-left: 3rem;
-		padding-right: 3rem;
+		padding: 1.5rem 3rem;
+		margin: 1rem auto;
 		max-width: 80ch;
-		background-color: #222222;
-		margin-top: 1rem;
-		margin-bottom: 1rem;
-		margin-left: auto;
-		margin-right: auto;
+
 		border-radius: 1rem;
+
+		background-color: #222222;
 	}
+
+	/*-----------------Table--------------------*/
+
+	table {
+		width: 80%;
+		margin: 1rem auto;
+	}
+
+	th {
+		text-align: end;
+
+		color: whitesmoke;
+	}
+
+	td {
+		text-align: center;
+	}
+
+	/*-----------------Boutton s'inscrire--------------------*/
+
+	#button {
+		color: whitesmoke;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	#button div {
+		text-align: center;
+		margin-bottom: 1rem;
+	}
+
+	/*-----------------Texts--------------------*/
 	h1 {
 		font-size: 2rem;
 		text-align: center;
 		margin: 2rem 0;
 		color: whitesmoke;
-	}
-	.formlist table {
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-	}
-	.button {
-		color: whitesmoke;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-	.button div {
-		display: flex;
-		align-items: center;
-		margin-bottom: 1rem;
-	}
-	table input {
 	}
 	.error_msg {
 		color: red;

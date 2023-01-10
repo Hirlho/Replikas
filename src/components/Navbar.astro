@@ -1,8 +1,9 @@
 ---
 import Logo from "../components/Logo.astro";
 import SearchBar from "../components/SearchBar.astro";
-import Acheteur from "../model/users/Acheteur";
-import { SessionTokenInvalideError } from "../model/users/Acheteur";
+import Account, { SessionTokenInvalideError } from "../model/users/Account";
+import Buyer from "../model/users/Buyer";
+import Company from "../model/users/Company";
 
 export interface Props {
 	page_name?: string;
@@ -11,14 +12,16 @@ export interface Props {
 
 const { page_name, search_bar } = Astro.props;
 // Recuperer les infos de l'utilisateur
-let user: Acheteur;
+let account: Account | Buyer | Company;
 const cookies = Astro.request.headers.get("cookie");
 if (cookies) {
 	const token = (cookies.endsWith(";") ? cookies : cookies + ";").match(/token=([^;]*);/); // Recuperer le token de session
 	try {
-		user = await Acheteur.getBySession(token[1]); // Recuperer l'utilisateur
+		account = await Account.getBySession(token[1]); // Recuperer l'utilisateur
+		if (account.isCompany()) account = await Company.getFromAccount(account);
+		else account = await Buyer.getFromAccount(account);
 	} catch (SessionTokenInvalideError) {
-		user = null; // Si le token est invalide, on ne recupere pas l'utilisateur
+		account = null; // Si le token est invalide, on ne recupere pas l'utilisateur
 	}
 }
 ---
@@ -35,12 +38,12 @@ if (cookies) {
 	<div id="right">
 		{search_bar && <SearchBar />}
 		{
-			user ? ( // Si l'utilisateur est connecte
+			account ? ( // Si l'utilisateur est connecte
 				<a class="button hbox" href="/settings" style="align-items: center;">
 					<div class="user_icon_container">
 						<img src="/img/icons/user.svg" alt="User" />
 					</div>
-					{user.getPrenom() + " " + user.getNom()}
+					{account.toString()}
 				</a>
 			) : (
 				// Si l'utilisateur n'est pas connecte

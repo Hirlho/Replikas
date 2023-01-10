@@ -9,6 +9,7 @@ test("Crée un article et lui assigne un id automatiquement", async () => {
 		1,
 		new Date("2020-01-01"),
 		new Date("2020-01-02"),
+		[],
 		1
 	);
 	expect(article.getId()).toBeGreaterThan(0);
@@ -22,6 +23,7 @@ test("Récupère un article existant", async () => {
 		1,
 		new Date("2020-01-01"),
 		new Date("2020-01-02"),
+		[],
 		1
 	);
 	const article2 = await Article.get(article.getId());
