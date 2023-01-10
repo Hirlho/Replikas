@@ -1,154 +1,172 @@
 ---
-import TextField from "../components/TextField.astro";
-import Layout from "../layouts/Layout.astro";
-import Button from "../components/Button.astro";
-import Account, { UtilisateurOuMotDePasseInvalideError } from "../model/users/Account";
-import { addCookie } from "../model/Utilitaire";
+import TextField from '../components/TextField.astro';
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import Account, {
+    UtilisateurOuMotDePasseInvalideError,
+} from '../model/users/Account';
+import { addCookie } from '../model/Utilitaire';
 
 // Si on a reçu un formulaire
-if (Astro.request.method == "POST") {
-	const formData = await Astro.request.formData();
-	if (!(formData.has("email") && formData.has("password")))
-		// On vérifie que les champs sont bien remplis
-		return Astro.redirect("/login?error=missing_field");
+if (Astro.request.method == 'POST') {
+    const formData = await Astro.request.formData();
+    if (!(formData.has('email') && formData.has('password')))
+        // On vérifie que les champs sont bien remplis
+        return Astro.redirect('/login?error=missing_field');
 
-	const email = formData.get("email").toString();
-	const password = formData.get("password").toString();
+    const email = formData.get('email').toString();
+    const password = formData.get('password').toString();
 
-	try {
-		// On récupère l'utilisateur, ou on lève une erreur si les identifiants sont invalides
-		const user = await Account.get(email, password);
-		// On crée un token
-		const token = await user.createSession();
-		// On crée les headers de la réponse
-		const headers = new Headers();
-		// On ajoute le token de session aux cookies du client
-		addCookie(headers, {
-			name: "token",
-			value: token,
-			maxAge: Account.SESSION_DURATION,
-			secure: import.meta.env.MODE == "production",
-			path: "/",
-		});
-		// Redirection vers la page d'accueil
-		headers.append("Location", "/");
-		// Envoi de la réponse
-		return new Response("", {
-			status: 302,
-			headers,
-		});
-	} catch (e) {
-		if (e instanceof UtilisateurOuMotDePasseInvalideError) {
-			// Si les identifiants sont invalides
-			return Astro.redirect("/login?error=invalid_credentials");
-		} else {
-			// Si une autre erreur non prevue est survenue
-			console.error(e);
-			return Astro.response.status(500).send("Internal server error");
-		}
-	}
+    try {
+        // On récupère l'utilisateur, ou on lève une erreur si les identifiants sont invalides
+        const user = await Account.get(email, password);
+        // On crée un token
+        const token = await user.createSession();
+        // On crée les headers de la réponse
+        const headers = new Headers();
+        // On ajoute le token de session aux cookies du client
+        addCookie(headers, {
+            name: 'token',
+            value: token,
+            maxAge: Account.SESSION_DURATION,
+            secure: import.meta.env.MODE == 'production',
+            path: '/',
+        });
+        // Redirection vers la page d'accueil
+        headers.append('Location', '/');
+        // Envoi de la réponse
+        return new Response('', {
+            status: 302,
+            headers,
+        });
+    } catch (e) {
+        if (e instanceof UtilisateurOuMotDePasseInvalideError) {
+            // Si les identifiants sont invalides
+            return Astro.redirect('/login?error=invalid_credentials');
+        } else {
+            // Si une autre erreur non prevue est survenue
+            console.error(e);
+            return Astro.response.status(500).send('Internal server error');
+        }
+    }
 }
 
 // Si on a reçu un paramètre "error"
-let error_msg = "";
-if (Astro.url.searchParams.has("error")) {
-	// On affiche un message d'erreur
-	const error = Astro.url.searchParams.get("error");
-	if (error == "invalid_credentials") {
-		error_msg = "Identifiants invalides";
-	} else if (error == "missing_field") {
-		error_msg = "Veuillez remplir tous les champs";
-	}
+let error_msg = '';
+if (Astro.url.searchParams.has('error')) {
+    // On affiche un message d'erreur
+    const error = Astro.url.searchParams.get('error');
+    if (error == 'invalid_credentials') {
+        error_msg = 'Identifiants invalides';
+    } else if (error == 'missing_field') {
+        error_msg = 'Veuillez remplir tous les champs';
+    }
 }
 ---
 
 <Layout title="login" no_searchbar>
-	<main>
-		<h1>Connectez-vous à votre compte</h1>
+    <main>
+        <h1>Connectez-vous à votre compte</h1>
 
-		{error_msg && <p class="error_msg">{error_msg}</p>}
-		<form method="post" action="/login">
-			<table>
-				<tr>
-					<th>E-mail :</th>
-					<td>
-						<TextField placeholder="Entrez votre e-mail" name="email" type="email" length="20rem" />
-					</td>
-				</tr>
-				<tr>
-					<th>Mot de passe :</th>
-					<td>
-						<TextField placeholder="Entrez votre mot de passe" name="password" type="password" length="20rem" />
-					</td>
-				</tr>
-			</table>
-			<div id="button">
-				<Button text="Se connecter" />
-			</div>
-		</form>
-		<p>Vous n'êtes pas encore inscrit ? <a href="register">S'inscrire</a></p>
-		<p><a href="recover-password">Mot de passe oublié</a></p>
-	</main>
+        {error_msg && <p class="error_msg">{error_msg}</p>}
+        <form method="post" action="/login">
+            <table>
+                <tr>
+                    <th>E-mail :</th>
+                    <td>
+                        <TextField
+                            placeholder="Entrez votre e-mail"
+                            name="email"
+                            type="email"
+                            length="20rem"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <th>Mot de passe :</th>
+                    <td>
+                        <TextField
+                            placeholder="Entrez votre mot de passe"
+                            name="password"
+                            type="password"
+                            length="20rem"
+                        />
+                    </td>
+                </tr>
+            </table>
+            <div id="button">
+                <Button text="Se connecter" />
+            </div>
+        </form>
+        <p>
+            Vous n'êtes pas encore inscrit ?
+            <a href="register">S'inscrire</a>
+        </p>
+        <p>
+            Vous avez oublié votre mot de passe ?
+            <a href="recover-password">Mot de passe oublié</a>
+        </p>
+    </main>
 </Layout>
 <style>
-	main {
-		margin: auto;
-		padding-top: 1.5rem;
-		padding-bottom: 1.5rem;
-		padding-left: 3rem;
-		padding-right: 3rem;
-		max-width: 80ch;
-		background-color: #222222;
-		border-radius: 15px;
-	}
+    main {
+        margin: auto;
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+        padding-left: 3rem;
+        padding-right: 3rem;
+        max-width: 80ch;
+        background-color: #222222;
+        border-radius: 15px;
+    }
 
-	/*-----------------Table--------------------*/
-	table {
-		width: 80%;
-		margin: auto;
+    /*-----------------Table--------------------*/
+    table {
+        width: 80%;
+        margin: auto;
 
-		color: whitesmoke;
-	}
+        color: whitesmoke;
+    }
 
-	th {
-		text-align: end;
-	}
+    th {
+        text-align: end;
+    }
 
-	td {
-		text-align: center;
-	}
+    td {
+        text-align: center;
+    }
 
-	/*-----------------Bouton s'inscrire--------------------*/
-	#button {
-		/* centre le bouton */
-		text-align: center;
-	}
+    /*-----------------Bouton s'inscrire--------------------*/
+    #button {
+        /* centre le bouton */
+        text-align: center;
+    }
 
-	/*-----------------Texts--------------------*/
-	h1 {
-		font-size: 2rem;
-		font-weight: 650;
+    /*-----------------Texts--------------------*/
+    h1 {
+        font-size: 2rem;
+        font-weight: 650;
 
-		text-align: center;
-		margin-bottom: 1.5rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
 
-		color: whitesmoke;
-	}
+        color: whitesmoke;
+    }
 
-	p {
-		color: whitesmoke;
-		text-align: center;
-	}
+    p {
+        color: whitesmoke;
+        text-align: center;
+    }
 
-	.error_msg {
-		color: red;
-		text-align: center;
-	}
+    .error_msg {
+        color: red;
+        text-align: center;
+    }
 
-	a {
-		color: blue;
-	}
-	a:hover {
-		color: purple;
-	}
+    a {
+        color: blue;
+    }
+    a:hover {
+        color: purple;
+    }
 </style>
