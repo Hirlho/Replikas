@@ -4,30 +4,49 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout title="Paiement" no_searchbar>
   <main>
-    <article>
-      <div class="img">
-        <img src="/img/article/sabre_laser.jpeg" alt="" />
-      </div>
-      <div class="informations">
-        <h1>Casque de Dark Vador (1975)</h1>
-        <p></p>
-        <p>Placer une offre :</p>
-        <form></form>
-        <h3>Vendu par une entreprise</h3>
-        <p>
-          La réplique du sabre laser que Dark Vador utilise dans Star Wars :
-          L'empire contre-attaque.
-        </p>
-      </div>
-    </article>
+    <div class="article">
+      <article>
+        <div class="img">
+          <img src="/img/article/sabre_laser.jpeg" alt="" />
+        </div>
+        <div class="informations">
+          <h1>Casque de Dark Vador (1975)</h1>
+          <p></p>
+          <h3 style="margin-top: 15%;">Date fin enchères : 22/08/2022</h3>
+          <h3 style="margin-top: 10%;">Prix à payer : 50,000€</h3>
+          <form></form>
+        </div>
+      </article>
+      <h3 class="Description">Descriptions :</h3>
+      <p>Un beau casque de dark vador</p>
+    </div>
   </main>
 </Layout>
 
 <style>
+  main {
+    margin: auto;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    max-width: 80ch;
+    background-color: #222222;
+    border-radius: 15px;
+  }
+
+  .Description {
+    margin-left: 2%;
+  }
+  h1,
   h2,
   h3,
   p {
     color: whitesmoke;
+  }
+  h1 {
+    text-align: center;
+    font-size: 25px;
   }
 
   h2 {
@@ -36,7 +55,7 @@ import Layout from "../layouts/Layout.astro";
 
   main {
     margin: 20px auto;
-    padding: 40px 4%;
+    padding: 40px 8%;
     width: 80%;
 
     border-radius: 20px;
@@ -51,8 +70,8 @@ import Layout from "../layouts/Layout.astro";
 
   .img {
     position: sticky;
-    width: 25%;
-    margin-left: 1%;
+    width: 30%;
+    margin-left: 0%;
   }
 
   .img > img {
