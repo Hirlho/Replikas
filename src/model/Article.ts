@@ -30,7 +30,7 @@ export default class Article {
 		article.min_bidding = result[0].art_min_bidding;
 		article.auction_start = result[0].art_auction_start;
 		article.auction_end = result[0].art_auction_end;
-		article.tmdb_movie_id = result[0].f_id;
+		article.tmdb_movie_id = result[0].m_id;
 		article.selling_company_id = result[0].c_id;
 
 		const imgs = await database`
@@ -115,7 +115,7 @@ export default class Article {
 			art.min_bidding = article.art_min_bidding;
 			art.auction_start = article.art_auction_start;
 			art.auction_end = article.art_auction_end;
-			art.tmdb_movie_id = article.f_id;
+			art.tmdb_movie_id = article.m_id;
 			art.selling_company_id = article.c_id;
 
 			const imgs = await database`
@@ -151,7 +151,7 @@ export default class Article {
 			art.min_bidding = article.art_encherissement_min;
 			art.auction_start = article.art_debut_vente;
 			art.auction_end = article.art_fin_vente;
-			art.tmdb_movie_id = article.f_id;
+			art.tmdb_movie_id = article.m_id;
 			art.selling_company_id = article.c_id;
 
 			const imgs = await database`
@@ -205,6 +205,18 @@ export default class Article {
 
 	public getImages(): string[] {
 		return this.img_paths;
+	}
+
+	public async getPoster(): Promise<string> {
+		if (this.img_paths.length > 0) {
+			return this.img_paths[0];
+		} else {
+			return await TMDB.getMoviePosterURL(this.tmdb_movie_id, 'w342').catch(
+				() => {
+					return '/img/article/placeholder.jpg';
+				}
+			);
+		}
 	}
 
 	public getSellingCompanyId(): number {
