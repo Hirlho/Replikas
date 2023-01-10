@@ -12,7 +12,6 @@ try {
 	article = await Article.get(id);
 	company = await Company.getById(article.getSellingCompanyId());
 } catch (e) {
-	console.error(e);
 	return new Response('Article introuvable', { status: 404 });
 }
 

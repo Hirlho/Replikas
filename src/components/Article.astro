@@ -1,19 +1,26 @@
 ---
+import Article from '../model/Article';
+
 export interface Props {
 	id: number;
-	titre: string;
-	image: string;
-	date: Date;
-	prix: number;
-	enCours?: boolean;
 }
 
-const { id, titre, image, date, prix, enCours } = Astro.props;
+const { id } = Astro.props;
+const article = await Article.get(id).catch(() => Article.getFallback(id));
+
+const titre = article.getName();
+const image = await article.getPoster();
+const prix = article.getPrixBase();
+const dateDebut = article.getDebutVente();
+const dateFin = article.getFinVente();
+
+const date = dateDebut > new Date() ? dateDebut : dateFin;
+const enCours = dateDebut < new Date() && dateFin > new Date();
 ---
 
 <li>
 	<a href={'/auction/' + id}>
-		<div><img src={'/img/article/' + image} alt={titre} /></div>
+		<div><img src={image} alt={titre} /></div>
 		<h3>{titre}</h3>
 		<p>
 			{

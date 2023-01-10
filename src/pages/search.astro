@@ -21,21 +21,7 @@ const articles = await ArticleModel.getBySearch(search);
 			</div>
 		</div>
 		<article>
-			{
-				articles.map((article) => (
-					<Article
-						id={article.getId()}
-						titre={article.getName()}
-						prix={article.getPrixBase()}
-						image={
-							article.getImages().length > 0
-								? article.getImages()[0]
-								: 'placeholder.jpg'
-						}
-						date={article.getDebutVente()}
-					/>
-				))
-			}
+			{articles.map((article) => <Article id={article.getId()} />)}
 		</article>
 		<div class="pages">
 			<span>
