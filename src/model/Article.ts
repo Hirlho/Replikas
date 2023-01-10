@@ -94,15 +94,15 @@ export default class Article {
             FROM 
                     article a INNER JOIN movie c ON a.m_id = c.m_id,
                     to_tsvector(a.art_name || ' ' || a.art_description || ' ' || c.m_title) document,
-                    plainto_tsquery(${search}) query,
+                    websearch_to_tsquery(${search}) query,
                     NULLIF(ts_rank(to_tsvector(a.art_name), query), 0) rank_name,
                     NULLIF(ts_rank(to_tsvector(a.art_description), query), 0) rank_description,
                     NULLIF(ts_rank(to_tsvector(c.m_title), query), 0) rank_movie_title,
                     SIMILARITY(${search}, a.art_name || a.art_description) similarity
             WHERE
-                    document @@ query OR similarity > 0.1
+                    document @@ query OR similarity > 0.08
             ORDER BY
-                    rank_name, rank_description, rank_movie_title, similarity DESC NULLS LAST
+                    rank_name DESC, rank_description DESC, rank_movie_title DESC, similarity DESC
 			LIMIT ${params.limit || 20} OFFSET ${params.offset || 0}`;
 
 		const articles: Article[] = [];

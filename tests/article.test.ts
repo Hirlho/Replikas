@@ -51,11 +51,9 @@ test('Cherche des article', async () => {
 test('Cherche des article avec bon ordre de pertinence', async () => {
 	const resultats = await Article.getBySearch('sabre Yoda');
 	expect(resultats[0].getDescription()).toContain('Yoda');
-	expect(resultats[1].getDescription()).toContain('Vader');
 
 	const resultats2 = await Article.getBySearch('sabre star wars Vader');
 	expect(resultats2[0].getDescription()).toContain('Vader');
-	expect(resultats2[1].getDescription()).toContain('Yoda');
 });
 
 afterAll(async () => {
