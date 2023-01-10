@@ -32,6 +32,41 @@ const { title, no_searchbar } = Astro.props;
 			<Footer />
 		</main>
 	</body>
+	<style is:global>
+		:root {
+			--theme-primary: #4b4e6d;
+			--theme-secondary: #222222;
+			--theme-button: #353a4d;
+			--theme-text: whitesmoke;
+			--theme-link: blue;
+		}
+		/* THEMES
+
+		// Default
+		:root {
+			--theme-primary: #4b4e6d;
+			--theme-secondary: #222222;
+			--theme-button: #353a4d;
+			--theme-text: whitesmoke;
+			--theme-link: blue;
+		}
+		
+		// "Rustic Charm" 
+		:root {
+			--theme-primary: #7b5e57;
+			--theme-secondary: #4c3e3a;
+			--theme-button: #b28f86;
+			--theme-text: white;
+			--theme-link: #9b8478;
+		}
+		
+		*/
+
+		.hbox {
+			display: flex;
+			flex-direction: row;
+		}
+	</style>
 	<style>
 		html,
 		body {
@@ -42,6 +77,7 @@ const { title, no_searchbar } = Astro.props;
 		}
 		body {
 			background-color: var(--theme-primary);
+			color: var(--theme-text);
 			font-family: system-ui, sans-serif;
 		}
 		main {
@@ -53,24 +89,6 @@ const { title, no_searchbar } = Astro.props;
 		section {
 			flex-grow: 1;
 			padding: 2rem;
-		}
-	</style>
-	<style is:global>
-		/* THEME */
-		:root {
-			--theme-primary: #4b4e6d;
-			--theme-secondary: #222222;
-			--theme-panel: #353a4d;
-			--theme-text: whitesmoke;
-
-			--theme-link: blue;
-
-			color: whitesmoke;
-		}
-
-		.hbox {
-			display: flex;
-			flex-direction: row;
 		}
 	</style>
 </html>
