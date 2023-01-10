@@ -77,6 +77,7 @@ ALTER TABLE buyer OWNER TO replikas_usr;
 ALTER TABLE session OWNER TO replikas_usr;
 ALTER TABLE company OWNER TO replikas_usr;
 ALTER TABLE article OWNER TO replikas_usr;
+ALTER TABLE film OWNER TO replikas_usr;
 ALTER TABLE article_image OWNER TO replikas_usr;
 ALTER TABLE bid OWNER TO replikas_usr;
 ALTER TABLE interests OWNER TO replikas_usr;
