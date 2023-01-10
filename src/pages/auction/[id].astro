@@ -24,10 +24,7 @@ const ends = dateDiff(article.getFinVente(), new Date());
 const nom = article.getName();
 const prix = article.getPrixBase();
 const encherissement_min = article.getEncherissementMin();
-const image =
-	article.getImages().length > 0
-		? article.getImages()[0]
-		: '/img/article/placeholder.jpg';
+const image = await article.getPoster();
 const description = article.getDescription();
 ---
 
