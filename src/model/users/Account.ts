@@ -41,7 +41,9 @@ export default class Account {
         const result = await database`
 			SELECT * FROM account WHERE a_id = ${id}`;
         if (result.count === 0) {
-            throw new UtilisateurOuMotDePasseInvalideError();
+            throw new RangeError(
+                `L'id ${id} ne correspond à aucun utilisateur`
+            );
         }
         account.id = result[0].a_id;
         account.email = result[0].a_mail;
