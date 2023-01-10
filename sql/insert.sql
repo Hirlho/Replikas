@@ -45,7 +45,7 @@ INSERT INTO movie VALUES (24, 'John Wick');
 INSERT INTO movie VALUES (25, 'Superman');
 
 
-INSERT INTO article (art_name, art_description, art_price, art_min_bidding, art_auction_start, art_auction_end, c_id, f_id)
+INSERT INTO article (art_name, art_description, art_price, art_min_bidding, art_auction_start, art_auction_end, c_id, m_id)
 VALUES
 ('Sabre laser', 'Le sable laser utilisé par dark vador Star Wars épisode 4', 1000, 100, '2023-01-01 00:00:00', '2023-02-01 00:00:00', 1, 4),
 ('Epee de Legolas', 'L épée utilisée par Legolas dans le Seigneur des Anneaux', 1500, 200, '2023-05-01 00:00:00', '2023-06-01 00:00:00', 1, 12),
