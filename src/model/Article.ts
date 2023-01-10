@@ -91,7 +91,7 @@ export default class Article {
                     document @@ query OR similarity > 0.1
             ORDER BY
                     rank_name, rank_description DESC NULLS LAST
-			LIMIT ${params.limit} OFFSET ${params.offset}`;
+			LIMIT ${params.limit || 20} OFFSET ${params.offset || 0}`;
 
 		const articles: Article[] = [];
 		for (const article of result) {

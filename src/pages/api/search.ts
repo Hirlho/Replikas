@@ -11,8 +11,6 @@ export const get: APIRoute = async ({ request }) => {
 			status: 400,
 		});
 	}
-	query.limit = query.limit ? parseInt(query.limit) : 10;
-	query.offset = query.offset ? parseInt(query.offset) : 0;
 
 	const t0 = performance.now();
 	const matches = await Article.getBySearch(query.search, {
