@@ -1,16 +1,19 @@
 import Article from '../src/model/Article';
 import Database from '../src/model/Database';
+import TMDB from '../src/model/TMDB';
 
 test('Crée un article et lui assigne un id automatiquement', async () => {
 	const article = await Article.create(
 		'Sabre laser',
-		"Un sabre laser de la marque Jedi, utilisé par Darth Vader dans l'épisode 4 de la saga Star Wars. @test-product",
+		"Un sabre laser de la marque Jedi, utilisé par Darth Vader dans l'épisode 4. @test-product",
 		1000,
 		1,
 		new Date('2020-01-01'),
 		new Date('2020-01-02'),
 		[],
-		1,
+		(
+			await TMDB.searchMovie('star wars')
+		)[0].id,
 		1
 	);
 	expect(article.getId()).toBeGreaterThan(0);
@@ -19,13 +22,15 @@ test('Crée un article et lui assigne un id automatiquement', async () => {
 test('Récupère un article existant', async () => {
 	const article = await Article.create(
 		'Sabre laser',
-		"Un sabre laser de la marque Jedi, utilisé par maître Yoda dans l'épisode 4 de la saga Star Wars. @test-product",
+		"Un sabre laser de la marque Jedi, utilisé par maître Yoda dans l'épisode 4. @test-product",
 		1000,
 		1,
 		new Date('2020-01-01'),
 		new Date('2020-01-02'),
 		[],
-		1,
+		(
+			await TMDB.searchMovie('star wars')
+		)[0].id,
 		1
 	);
 	const article2 = await Article.get(article.getId());
