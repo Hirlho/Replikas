@@ -13,3 +13,9 @@ test('Can fetch movie from id', async () => {
 test('Unknown movie id throws error', async () => {
 	await expect(TMDB.getMovie(0)).rejects.toThrowError(MovieNotFoundError);
 });
+
+test('Search movie', async () => {
+	const data = await TMDB.searchMovie('fight club');
+	expect(data.length).toBeGreaterThanOrEqual(1);
+	expect(data[0]).toHaveProperty('id', 550);
+});

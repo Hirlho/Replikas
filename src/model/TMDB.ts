@@ -67,6 +67,17 @@ export default class TMDB {
 			? `${this._imageBaseUrl}/original${movie.poster_path}`
 			: '';
 	}
+
+	public static async searchMovie(
+		query: string,
+		language = 'fr-FR'
+	): Promise<TMDBMovie[]> {
+		const response = await fetch(
+			`${this._baseUrl}/search/movie?api_key=${this._apiKey}&language=${language}&query=${query}`
+		);
+		const data = await response.json();
+		return data.results;
+	}
 }
 
 export class MovieNotFoundError extends Error {
