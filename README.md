@@ -1,49 +1,50 @@
-# Welcome to [Astro](https://astro.build)
+# Bienvenue sur le GitLab de [Replikas](https://replikas.gasdev.fr)
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/s/github/withastro/astro/tree/latest/examples/basics)
+## Description
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Replikas est un site d'enchères d'accessoires utilisés lors de films et séries.
+Notre site est basé sur le framework [Astro](https://astro.build) et [TypeScript](https://www.typescriptlang.org/).
 
-![basics](https://user-images.githubusercontent.com/4677417/186188965-73453154-fdec-4d6b-9c34-cb35c248ae5b.png)
+Il a pour but de permettre aux membres de la communauté cinématographique de se procurer des accessoires utilisés lors de tournages pour enrichir leurs collections personnelles.
 
-## 🚀 Project Structure
+## Showcase
 
-Inside of your Astro project, you'll see the following folders and files:
+### Page d'accueil
 
-```
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+![Page d'accueil](/docs/screenshots/home.png)
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+### Page d'un article
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+![Page d'un article](/docs/screenshots/article.png)
 
-Any static assets, like images, can be placed in the `public/` directory.
+### Page de connexion et création de compte
 
-## 🧞 Commands
+![Page de connexion](/docs/screenshots/login.png)
+![Page de création de compte](/docs/screenshots/register.png)
 
-All commands are run from the root of the project, from a terminal:
+### Page de profil
 
-| Command                | Action                                             |
-| :--------------------- | :------------------------------------------------- |
-| `npm install`          | Installs dependencies                              |
-| `npm run dev`          | Starts local dev server at `localhost:3000`        |
-| `npm run build`        | Build your production site to `./dist/`            |
-| `npm run preview`      | Preview your build locally, before deploying       |
-| `npm run astro ...`    | Run CLI commands like `astro add`, `astro preview` |
-| `npm run astro --help` | Get help using the Astro CLI                       |
+![Page de profil](/docs/screenshots/profile.png)
 
-## 👀 Want to learn more?
+### Page de recherche
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+![Page de recherche](/docs/screenshots/search.png)
+
+## Commandes
+
+| Command           | Action                                       |
+| :---------------- | :------------------------------------------- |
+| `npm install`     | Installs dependencies                        |
+| `npm run dev`     | Starts local dev server at `localhost:3000`  |
+| `npm run build`   | Build your production site to `./dist/`      |
+| `npm run preview` | Preview your build locally, before deploying |
+| `npm run deploy`  | Deploy our site to production                |
+
+## Equipe
+
+- [**Ahmed Khairi**](https://gricad-gitlab.univ-grenoble-alpes.fr/khairia)
+- [**Cedric Champeix**](https://gricad-gitlab.univ-grenoble-alpes.fr/champeic)
+- [**Gaspard Culis**](https://github.com/GaspardCulis)
+- [**Matis Basso**](https://gricad-gitlab.univ-grenoble-alpes.fr/bassom)
+- [**Mohammed Ben Aicha**](https://gricad-gitlab.univ-grenoble-alpes.fr/benaichm)
+- [**Mohammed Friouichen**](https://gricad-gitlab.univ-grenoble-alpes.fr/friouicm)
