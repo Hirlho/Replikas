@@ -64,10 +64,10 @@ if (Astro.url.searchParams.has("error")) {
 			<h1>Créer votre compte</h1>
 			<table>
 				<TextField text="" placeholder="Nom" length="15rem"/>
-				<TextField text="" placeholder="Prenom" />
-				<TextField text="" placeholder="Email" type="email" />
-				<TextField text="" placeholder="Mot de passe" type="password" />
-				<TextField text="" placeholder="Confirmer mot de passe" type="password" />
+				<TextField text="" placeholder="Prenom" length="15rem"/>
+				<TextField text="" placeholder="Email" type="email" length="15rem"/>
+				<TextField text="" placeholder="Mot de passe" type="password" length="15rem"/>
+				<TextField text="" placeholder="Confirmer mot de passe" type="password" length="15rem"/>
 			</table>
 
 			<div class="button">
@@ -104,7 +104,6 @@ if (Astro.url.searchParams.has("error")) {
 	}
 	.formlist table {
 		width: 100%;
-		border-collapse: collapse;
 		display: flex;
 		flex-direction: column;
 	}
@@ -124,4 +123,5 @@ if (Astro.url.searchParams.has("error")) {
 	.error_msg {
 		color: red;
 	}
+
 </style>
