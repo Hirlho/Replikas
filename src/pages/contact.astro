@@ -10,56 +10,56 @@ import Button from "../components/Button.astro";
     <div class="socials">
       <ul>
         <li>
-      <a href="https://fr-fr.facebook.com/DonaldTrump"
-        ><img
-          src="/img/icons/socials/facebook.svg"
-          width="80px"
-          height="80px"
-          alt="Facebook"
-        />
-      </a>
-      </li>
-      <li>
-      <a href="https://twitter.com/elonmusk"
-        ><img
-          src="/img/icons/socials/twitter.svg"
-          width="80px"
-          height="80px"
-          alt="Twitter"
-        />
-      </a>
-      </li>
-      <li>
-      <a href="https://www.instagram.com/hugodecrypte"
-        ><img
-          src="/img/icons/socials/instagram.svg"
-          width="80px"
-          height="80px"
-          alt="Instagram"
-        />
-      </a>
-      </li>
-      <li>
-      <a href="https://fr.linkedin.com/in/herv%C3%A9-blanchon-4851b02"
-        ><img
-          src="/img/icons/socials/linkedin.svg"
-          width="80px"
-          height="80px"
-          alt="Linkedin"
-        />
-      </a>
-      </li>
-      <li>
-      <a href="https://r.mtdv.me/replikas"
-        ><img
-          src="/img/icons/socials/youtube.svg"
-          width="80px"
-          height="80px"
-          alt="Youtube"
-        />
-      </a>
-      </li>
-    </ul>
+          <a href="https://fr-fr.facebook.com/DonaldTrump"
+            ><img
+              src="/img/icons/socials/facebook.svg"
+              width="80px"
+              height="80px"
+              alt="Facebook"
+            />
+          </a>
+        </li>
+        <li>
+          <a href="https://twitter.com/elonmusk"
+            ><img
+              src="/img/icons/socials/twitter.svg"
+              width="80px"
+              height="80px"
+              alt="Twitter"
+            />
+          </a>
+        </li>
+        <li>
+          <a href="https://www.instagram.com/hugodecrypte"
+            ><img
+              src="/img/icons/socials/instagram.svg"
+              width="80px"
+              height="80px"
+              alt="Instagram"
+            />
+          </a>
+        </li>
+        <li>
+          <a href="https://fr.linkedin.com/in/herv%C3%A9-blanchon-4851b02"
+            ><img
+              src="/img/icons/socials/linkedin.svg"
+              width="80px"
+              height="80px"
+              alt="Linkedin"
+            />
+          </a>
+        </li>
+        <li>
+          <a href="https://r.mtdv.me/replikas"
+            ><img
+              src="/img/icons/socials/youtube.svg"
+              width="80px"
+              height="80px"
+              alt="Youtube"
+            />
+          </a>
+        </li>
+      </ul>
     </div>
     <h1>Contactez-nous</h1>
     <form method="get" action="/">
@@ -120,12 +120,11 @@ import Button from "../components/Button.astro";
   }
 
   /*---------Réseaux sociaux------------*/
-  .socials ul{
+  .socials ul {
     display: flex;
     list-style-type: none;
-
   }
-  .socials ul li a{
+  .socials ul li a {
     display: flex;
     position: relative;
     width: 100px;
@@ -140,7 +139,7 @@ import Button from "../components/Button.astro";
     z-index: 5;
     transition: 0.3s;
   }
-  .socials ul li a:after{
+  .socials ul li a:after {
     content: "";
     position: absolute;
     left: 0;
@@ -155,13 +154,13 @@ import Button from "../components/Button.astro";
     z-index: -1;
     transition: 0.3s;
   }
-  .socials ul li a:hover{
-      transform: rotate(-15deg);
-    }
-  .socials ul li a:hover:before{
+  .socials ul li a:hover {
+    transform: rotate(-15deg);
+  }
+  .socials ul li a:hover:before {
     transform: rotate(15deg);
   }
-  .socials ul li a:before{
+  .socials ul li a:before {
     content: "";
     position: absolute;
     width: 100px;
@@ -175,22 +174,21 @@ import Button from "../components/Button.astro";
     transform: rotate(10deg);
     transition: 0.3s;
   }
-  .socials ul li:nth-child(1) a:before{
+  .socials ul li:nth-child(1) a:before {
     background: #3b5998;
   }
-  .socials ul li:nth-child(2) a:before{
+  .socials ul li:nth-child(2) a:before {
     background: #1da1f2;
   }
-  .socials ul li:nth-child(3) a:before{
+  .socials ul li:nth-child(3) a:before {
     background: #e1306c;
   }
-  .socials ul li:nth-child(4) a:before{
+  .socials ul li:nth-child(4) a:before {
     background: #0077b5;
   }
-  .socials ul li:nth-child(5) a:before{
+  .socials ul li:nth-child(5) a:before {
     background: #ff0000;
   }
-  
 
   /*----------Table-----------*/
 
@@ -212,11 +210,13 @@ import Button from "../components/Button.astro";
   }
 
   textarea {
+    resize: none;
     border: none;
     background-color: whitesmoke;
     border-radius: 5px;
     margin: 1rem;
     padding: 0.7rem;
+    text-align: left;
   }
 
   textarea:focus {
