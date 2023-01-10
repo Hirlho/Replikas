@@ -11,97 +11,125 @@ const { typeArticles } = Astro.props;
 ---
 
 <Layout title="ArticlesUtilisateur" no_searchbar>
-    <section class="sectionSearchBar">
-        <SearchBar/>
-    </section>
-    <section class="sectionArticles">
-        <h1>Vos Articles</h1>
-        <form method="post" action="/ArticlesUtilisateur">
-            <input type="submit" value="À payer" name="" id="" />
-            <input type="submit" value="Possédés" name="" id="" />
-            <input type="submit" value="Aimés" name="" id="" />
-            <input type="submit" value="Participe" name="" id="" />
-		</form>
-        <p>Si 3 jours après avoir gagné une enchère, vous n'avez pas payé l'article celui-ci ne vous appartiendra plus.</p>
-        <div>
-            <Article
-			    titre="Chapeau de Gandalf"
-			    image="chapeau_de_gandalf.jpeg"
-			    date={new Date()}
-			    prix={690}
-		    />
-            <Article
-			    titre="Chapeau de Gandalf"
-			    image="chapeau_de_gandalf.jpeg"
-			    date={new Date()}
-			    prix={690}
-		    />
-            <Article
-			    titre="Chapeau de Gandalf"
-			    image="chapeau_de_gandalf.jpeg"
-			    date={new Date()}
-			    prix={690}
-		    />
-            <Article
-			    titre="Chapeau de Gandalf"
-			    image="chapeau_de_gandalf.jpeg"
-			    date={new Date()}
-			    prix={690}
-		    />
-            <Article
-			    titre="Chapeau de Gandalf"
-			    image="chapeau_de_gandalf.jpeg"
-			    date={new Date()}
-			    prix={690}
-		    />
-            <Article
-			    titre="Chapeau de Gandalf"
-			    image="chapeau_de_gandalf.jpeg"
-			    date={new Date()}
-			    prix={690}
-		    />
+  <main>
+    <section>
+      <form method="post" action="/ArticlesUtilisateur">
+        <h1>Vos articles</h1>
+        <div class="pages">
+          <input type="submit" value="À payer" name="" id="" />
+          <input type="submit" value="Possédés" name="" id="" />
+          <input type="submit" value="Aimés" name="" id="" />
+          <input type="submit" value="Participe" name="" id="" />
         </div>
+      </form>
+      <section class="sectionSearchBar">
+        <SearchBar />
+      </section>
+      <p>
+        Si 3 jours après avoir gagné une enchère, vous n'avez pas payé l'article
+        celui-ci ne vous appartiendra plus.
+      </p>
+      <div class="articles">
+        <Article
+          titre="Chapeau de Gandalf"
+          image="chapeau_de_gandalf.jpeg"
+          date={new Date()}
+          prix={690}
+        />
+        <Article
+          titre="Chapeau de Gandalf"
+          image="chapeau_de_gandalf.jpeg"
+          date={new Date()}
+          prix={690}
+        />
+        <Article
+          titre="Chapeau de Gandalf"
+          image="chapeau_de_gandalf.jpeg"
+          date={new Date()}
+          prix={690}
+        />
+        <Article
+          titre="Chapeau de Gandalf"
+          image="chapeau_de_gandalf.jpeg"
+          date={new Date()}
+          prix={690}
+        />
+        <Article
+          titre="Chapeau de Gandalf"
+          image="chapeau_de_gandalf.jpeg"
+          date={new Date()}
+          prix={690}
+        />
+        <Article
+          titre="Chapeau de Gandalf"
+          image="chapeau_de_gandalf.jpeg"
+          date={new Date()}
+          prix={690}
+        />
+      </div>
     </section>
+  </main>
 </Layout>
 <style>
-    .sectionSearchBar{
-        padding-right: 20%;
-        padding-left: 20%;
-    }
-    .sectionArticles{
-        display: flex;
-        flex-wrap: wrap;
-        background-color: #222222;
-        border-radius: 5px;
-        padding-left: 3rem;
-        padding-right: 3rem;
-        margin: 2rem;
-    }
-    div{
-        display: flex;
-        flex-wrap: wrap;
-    }
-    h1{
-        color: whitesmoke;
-        font-size: 2.5rem;
-    }
-    form{
-        margin-left: 10rem;
-    }
-    input{
-        color: whitesmoke;
-        background-color: #222222;
-        margin: 1rem;
-        margin-top: 2rem;
-        font-size: 2rem;
-        border-top: transparent;
-        border-left: transparent;
-        border-right: transparent;
-        border-color: whitesmoke;
-    }
-    p {
-        color: whitesmoke;
-        padding-left: 3rem;
-        font-size: 1.5rem;
-    }
+  main {
+    width: 80%;
+    margin: 2rem auto;
+
+    background-color: #222222;
+    border-radius: 2rem;
+
+    padding: 2rem 3rem;
+  }
+
+  .sectionSearchBar {
+    width: 60%;
+    margin: 2rem auto;
+  }
+
+  /*-----------Nav-------------*/
+
+  form {
+    width: 80%;
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .pages {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  input {
+    color: whitesmoke;
+    background-color: #222222;
+    margin: 1rem;
+    font-size: 2rem;
+    border-top: transparent;
+    border-left: transparent;
+    border-right: transparent;
+    border-color: whitesmoke;
+  }
+
+  /*--------------Articles----------------*/
+  .articles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+
+  /*--------------Texts-------------------*/
+  h1 {
+    color: whitesmoke;
+    font-size: 2.5rem;
+
+    margin: 0;
+  }
+  p {
+    color: whitesmoke;
+    padding-left: 3rem;
+    font-size: 1rem;
+  }
 </style>
