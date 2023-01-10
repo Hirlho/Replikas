@@ -1,11 +1,11 @@
-import TMDB from "../src/model/TMDB";
+import TMDB from '../src/model/TMDB';
 
-test("TMDB API works fine", async () => {
+test('TMDB API works fine', async () => {
 	const data = await TMDB.getMovie(550);
-	expect(data).toHaveProperty("original_title", "Fight Club"); // Check if the movie is Fight Club
+	expect(data).toHaveProperty('original_title', 'Fight Club'); // Check if the movie is Fight Club
 
 	const posterURL = await TMDB.getMoviePosterURL(550);
 	expect(posterURL).toBe(
-		"https://image.tmdb.org/t/p/original/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg"
+		'https://image.tmdb.org/t/p/original/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg'
 	);
 });

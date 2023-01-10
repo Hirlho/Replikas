@@ -7,18 +7,18 @@ import PossessedPage from '../components/basketPages/PossessedPage.astro';
 
 let page;
 if (!Astro.url.searchParams.get('pageName')) {
-    page = 'Possédés';
+	page = 'Possédés';
 } else {
-    page = Astro.url.searchParams.get('pageName');
+	page = Astro.url.searchParams.get('pageName');
 }
 ---
 
 <Layout title="ArticlesUtilisateur" no_searchbar>
-    {
-        {
-            Possédés: <PossessedPage />,
-            'À payer': <NotPayedPage />,
-            Aimés: <LikedPage />,
-        }[page]
-    }
+	{
+		{
+			Possédés: <PossessedPage />,
+			'À payer': <NotPayedPage />,
+			Aimés: <LikedPage />,
+		}[page]
+	}
 </Layout>
