@@ -2,6 +2,7 @@ DROP TABLE aquired;
 DROP TABLE interests;
 DROP TABLE bid;
 DROP TABLE article_image;
+DROP TABLE movie;
 DROP TABLE article;
 DROP TABLE company;
 DROP TABLE session;
