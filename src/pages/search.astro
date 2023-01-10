@@ -1,154 +1,118 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import SearchBar from "../components/SearchBar.astro";
-import Article from "../components/Article.astro";
+import Layout from '../layouts/Layout.astro';
+import SearchBar from '../components/SearchBar.astro';
+import Article from '../components/Article.astro';
+import { default as ArticleModel } from '../model/Article';
 
-const text = Astro.url.searchParams.get("article");
+const search = Astro.url.searchParams.get('article');
+
+const articles = await ArticleModel.getBySearch(search);
 ---
 
 <Layout title="Replikas" no_searchbar>
-  <main>
-    <div class="searchBar">
-      <div id="searchBar">
-        <SearchBar text={text} />
-      </div>
-      <div class="checkbox">
-        <input type="checkbox" id="scales" name="scales" checked />
-        <label for="enCour">Enchère en cours</label>
-      </div>
-    </div>
-    <article>
-      <Article
-        titre="Casque de Dark Vador"
-        image="casque_de_dark_vador.jpeg"
-        date={new Date()}
-        prix={2530}
-      />
-      <Article
-        titre="Sabre laser"
-        image="sabre_laser.jpeg"
-        date={new Date()}
-        prix={1320}
-      />
-      <Article
-        titre="Casque de Dark Vador"
-        image="casque_de_dark_vador.jpeg"
-        date={new Date()}
-        prix={2530}
-      />
-      <Article
-        titre="Sabre laser"
-        image="sabre_laser.jpeg"
-        date={new Date()}
-        prix={1320}
-      />
-      <Article
-        titre="Casque de Dark Vador"
-        image="casque_de_dark_vador.jpeg"
-        date={new Date()}
-        prix={2530}
-      />
-      <Article
-        titre="Sabre laser"
-        image="sabre_laser.jpeg"
-        date={new Date()}
-        prix={1320}
-      />
-      <Article
-        titre="Casque de Dark Vador"
-        image="casque_de_dark_vador.jpeg"
-        date={new Date()}
-        prix={2530}
-      />
-      <Article
-        titre="Sabre laser"
-        image="sabre_laser.jpeg"
-        date={new Date()}
-        prix={1320}
-      />
-      <Article
-        titre="Casque de Dark Vador"
-        image="casque_de_dark_vador.jpeg"
-        date={new Date()}
-        prix={2530}
-      />
-    </article>
-    <div class="pages">
-      <span>
-        <a href="">Précédent</a>
-        <a href="">1</a>
-        <a href="">2</a>
-        <a href="">3</a>
-        <span>...</span>
-        <a href="">5</a>
-        <a href="">Suivant</a>
-      </span>
-    </div>
-  </main>
+    <main>
+        <div class="searchBar">
+            <div id="searchBar">
+                <SearchBar text={search} />
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="scales" name="scales" checked />
+                <label for="enCour">Enchère en cours</label>
+            </div>
+        </div>
+        <article>
+            {
+                articles.map((article) => (
+                    <Article
+                        id={article.getId()}
+                        titre={article.getName()}
+                        prix={article.getPrixBase()}
+                        image={
+                            article.getImages().length > 0
+                                ? article.getImages()[0]
+                                : 'placeholder.jpg'
+                        }
+                        date={article.getDebutVente()}
+                    />
+                ))
+            }
+        </article>
+        <div class="pages">
+            <span>
+                <a href="">Précédent</a>
+                <a href="">1</a>
+                <a href="">2</a>
+                <a href="">3</a>
+                <span>...</span>
+                <a href="">5</a>
+                <a href="">Suivant</a>
+            </span>
+        </div>
+    </main>
 </Layout>
 
 <style>
-  main {
-    margin: 20px auto;
-    padding: 20px 2%;
-    width: 80%;
+    main {
+        margin: 20px auto;
+        padding: 20px 2%;
+        width: 80%;
 
-    border-radius: 20px;
+        border-radius: 20px;
 
-    background-color: #222222;
-  }
+        background-color: #222222;
+    }
 
-  .searchBar {
-    margin: 10px 20% 40px 20%;
-    width: 60%;
+    .searchBar {
+        margin: 10px 20% 40px 20%;
+        width: 60%;
 
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-  }
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+    }
 
-  #searchBar {
-    width: 80%;
-  }
+    #searchBar {
+        width: 80%;
+    }
 
-  .checkbox {
-    scale: 1.2;
-  }
+    .checkbox {
+        scale: 1.2;
+    }
 
-  label {
-    color: whitesmoke;
-  }
+    label {
+        color: whitesmoke;
+    }
 
-  article {
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-  }
+    article {
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
 
-  .pages {
-    text-align: center;
-    margin: 20px 0;
-  }
+    .pages {
+        text-align: center;
+        margin: 20px 0;
+    }
 
-  .pages > span {
-    display: inline-block;
+    .pages > span {
+        display: inline-block;
 
-    border-radius: 10px;
+        border-radius: 10px;
 
-    background-color: #4b4e6d;
-  }
+        background-color: #4b4e6d;
+    }
 
-  .pages > span > * {
-    text-decoration: none;
-    color: whitesmoke;
+    .pages > span > * {
+        text-decoration: none;
+        color: whitesmoke;
 
-    display: inline-block;
+        display: inline-block;
 
-    height: 46px;
-    line-height: 46px;
-    padding: 0 14px;
-  }
+        height: 46px;
+        line-height: 46px;
+        padding: 0 14px;
+    }
 </style>
 <script></script>
