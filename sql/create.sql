@@ -36,8 +36,13 @@ CREATE TABLE article (
     art_auction_start TIMESTAMP NOT NULL,
     art_auction_end TIMESTAMP NOT NULL,
     c_id INTEGER REFERENCES company (a_id),
-    f_id INTEGER NOT NULL
+    f_id INTEGER REFERENCES film (f_id)
 );
+
+CREATE TABLE film (
+    f_id INTEGER PRIMARY KEY,
+    f_title varchar(255) NOT NULL,
+)
 
 CREATE TABLE article_image (
     art_id INTEGER REFERENCES article (art_id),
