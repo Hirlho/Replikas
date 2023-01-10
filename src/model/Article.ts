@@ -10,6 +10,7 @@ export default class Article {
     private auction_end: Date;
     private img_paths: string[] = [];
     private tmdb_movie_id: number;
+    private selling_company_id: number;
 
     private constructor() {}
 
@@ -29,6 +30,7 @@ export default class Article {
         article.auction_start = result[0].art_auction_start;
         article.auction_end = result[0].art_auction_end;
         article.tmdb_movie_id = result[0].f_id;
+        article.selling_company_id = result[0].c_id;
 
         const imgs = await database`
 			SELECT * FROM article_image WHERE art_id = ${id}`;
@@ -47,12 +49,13 @@ export default class Article {
         auction_start: Date,
         auction_end: Date,
         img_paths: string[],
-        tmdb_movie_id: number
+        tmdb_movie_id: number,
+        selling_company_id: number
     ): Promise<Article> {
         const database = Database.get();
         const article = new Article();
         const result = await database`
-            INSERT INTO article (art_name, art_description, art_price, art_min_bidding, art_auction_start, art_auction_end, f_id) VALUES (${name}, ${description}, ${price}, ${min_bidding}, ${auction_start}, ${auction_end}, ${tmdb_movie_id}) RETURNING art_id`;
+            INSERT INTO article (art_name, art_description, art_price, art_min_bidding, art_auction_start, art_auction_end, f_id, c_id) VALUES (${name}, ${description}, ${price}, ${min_bidding}, ${auction_start}, ${auction_end}, ${tmdb_movie_id}, ${selling_company_id}) RETURNING art_id`;
         article.id = result[0].art_id;
         article.name = name;
         article.description = description;
@@ -62,6 +65,7 @@ export default class Article {
         article.auction_end = auction_end;
         article.img_paths = img_paths;
         article.tmdb_movie_id = tmdb_movie_id;
+        article.selling_company_id = selling_company_id;
 
         for (const img_path of img_paths) {
             await database`
@@ -107,6 +111,7 @@ export default class Article {
             art.auction_start = article.art_auction_start;
             art.auction_end = article.art_auction_end;
             art.tmdb_movie_id = article.f_id;
+            art.selling_company_id = article.c_id;
 
             const imgs = await database`
 			SELECT * FROM article_image WHERE art_id = ${art.id}`;
@@ -142,6 +147,7 @@ export default class Article {
             art.auction_start = article.art_debut_vente;
             art.auction_end = article.art_fin_vente;
             art.tmdb_movie_id = article.f_id;
+            art.selling_company_id = article.c_id;
 
             const imgs = await database`
 				  SELECT * FROM article_image WHERE art_id = ${art.id}`;
@@ -194,6 +200,10 @@ export default class Article {
 
     public getImages(): string[] {
         return this.img_paths;
+    }
+
+    public getSellingCompanyId(): number {
+        return this.selling_company_id;
     }
 }
 
