@@ -165,6 +165,22 @@ export default class Article {
 		return articles;
 	}
 
+	public static getFallback(id: number): Article {
+		const article = new Article();
+		article.id = null;
+		article.name = `Article ${id} non trouvé`;
+		article.description = `Cet article n'existe pas ou plus`;
+		article.price = 0;
+		article.min_bidding = 0;
+		article.auction_start = new Date();
+		article.auction_end = new Date();
+		article.tmdb_movie_id = null;
+		article.selling_company_id = null;
+		article.img_paths = ['/img/article/placeholder.jpg'];
+
+		return article;
+	}
+
 	public async delete(): Promise<void> {
 		const database = Database.get();
 		await database`DELETE FROM article WHERE art_id = ${this.id}`;
