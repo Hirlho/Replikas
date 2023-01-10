@@ -104,12 +104,6 @@ const description = article.getDescription();
 </Layout>
 
 <style>
-	h2,
-	h3,
-	p {
-		color: whitesmoke;
-	}
-
 	h2 {
 		margin-top: 0;
 	}
@@ -121,7 +115,7 @@ const description = article.getDescription();
 
 		border-radius: 20px;
 
-		background-color: #222222;
+		background-color: var(--theme-secondary);
 	}
 
 	article {
@@ -167,8 +161,7 @@ const description = article.getDescription();
 	}
 
 	.button {
-		background-color: #4b4e6d;
-		color: whitesmoke;
+		background-color: var(--theme-panel);
 
 		border: none;
 		border-radius: 5px;

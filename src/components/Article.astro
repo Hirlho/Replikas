@@ -34,7 +34,7 @@ const { id, titre, image, date, prix, enCours } = Astro.props;
 		display: flex;
 		flex-direction: column;
 
-		background-color: #4b4e6d;
+		background-color: var(--theme-primary);
 
 		border-radius: 10px;
 		overflow: hidden;
@@ -54,7 +54,6 @@ const { id, titre, image, date, prix, enCours } = Astro.props;
 
 	h3,
 	p {
-		color: whitesmoke;
 		margin: 0;
 		padding: 5px;
 	}

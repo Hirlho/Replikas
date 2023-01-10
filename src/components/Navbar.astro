@@ -70,16 +70,11 @@ if (cookies) {
 		padding: 0px;
 	}
 
-	:root {
-		--background-color: #222222;
-	}
-
 	header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		background-color: var(--background-color);
-		color: whitesmoke;
+		background-color: var(--theme-secondary);
 
 		max-width: 100%;
 		padding-block: 1rem;
@@ -97,17 +92,17 @@ if (cookies) {
 	}
 
 	.button {
-		color: whitesmoke;
 		text-decoration: none;
 		font-size: 1.5rem;
 		padding: 0.5rem 1rem;
 		margin: 0.5rem;
 		border-radius: 0.5rem;
-		background-color: #4b4e6d;
+		background-color: var(--theme-panel);
+		color: inherit;
 	}
 
 	.button:hover {
-		background-color: #6b6e8d;
+		filter: brightness(1.2);
 	}
 
 	.user_icon_container {

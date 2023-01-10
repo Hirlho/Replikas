@@ -21,7 +21,7 @@ const { text } = Astro.props;
 <script>
 	const articleInput = document.getElementById('article') as HTMLInputElement;
 	const article = new URLSearchParams(window.location.search).get('article');
-	articleInput.value = article || '';
+	if (article) articleInput.value = article;
 </script>
 <style>
 	form {

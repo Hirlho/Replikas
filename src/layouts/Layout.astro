@@ -41,7 +41,7 @@ const { title, no_searchbar } = Astro.props;
 			margin: 0;
 		}
 		body {
-			background-color: #4b4e6d;
+			background-color: var(--theme-primary);
 			font-family: system-ui, sans-serif;
 		}
 		main {
@@ -56,6 +56,18 @@ const { title, no_searchbar } = Astro.props;
 		}
 	</style>
 	<style is:global>
+		/* THEME */
+		:root {
+			--theme-primary: #4b4e6d;
+			--theme-secondary: #222222;
+			--theme-panel: #353a4d;
+			--theme-text: whitesmoke;
+
+			--theme-link: blue;
+
+			color: whitesmoke;
+		}
+
 		.hbox {
 			display: flex;
 			flex-direction: row;

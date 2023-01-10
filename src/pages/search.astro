@@ -59,7 +59,7 @@ const articles = await ArticleModel.getBySearch(search);
 
 		border-radius: 20px;
 
-		background-color: #222222;
+		background-color: var(--theme-secondary);
 	}
 
 	.searchBar {
@@ -80,10 +80,6 @@ const articles = await ArticleModel.getBySearch(search);
 		scale: 1.2;
 	}
 
-	label {
-		color: whitesmoke;
-	}
-
 	article {
 		margin: 0 auto;
 		display: flex;
@@ -101,12 +97,12 @@ const articles = await ArticleModel.getBySearch(search);
 
 		border-radius: 10px;
 
-		background-color: #4b4e6d;
+		background-color: var(--theme-panel);
 	}
 
 	.pages > span > * {
 		text-decoration: none;
-		color: whitesmoke;
+		color: inherit;
 
 		display: inline-block;
 

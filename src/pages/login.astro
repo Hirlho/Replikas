@@ -116,7 +116,7 @@ if (Astro.url.searchParams.has('error')) {
 		padding-left: 3rem;
 		padding-right: 3rem;
 		max-width: 80ch;
-		background-color: #222222;
+		background-color: var(--theme-secondary);
 		border-radius: 15px;
 	}
 
@@ -124,8 +124,6 @@ if (Astro.url.searchParams.has('error')) {
 	table {
 		width: 80%;
 		margin: auto;
-
-		color: whitesmoke;
 	}
 
 	th {
@@ -149,12 +147,9 @@ if (Astro.url.searchParams.has('error')) {
 
 		text-align: center;
 		margin-bottom: 1.5rem;
-
-		color: whitesmoke;
 	}
 
 	p {
-		color: whitesmoke;
 		text-align: center;
 	}
 
@@ -164,9 +159,9 @@ if (Astro.url.searchParams.has('error')) {
 	}
 
 	a {
-		color: blue;
+		color: var(--theme-link);
 	}
 	a:hover {
-		color: purple;
+		filter: hue-rotate(20deg);
 	}
 </style>

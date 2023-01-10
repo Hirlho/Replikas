@@ -20,7 +20,7 @@ const { nom, image, description } = Astro.props;
 	section {
 		display: flex;
 		flex-direction: column;
-		background-color: #222222;
+		background-color: var(--theme-secondary);
 		width: 100%;
 	}
 	li {
@@ -29,8 +29,6 @@ const { nom, image, description } = Astro.props;
 
 		display: flex;
 		flex-direction: column;
-
-		background-color: #4b4e6d;
 
 		border-radius: 10px;
 		overflow: hidden;
@@ -47,7 +45,6 @@ const { nom, image, description } = Astro.props;
 
 	h3,
 	p {
-		color: whitesmoke;
 		margin: 0;
 		padding: 5px;
 		text-align: center;

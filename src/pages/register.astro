@@ -156,7 +156,7 @@ if (Astro.url.searchParams.has('error')) {
 
 		border-radius: 1rem;
 
-		background-color: #222222;
+		background-color: var(--theme-secondary);
 	}
 
 	/*-----------------Table--------------------*/
@@ -168,8 +168,6 @@ if (Astro.url.searchParams.has('error')) {
 
 	th {
 		text-align: end;
-
-		color: whitesmoke;
 	}
 
 	td {
@@ -179,7 +177,6 @@ if (Astro.url.searchParams.has('error')) {
 	/*-----------------Boutton s'inscrire--------------------*/
 
 	#button {
-		color: whitesmoke;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -195,7 +192,6 @@ if (Astro.url.searchParams.has('error')) {
 		font-size: 2rem;
 		text-align: center;
 		margin: 2rem 0;
-		color: whitesmoke;
 	}
 	.error_msg {
 		color: red;
