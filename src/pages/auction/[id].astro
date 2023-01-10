@@ -1,0 +1,178 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Article from '../../model/Article';
+import Company from '../../model/users/Company';
+import { dateDiff } from '../../model/Utilitaire';
+
+const id = parseInt(Astro.params.id);
+
+let article: Article;
+let company: Company;
+try {
+    article = await Article.get(id);
+    company = await Company.getById(article.getSellingCompanyId());
+} catch (e) {
+    console.error(e);
+    return new Response('Article introuvable', { status: 404 });
+}
+
+const enCours =
+    article.getDebutVente() < new Date() && article.getFinVente() > new Date();
+
+const starts = dateDiff(article.getDebutVente(), new Date());
+const ends = dateDiff(article.getFinVente(), new Date());
+
+const nom = article.getName();
+const prix = article.getPrixBase();
+const encherissement_min = article.getEncherissementMin();
+const image =
+    article.getImages().length > 0
+        ? article.getImages()[0]
+        : '/img/article/placeholder.jpg';
+const description = article.getDescription();
+---
+
+<Layout title="Replikas" no_searchbar>
+    <main>
+        <h2>
+            {
+                enCours
+                    ? 'Se termine dans ' +
+                      ends.day +
+                      'j ' +
+                      ends.hour +
+                      'h ' +
+                      ends.min +
+                      'min'
+                    : 'Commence dans ' +
+                      starts.day +
+                      'j ' +
+                      starts.hour +
+                      'h ' +
+                      starts.min +
+                      'min'
+            }
+        </h2>
+        <article>
+            <div class="img">
+                <img src={image} alt="" />
+            </div>
+            <div class="informations">
+                <h2>{nom}</h2>
+                <p>
+                    {enCours ? 'Valeur actuelle :' : 'Valeur de départ : '}
+                </p>
+                <h2>{article.getPrixBase()} €</h2>
+                <p>Placer une offre :</p>
+                <form>
+                    <div>
+                        <input
+                            class="button"
+                            type="submit"
+                            value={prix + encherissement_min + ' €'}
+                        />
+                        <input
+                            class="button"
+                            type="submit"
+                            value={prix + encherissement_min * 3 + ' €'}
+                        />
+                        <input
+                            class="button"
+                            type="submit"
+                            value={prix + encherissement_min * 5 + ' €'}
+                        />
+                    </div>
+                    <input
+                        type="number"
+                        min={prix + encherissement_min}
+                        placeholder={prix + encherissement_min + ' ou plus'}
+                    />
+                    <input
+                        id="placerOffre"
+                        class="button"
+                        type="submit"
+                        value="Placer l'offre"
+                    />
+                </form>
+                <h3>Vendu par : {company.getNom()}</h3>
+                <p>
+                    {description}
+                </p>
+            </div>
+        </article>
+    </main>
+</Layout>
+
+<style>
+    h2,
+    h3,
+    p {
+        color: whitesmoke;
+    }
+
+    h2 {
+        margin-top: 0;
+    }
+
+    main {
+        margin: 20px auto;
+        padding: 40px 4%;
+        width: 80%;
+
+        border-radius: 20px;
+
+        background-color: #222222;
+    }
+
+    article {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .img {
+        position: sticky;
+        width: 25%;
+        margin-left: 1%;
+    }
+
+    .img > img {
+        width: 100%;
+    }
+
+    .informations {
+        margin-left: 10%;
+    }
+
+    form {
+        width: 200px;
+        margin-left: 20px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    form > div {
+        display: flex;
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    form > * {
+        margin: 10px 0;
+    }
+
+    #placerOffre {
+        width: 120px;
+    }
+
+    .button {
+        background-color: #4b4e6d;
+        color: whitesmoke;
+
+        border: none;
+        border-radius: 5px;
+
+        padding: 5px;
+    }
+</style>
