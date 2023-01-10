@@ -27,6 +27,11 @@ CREATE TABLE company (
     c_name varchar(50) NOT NULL
 );
 
+CREATE TABLE movie (
+    f_id INTEGER PRIMARY KEY,
+    f_title varchar(255) NOT NULL
+);
+
 CREATE TABLE article (
     art_id SERIAL PRIMARY KEY,
     art_name varchar(128) NOT NULL,
@@ -36,13 +41,8 @@ CREATE TABLE article (
     art_auction_start TIMESTAMP NOT NULL,
     art_auction_end TIMESTAMP NOT NULL,
     c_id INTEGER REFERENCES company (a_id),
-    f_id INTEGER REFERENCES film (f_id)
+    f_id INTEGER REFERENCES movie (f_id)
 );
-
-CREATE TABLE film (
-    f_id INTEGER PRIMARY KEY,
-    f_title varchar(255) NOT NULL,
-)
 
 CREATE TABLE article_image (
     art_id INTEGER REFERENCES article (art_id),
@@ -77,7 +77,7 @@ ALTER TABLE buyer OWNER TO replikas_usr;
 ALTER TABLE session OWNER TO replikas_usr;
 ALTER TABLE company OWNER TO replikas_usr;
 ALTER TABLE article OWNER TO replikas_usr;
-ALTER TABLE film OWNER TO replikas_usr;
+ALTER TABLE movie OWNER TO replikas_usr;
 ALTER TABLE article_image OWNER TO replikas_usr;
 ALTER TABLE bid OWNER TO replikas_usr;
 ALTER TABLE interests OWNER TO replikas_usr;
