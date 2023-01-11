@@ -4,7 +4,7 @@ import Article from '../../model/Article';
 import Company from '../../model/users/Company';
 import { dateDiff } from '../../model/Utilitaire';
 
-const id = parseInt(Astro.params.id);
+const id = parseInt(Astro.params.id); // L'id de l'article est dans le chemin de l'URL
 
 let article: Article;
 let company: Company;

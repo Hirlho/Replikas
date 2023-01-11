@@ -15,6 +15,12 @@ export default class Article {
 
 	private constructor() {}
 
+	/**
+	 * Prend le résultat d'une requete a la {@link Database} (1 row) et retourne un {@link Article}
+	 * Méthode utilitaire pour éviter du code dupliqué.
+	 * @param result Le résultat d'une requete à la {@link Database} (1 row)
+	 * @returns L'article correspondant au résultat
+	 */
 	private static async getFromResult(result: any): Promise<Article> {
 		const database = Database.get();
 		const article = new Article();
@@ -37,6 +43,12 @@ export default class Article {
 		return article;
 	}
 
+	/**
+	 * Retourne l'article correspondant à l'id
+	 * @param id L'id de l'article
+	 * @returns L'article correspondant à l'id
+	 * @throws {ArticleInexistantError} Si l'article n'existe pas
+	 */
 	public static async get(id: number): Promise<Article> {
 		const database = Database.get();
 		const result = await database`
@@ -47,6 +59,19 @@ export default class Article {
 		return this.getFromResult(result[0]);
 	}
 
+	/**
+	 * Crée un article
+	 * @param name Le nom de l'article
+	 * @param description La description de l'article
+	 * @param price Le prix de l'article
+	 * @param min_bidding Le prix minimum de l'article
+	 * @param auction_start La date de début de l'enchère
+	 * @param auction_end La date de fin de l'enchère
+	 * @param img_paths Les chemins des images de l'article
+	 * @param tmdb_movie_id L'id du film correspondant à l'article
+	 * @param selling_company_id L'id de la société vendant l'article
+	 * @returns L'article créé
+	 */
 	public static async create(
 		name: string,
 		description: string,
@@ -74,6 +99,10 @@ export default class Article {
 		return this.getFromResult(result[0]);
 	}
 
+	/**
+	 * Retourne tous les articles de la base de données
+	 * @returns Tous les articles
+	 */
 	public static async getAll(): Promise<Article[]> {
 		const database = Database.get();
 		const result = await database`
@@ -86,6 +115,12 @@ export default class Article {
 		return articles;
 	}
 
+	/**
+	 * Exécute une recherche sur les articles
+	 * @param search Les mots clés de la recherche
+	 * @param params Les paramètres de la recherche
+	 * @returns Les articles correspondant à la recherche
+	 */
 	public static async getBySearch(
 		search: string,
 		params = { limit: 20, offset: 0 }
@@ -94,7 +129,8 @@ export default class Article {
 			return this.getAll();
 		}
 		const database = Database.get();
-		// Cherche les articles dont le nom ou la description contient le mot recherché (ts_query, ts_vector, plainto_tsquery), triés par pertinence (ts_rank)
+		const t0 = performance.now();
+		// Cherche les articles dont le nom, la description ou le nom de film contient le mot recherché (ts_query, ts_vector, plainto_tsquery), triés par pertinence (ts_rank)
 		const result = await database`
             SELECT 
                     a.*, 
@@ -120,9 +156,15 @@ export default class Article {
 		for (const article of result) {
 			articles.push(await this.getFromResult(article));
 		}
+		const t1 = performance.now();
+		console.info(`Search took ${t1 - t0} milliseconds.`);
 		return articles;
 	}
 
+	/**
+	 * @param params Les paramètres de la recherche
+	 * @returns Les articles ayant le plus d'enchèrissements
+	 */
 	public static async mostBids(
 		params = { limit: 8, offset: 0 }
 	): Promise<Article[]> {
@@ -144,6 +186,11 @@ export default class Article {
 		return articles;
 	}
 
+	/**
+	 * Méthode utilitaire pour créer un faux article qui n'est pas dans la DB
+	 * @param id L'id de l'article non trouvé
+	 * @returns L'article de fallback
+	 */
 	public static getFallback(id: number): Article {
 		const article = new Article();
 		article.id = null;
@@ -160,6 +207,10 @@ export default class Article {
 		return article;
 	}
 
+	/**
+	 * Supprime un article de la base de données
+	 * @param id L'id de l'article à supprimer
+	 */
 	public async delete(): Promise<void> {
 		const database = Database.get();
 		await database`DELETE FROM article WHERE art_id = ${this.id}`;
@@ -202,6 +253,9 @@ export default class Article {
 		return this.img_paths;
 	}
 
+	/**
+	 * @returns L'url de l'image principale de l'article, si il n'a pas d'images on va chercher le poster sur TMDB
+	 */
 	public async getPoster(): Promise<string> {
 		if (this.img_paths.length > 0) {
 			return this.img_paths[0];
