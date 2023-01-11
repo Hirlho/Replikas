@@ -1,3 +1,6 @@
+import { SessionTokenInvalideError } from './users/Account';
+import Buyer from './users/Buyer';
+
 export { dateDiff };
 
 /**
@@ -6,7 +9,10 @@ export { dateDiff };
  * @param date2
  * @returns La difference entre les 2 dates en jour, heure, minute et seconde
  */
-function dateDiff(date1: Date, date2: Date): { day: number; hour: number; min: number; sec: number } {
+function dateDiff(
+	date1: Date,
+	date2: Date
+): { day: number; hour: number; min: number; sec: number } {
 	var diff = {
 		sec: 0,
 		min: 0,
@@ -37,13 +43,35 @@ function dateDiff(date1: Date, date2: Date): { day: number; hour: number; min: n
  */
 export function addCookie(
 	headers: Headers,
-	cookie: { name: string; value: string; maxAge?: number; secure?: boolean; path?: string }
+	cookie: {
+		name: string;
+		value: string;
+		maxAge?: number;
+		secure?: boolean;
+		path?: string;
+	}
 ) {
 	let val = `${cookie.name}=${cookie.value};`;
-	val += cookie.maxAge ? ` Max-Age=${cookie.maxAge};` : "";
-	val += cookie.secure ? ` Secure;` : "";
-	val += cookie.path ? ` Path=${cookie.path};` : "";
-	headers.append("Set-Cookie", val);
+	val += cookie.maxAge ? ` Max-Age=${cookie.maxAge};` : '';
+	val += cookie.secure ? ` Secure;` : '';
+	val += cookie.path ? ` Path=${cookie.path};` : '';
+	headers.append('Set-Cookie', val);
+}
+
+/**
+ * Retourne un {@link Buyer} à partir d'un token de session
+ * @param headers Les headers de la requête
+ * @returns Le {@link Buyer} correspondant au token de session
+ */
+export async function getBuyerBySession(headers: Headers): Promise<Buyer> {
+	const cookies = headers.get('cookie');
+	if (cookies) {
+		const token = (cookies.endsWith(';') ? cookies : cookies + ';').match(
+			/token=([^;]*);/
+		); // Recuperer le token de session
+		if (token.length > 0) return Buyer.getBySession(token[1]);
+	}
+	throw new SessionTokenInvalideError();
 }
 
 export class EtatInnatenduError extends Error {

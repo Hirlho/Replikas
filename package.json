@@ -1,32 +1,33 @@
 {
-	"name": "@example/basics",
-	"type": "module",
-	"version": "0.0.1",
-	"private": true,
-	"scripts": {
-		"dev": "astro dev --host",
-		"build": "astro build",
-		"preview": "astro preview",
-		"astro": "astro",
-		"deploy": "./scripts/deploy.sh",
-		"test": "jest",
-		"test-playwright": "npx playwright test",
-		"pretty": "prettier --write \"./**/*.{js,jsx,json,astro,sql}\""
-	},
-	"dependencies": {
-		"@astrojs/node": "^3.1.0",
-		"astro": "^1.6.10",
-		"dotenv": "^16.0.3",
-		"postgres": "^3.3.3",
-		"sha.js": "^2.4.11"
-	},
-	"devDependencies": {
-		"@playwright/test": "^1.29.0",
-		"@types/jest": "^29.2.5",
-		"@types/pg": "^8.6.6",
-		"@types/sha.js": "^2.4.0",
-		"jest": "^29.3.1",
-		"ts-jest": "^29.0.3",
-		"ts-node": "^10.9.1"
-	}
+  "name": "@example/basics",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev --host",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "deploy": "./scripts/deploy.sh",
+    "test": "jest",
+    "test-playwright": "npx playwright test"
+  },
+  "dependencies": {
+    "@astrojs/node": "^3.1.0",
+    "@emailjs/browser": "^3.10.0",
+    "astro": "^1.6.10",
+    "dotenv": "^16.0.3",
+    "emailjs-com": "^3.2.0",
+    "postgres": "^3.3.3",
+    "sha.js": "^2.4.11"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.29.0",
+    "@types/jest": "^29.2.5",
+    "@types/pg": "^8.6.6",
+    "@types/sha.js": "^2.4.0",
+    "jest": "^29.3.1",
+    "ts-jest": "^29.0.3",
+    "ts-node": "^10.9.1"
+  }
 }

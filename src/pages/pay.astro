@@ -24,7 +24,70 @@ import Layout from '../layouts/Layout.astro';
 
 		<div class="container_info">
 			<div style="width:500px;margin-left: 30%;">
-				<li class="payment_details"><h3>Voir les détails du paiement</h3></li>
+				<li class="payment_details">
+					<h3 class="titre_payment">
+						<a onclick="showText('text1')" href="javascript:void(0);"
+							>Voir les détails du paiement</a
+						>
+					</h3>
+				</li>
+				<script language="JavaScript">
+					function isInViewport(element) {
+						const rect = element.getBoundingClientRect();
+						return (
+							rect.top >= 0 &&
+							rect.left >= 0 &&
+							rect.bottom <=
+								(window.innerHeight || document.documentElement.clientHeight) &&
+							rect.right <=
+								(window.innerWidth || document.documentElement.clientWidth)
+						);
+					}
+					function showText(id) {
+						if (isInViewport(document.getElementById(id))) {
+							document.getElementById(id).style.display = 'block';
+						} else {
+							document.getElementById(id).style = 'display:none';
+						}
+					}
+				</script>
+			</div>
+			<div class="details" id="text1" style="display:none;">
+				<h2>Un mode de payement simple et sécurisé :</h2>
+				<p>
+					Afin de satisfaire nos clients Replikas met à votre disposition un
+					système simple et entièrement sécurisé via Paypal pour vos paiements
+					en ligne.
+				</p>
+				<br />
+				<h2>Vous avez des difficultés à payer en ligne avec votre carte ?</h2>
+				<h3>Si vous avez dépassé votre limite de paiement en ligne :</h3>
+				<p>
+					L'article sera redirigé vers le second plus grand donateur des
+					enchères. Cela est nécessaire afin de garantir la transparence et
+					l'équité de notre processus d'enchères. Nous comprenons que des
+					problèmes de paiement peuvent survenir de manière inattendue, et nous
+					sommes toujours disposés à travailler avec nos clients pour trouver
+					une solution.
+				</p>
+				<br />
+				<h2>Si vous rencontrez des difficultés pour effectuer le paiement :</h2>
+				<p>
+					Veuillez nous contacter immédiatement afin que nous puissions trouver
+					une solution adaptée à votre situation.
+				</p>
+
+				<p>
+					Nous vous remercions de votre confiance et de votre soutien, et nous
+					espérons que vous soyez satisfait de votre achat avec Replikas.
+				</p>
+				<br />
+				<p class="note">
+					Note : Replikas n'a pas accès aux informations financières des clients
+					et ne peut aucunement modifier ou supprimer les plafonds de paiement
+					appliqués à la carte. Seule votre banque est en mesure de les
+					modifier.
+				</p>
 			</div>
 			<form method="get" action="/"></form>
 		</div>
@@ -32,9 +95,19 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <style>
+	a {
+		text-decoration: none;
+		color: whitesmoke;
+	}
+	.note {
+		font-size: 12.7px;
+	}
+	.details {
+		text-align: center;
+	}
 	.container_info {
 		margin: auto;
-		margin-top: 25px;
+		margin-top: 7%;
 		padding-top: 1.5rem;
 		padding-bottom: 1.5rem;
 		padding-left: 3rem;
@@ -45,7 +118,6 @@ import Layout from '../layouts/Layout.astro';
 	}
 	.buton_pay {
 		background-color: var(--theme-button);
-		color: whitesmoke;
 		border-radius: 5px;
 		font-family: Arial;
 		font-size: 20px;
@@ -53,6 +125,13 @@ import Layout from '../layouts/Layout.astro';
 		padding: 10px;
 		margin-top: 7%;
 		margin-left: 35%;
+		color: var(--theme-button-text);
+		border: none;
+		color: inherit;
+	}
+	.buton_pay:hover {
+		filter: brightness(1.2);
+		cursor: pointer;
 	}
 	main {
 		margin: auto;

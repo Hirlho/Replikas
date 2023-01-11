@@ -1,10 +1,26 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import UserSetting from '../components/UserSetting.astro';
+import Buyer from '../model/users/Buyer';
+import { getBuyerBySession } from '../model/Utilitaire';
+import {
+	AccountTypeMismatch,
+	SessionTokenInvalideError,
+} from '../model/users/Account';
 
-const mail = 'unMail@gmail.com';
-const lastName = 'unNom';
-const firstName = 'unPrénom';
+let account: Buyer;
+try {
+	account = await getBuyerBySession(Astro.request.headers);
+} catch (e) {
+	if (e instanceof AccountTypeMismatch)
+		return Astro.redirect('/dashboard/settings');
+	else if (!(e instanceof SessionTokenInvalideError)) console.error(e);
+	return Astro.redirect('/login');
+}
+
+const mail = account.getEmail();
+const lastName = account.getNom();
+const firstName = account.getPrenom();
 ---
 
 <Layout title="Replikas" no_searchbar>
