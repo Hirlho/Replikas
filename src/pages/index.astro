@@ -1,6 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Article from '../components/Article.astro';
+import { default as ArticleModel } from '../model/Article';
+
+const articles = await ArticleModel.mostBids();
 ---
 
 <Layout title="Replikas">
@@ -8,62 +11,7 @@ import Article from '../components/Article.astro';
 		<div>
 			<h1>Les plus attendus</h1>
 			<ul>
-				<Article
-					titre="Chapeau de Gandalf"
-					image="chapeau_de_gandalf.jpeg"
-					date={new Date()}
-					prix={690}
-					id={1}
-				/>
-				<Article
-					titre="Chapeau de Gandalf"
-					image="chapeau_de_gandalf.jpeg"
-					date={new Date()}
-					prix={690}
-					id={2}
-				/>
-				<Article
-					titre="Chapeau de Gandalf"
-					image="chapeau_de_gandalf.jpeg"
-					date={new Date()}
-					prix={690}
-					id={3}
-				/>
-				<Article
-					titre="Chapeau de Gandalf"
-					image="chapeau_de_gandalf.jpeg"
-					date={new Date()}
-					prix={690}
-					id={4}
-				/>
-				<Article
-					titre="Chapeau de Gandalf"
-					image="chapeau_de_gandalf.jpeg"
-					date={new Date()}
-					prix={690}
-					id={5}
-				/>
-				<Article
-					titre="Chapeau de Gandalf"
-					image="chapeau_de_gandalf.jpeg"
-					date={new Date()}
-					prix={690}
-					id={6}
-				/>
-				<Article
-					titre="Chapeau de Gandalf"
-					image="chapeau_de_gandalf.jpeg"
-					date={new Date()}
-					prix={690}
-					id={7}
-				/>
-				<Article
-					titre="Chapeau de Gandalf"
-					image="chapeau_de_gandalf.jpeg"
-					date={new Date()}
-					prix={690}
-					id={8}
-				/>
+				{articles.map((article) => <Article id={article.getId()} />)}
 			</ul>
 		</div>
 	</main>
