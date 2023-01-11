@@ -3,11 +3,13 @@ import Layout from '../layouts/Layout.astro';
 import UserSetting from '../components/UserSetting.astro';
 import Buyer from '../model/users/Buyer';
 import { getBuyerBySession } from '../model/Utilitaire';
+import { SessionTokenInvalideError } from '../model/users/Account';
 
 let account: Buyer;
 try {
 	account = await getBuyerBySession(Astro.request.headers);
 } catch (e) {
+	if (!(e instanceof SessionTokenInvalideError)) console.error(e);
 	return Astro.redirect('/login');
 }
 
