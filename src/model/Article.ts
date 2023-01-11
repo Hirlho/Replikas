@@ -129,7 +129,9 @@ export default class Article {
 		return articles;
 	}
 
-	public static async mostBids(): Promise<Article[]> {
+	public static async mostBids(
+		params = { limit: 8, offset: 0 }
+	): Promise<Article[]> {
 		const database = Database.get();
 		const result = await database`
 				SELECT * 
@@ -139,7 +141,7 @@ export default class Article {
 					FROM bid
 					GROUP BY art_id
 					ORDER BY count(art_id) DESC
-					LIMIT 8
+					LIMIT ${params.limit || 8} OFFSET ${params.offset || 0}
 					)`;
 		const articles: Article[] = [];
 		for (const article of result) {
