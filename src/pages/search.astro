@@ -4,9 +4,21 @@ import SearchBar from '../components/SearchBar.astro';
 import Article from '../components/Article.astro';
 import { default as ArticleModel } from '../model/Article';
 
-const search = Astro.url.searchParams.get('article');
+const PAGE_SIZE = 20;
+const search = Astro.url.searchParams.get('article') || '';
+const page = Math.max(parseInt(Astro.url.searchParams.get('page')) || 1, 1);
 
-const articles = await ArticleModel.getBySearch(search);
+let articles = await ArticleModel.getBySearch(search, {
+	limit: null,
+	offset: 0,
+});
+
+const length = articles.length;
+const hasMore = articles.length > page * PAGE_SIZE;
+if (hasMore) {
+	articles = articles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+}
+const pages = [...Array(Math.ceil(length / PAGE_SIZE)).values()];
 ---
 
 <Layout title="Replikas" no_searchbar>
@@ -16,22 +28,32 @@ const articles = await ArticleModel.getBySearch(search);
 				<SearchBar text={search} />
 			</div>
 			<div class="checkbox">
-				<input type="checkbox" id="scales" name="scales" checked />
-				<label for="enCour">Enchère en cours</label>
+				<input type="checkbox" id="pending" name="pending" checked />
+				<label for="pending">Enchère en cours</label>
 			</div>
 		</div>
-		<article>
+		<ul>
 			{articles.map((article) => <Article article={article} />)}
-		</article>
+		</ul>
 		<div class="pages">
 			<span>
-				<a href="">Précédent</a>
-				<a href="">1</a>
-				<a href="">2</a>
-				<a href="">3</a>
-				<span>...</span>
-				<a href="">5</a>
-				<a href="">Suivant</a>
+				{
+					page > 1 && (
+						<a href={`?article=${search}&page=${page - 1}`}>Précédent</a>
+					)
+				}
+				{
+					pages.map((_, i) => (
+						<a
+							href={`?article=${search}&page=${i + 1}`}
+							class={i + 1 === page ? 'active' : ''}
+						>
+							{i + 1}
+						</a>
+					))
+				}
+
+				{hasMore && <a href={`?article=${search}&page=${page + 1}`}>Suivant</a>}
 			</span>
 		</div>
 	</main>
@@ -66,7 +88,7 @@ const articles = await ArticleModel.getBySearch(search);
 		scale: 1.2;
 	}
 
-	article {
+	ul {
 		margin: 0 auto;
 		display: flex;
 		flex-wrap: wrap;
@@ -86,7 +108,8 @@ const articles = await ArticleModel.getBySearch(search);
 		background-color: var(--theme-button);
 	}
 
-	.pages > span > * {
+	.pages > span > a {
+		background-color: var(--theme-button);
 		text-decoration: none;
 		color: inherit;
 
@@ -95,6 +118,26 @@ const articles = await ArticleModel.getBySearch(search);
 		height: 46px;
 		line-height: 46px;
 		padding: 0 14px;
+	}
+
+	.pages > span > a.active {
+		filter: brightness(0.8);
+	}
+
+	.pages > span > a:hover {
+		filter: brightness(1.2);
+	}
+
+	.pages > span > a:active {
+		filter: brightness(0.8);
+	}
+
+	.pages > span > a:last-child {
+		border-radius: 0 10px 10px 0;
+	}
+
+	.pages > span > a:first-child {
+		border-radius: 10px 0 0 10px;
 	}
 </style>
 <script></script>
