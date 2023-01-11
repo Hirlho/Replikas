@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Article from '../../model/Article';
+import Article, { ArticleInexistantError } from '../../model/Article';
+import { AccountTypeMismatch } from '../../model/users/Account';
 import Company from '../../model/users/Company';
 import { dateDiff } from '../../model/Utilitaire';
 
@@ -12,7 +13,10 @@ try {
 	article = await Article.get(id);
 	company = await Company.getById(article.getSellingCompanyId());
 } catch (e) {
-	return new Response('Article introuvable', { status: 404 });
+	if (e instanceof ArticleInexistantError)
+		return new Response('Article introuvable', { status: 404 }); // FIXME : pas tres bastien scapin like
+	console.log(e);
+	return new Response(`Erreur interne : ${e}`, { status: 500 }); // FIXME : pas tres bastien scapin like
 }
 
 const enCours =
