@@ -46,7 +46,9 @@ if (Astro.request.method == 'POST') {
 		} else {
 			// Si une autre erreur non prevue est survenue
 			console.error(e);
-			return Astro.response.status(500).send('Internal server error');
+			return new Response('Internal server error', {
+				status: 500,
+			}); // FIXME Pas tres bastien scapin friendly
 		}
 	}
 }
