@@ -18,12 +18,42 @@ import Layout from '../layouts/Layout.astro';
 				</div>
 			</article>
 			<h3 class="Description">Descriptions :</h3>
-			<p>Un beau casque de dark vador</p>
+			<p style="font-size: large;">Un beau casque de dark vador</p>
+		</div>
+		<button type="button" class="buton_pay">Payer</button>
+
+		<div class="container_info">
+			<div style="width:500px;margin-left: 30%;">
+				<li class="payment_details"><h3>Voir les détails du paiement</h3></li>
+			</div>
+			<form method="get" action="/"></form>
 		</div>
 	</main>
 </Layout>
 
 <style>
+	.container_info {
+		margin: auto;
+		margin-top: 25px;
+		padding-top: 1.5rem;
+		padding-bottom: 1.5rem;
+		padding-left: 3rem;
+		padding-right: 3rem;
+		max-width: 80ch;
+		background-color: var(--theme-button);
+		border-radius: 15px;
+	}
+	.buton_pay {
+		background-color: var(--theme-button);
+		color: whitesmoke;
+		border-radius: 5px;
+		font-family: Arial;
+		font-size: 20px;
+		width: 200px;
+		padding: 10px;
+		margin-top: 7%;
+		margin-left: 35%;
+	}
 	main {
 		margin: auto;
 		padding-top: 1.5rem;
