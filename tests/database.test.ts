@@ -1,7 +1,7 @@
-import Database from "../src/model/Database";
+import Database from '../src/model/Database';
 
 jest.setTimeout(10000);
-test("Connecting to the database works", async () => {
+test('Connecting to the database works', async () => {
 	const database = Database.get();
 	{
 		await database`DELETE FROM test`;

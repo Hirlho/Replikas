@@ -28,8 +28,8 @@ CREATE TABLE company (
 );
 
 CREATE TABLE movie (
-    f_id INTEGER PRIMARY KEY,
-    f_title varchar(255) NOT NULL
+    m_id INTEGER PRIMARY KEY,
+    m_title varchar(255) NOT NULL
 );
 
 CREATE TABLE article (
@@ -41,7 +41,7 @@ CREATE TABLE article (
     art_auction_start TIMESTAMP NOT NULL,
     art_auction_end TIMESTAMP NOT NULL,
     c_id INTEGER REFERENCES company (a_id),
-    f_id INTEGER REFERENCES movie (f_id)
+    m_id INTEGER REFERENCES movie (m_id)
 );
 
 CREATE TABLE article_image (

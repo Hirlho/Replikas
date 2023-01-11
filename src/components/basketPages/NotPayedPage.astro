@@ -3,151 +3,146 @@ import Article from '../Article.astro';
 import SearchBar from '../SearchBar.astro';
 
 export interface Props {
-    typeArticles?: string;
+	typeArticles?: string;
 }
 
 const { typeArticles } = Astro.props;
 ---
 
 <main>
-    <section>
-        <form method="get" action="/basket">
-            <h1>Vos articles</h1>
-            <div class="pages">
-                <input type="submit" value="Possédés" name="pageName" />
-                <input
-                    id="currentPage"
-                    type="submit"
-                    value="À payer"
-                    name="pageName"
-                />
-                <input type="submit" value="Aimés" name="pageName" />
-            </div>
-        </form>
-        <section class="sectionSearchBar">
-            <SearchBar />
-        </section>
-        <p>
-            Si 3 jours après avoir gagné une enchère, vous n'avez pas payé
-            l'article celui-ci ne vous appartiendra plus.
-        </p>
-        <div class="articles">
-            <Article
-                titre="Chapeau de Gandalf"
-                image="chapeau_de_gandalf.jpeg"
-                date={new Date()}
-                prix={690}
-            />
-            <Article
-                titre="Chapeau de Gandalf"
-                image="chapeau_de_gandalf.jpeg"
-                date={new Date()}
-                prix={690}
-            />
-            <Article
-                titre="Chapeau de Gandalf"
-                image="chapeau_de_gandalf.jpeg"
-                date={new Date()}
-                prix={690}
-            />
-            <Article
-                titre="Chapeau de Gandalf"
-                image="chapeau_de_gandalf.jpeg"
-                date={new Date()}
-                prix={690}
-            />
-            <Article
-                titre="Chapeau de Gandalf"
-                image="chapeau_de_gandalf.jpeg"
-                date={new Date()}
-                prix={690}
-            />
-            <Article
-                titre="Chapeau de Gandalf"
-                image="chapeau_de_gandalf.jpeg"
-                date={new Date()}
-                prix={690}
-            />
-        </div>
-    </section>
+	<section>
+		<form method="get" action="/basket">
+			<h1>Vos articles</h1>
+			<div class="pages">
+				<input type="submit" value="Possédés" name="pageName" />
+				<input id="currentPage" type="submit" value="À payer" name="pageName" />
+				<input type="submit" value="Aimés" name="pageName" />
+			</div>
+		</form>
+		<section class="sectionSearchBar">
+			<SearchBar />
+		</section>
+		<p>
+			Si 3 jours après avoir gagné une enchère, vous n'avez pas payé l'article
+			celui-ci ne vous appartiendra plus.
+		</p>
+		<div class="articles">
+			<Article
+				titre="Chapeau de Gandalf"
+				image="chapeau_de_gandalf.jpeg"
+				date={new Date()}
+				prix={690}
+			/>
+			<Article
+				titre="Chapeau de Gandalf"
+				image="chapeau_de_gandalf.jpeg"
+				date={new Date()}
+				prix={690}
+			/>
+			<Article
+				titre="Chapeau de Gandalf"
+				image="chapeau_de_gandalf.jpeg"
+				date={new Date()}
+				prix={690}
+			/>
+			<Article
+				titre="Chapeau de Gandalf"
+				image="chapeau_de_gandalf.jpeg"
+				date={new Date()}
+				prix={690}
+			/>
+			<Article
+				titre="Chapeau de Gandalf"
+				image="chapeau_de_gandalf.jpeg"
+				date={new Date()}
+				prix={690}
+			/>
+			<Article
+				titre="Chapeau de Gandalf"
+				image="chapeau_de_gandalf.jpeg"
+				date={new Date()}
+				prix={690}
+			/>
+		</div>
+	</section>
 </main>
 <style>
-    main {
-        width: 80%;
-        margin: 2rem auto;
+	main {
+		width: 80%;
+		margin: 2rem auto;
 
-        background-color: #222222;
-        border-radius: 2rem;
+		background-color: var(--theme-secondary);
+		border-radius: 2rem;
 
-        padding: 2rem 3rem;
-    }
+		padding: 2rem 3rem;
+	}
 
-    .sectionSearchBar {
-        width: 60%;
-        margin: 2rem auto;
-    }
+	.sectionSearchBar {
+		width: 60%;
+		margin: 2rem auto;
+	}
 
-    /*-----------Nav-------------*/
+	/*-----------Nav-------------*/
 
-    form {
-        width: 80%;
-        margin: auto;
+	form {
+		width: 80%;
+		margin: auto;
 
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
 
-    .pages {
-        display: flex;
-        justify-content: space-around;
-    }
+	.pages {
+		display: flex;
+		justify-content: space-around;
+	}
 
-    input {
-        color: whitesmoke;
-        background-color: #222222;
+	input {
+		color: whitesmoke;
+		background-color: var(--theme-secondary);
 
-        padding: 0.5rem 1rem;
-        margin: 0 1rem;
-        font-size: 2rem;
+		padding: 0.5rem 1rem;
+		margin: 0 1rem;
+		font-size: 2rem;
 
-        border: none;
+		border: none;
 
-        transition: 0.5s ease;
+		transition: 0.5s ease;
 
-        cursor: pointer;
-    }
+		cursor: pointer;
+	}
 
-    input:hover {
-        scale: 1.1;
-        transition: 0.5s ease;
-    }
+	input:hover {
+		scale: 1.1;
+		transition: 0.5s ease;
+	}
 
-    #currentPage {
-        border: solid;
-        border-top: transparent;
-        border-left: transparent;
-        border-right: transparent;
-        border-color: whitesmoke;
-    }
+	#currentPage {
+		border: solid;
+		border-top: transparent;
+		border-left: transparent;
+		border-right: transparent;
+		border-color: whitesmoke;
+	}
 
-    /*--------------Articles----------------*/
-    .articles {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
-    }
+	/*--------------Articles----------------*/
+	.articles {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-around;
+	}
 
-    /*--------------Texts-------------------*/
-    h1 {
-        color: whitesmoke;
-        font-size: 2.5rem;
+	/*--------------Texts-------------------*/
+	h1 {
+		color: whitesmoke;
+		font-size: 2.5rem;
 
-        margin: 0;
-    }
-    p {
-        color: whitesmoke;
-        padding-left: 3rem;
-        font-size: 1rem;
-    }
+		margin: 0;
+	}
+	p {
+		color: whitesmoke;
+		padding-left: 3rem;
+		font-size: 1rem;
+	}
 </style>

@@ -12,8 +12,8 @@ const { text } = Astro.props;
 	input {
 		border: none;
 		border-radius: 5px;
-		color: whitesmoke;
-		background-color: #353a4d;
+		background-color: var(--theme-button);
+		color: inherit;
 		margin: 0.7rem;
 		font-size: 1.2rem;
 		font-weight: 600;
@@ -21,7 +21,7 @@ const { text } = Astro.props;
 	}
 
 	input:hover {
-		background-color: #2a2e3c;
+		filter: brightness(1.2);
 		cursor: pointer;
 	}
 </style>

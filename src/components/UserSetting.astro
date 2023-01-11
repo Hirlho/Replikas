@@ -1,25 +1,25 @@
 ---
 export interface Props {
-  parametre: string;
-  value?: string;
+	parametre: string;
+	value?: string;
 }
 
 const { parametre, value } = Astro.props;
 ---
 
 <div>
-  <p>{parametre}{value ? " : " + value : ""}</p>
-  <a href="">modifier</a>
+	<p>{parametre}{value ? ' : ' + value : ''}</p>
+	<a href="">modifier</a>
 </div>
 
 <style>
-  div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+	div {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
 
-  a {
-    color: blue;
-  }
+	a {
+		color: var(--theme-link);
+	}
 </style>

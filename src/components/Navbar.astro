@@ -1,9 +1,9 @@
 ---
-import Logo from "../components/Logo.astro";
-import SearchBar from "../components/SearchBar.astro";
-import Account, { SessionTokenInvalideError } from "../model/users/Account";
-import Buyer from "../model/users/Buyer";
-import Company from "../model/users/Company";
+import Logo from '../components/Logo.astro';
+import SearchBar from '../components/SearchBar.astro';
+import Account, { SessionTokenInvalideError } from '../model/users/Account';
+import Buyer from '../model/users/Buyer';
+import Company from '../model/users/Company';
 
 export interface Props {
 	page_name?: string;
@@ -13,9 +13,11 @@ export interface Props {
 const { page_name, search_bar } = Astro.props;
 // Recuperer les infos de l'utilisateur
 let account: Account | Buyer | Company;
-const cookies = Astro.request.headers.get("cookie");
+const cookies = Astro.request.headers.get('cookie');
 if (cookies) {
-	const token = (cookies.endsWith(";") ? cookies : cookies + ";").match(/token=([^;]*);/); // Recuperer le token de session
+	const token = (cookies.endsWith(';') ? cookies : cookies + ';').match(
+		/token=([^;]*);/
+	); // Recuperer le token de session
 	try {
 		account = await Account.getBySession(token[1]); // Recuperer l'utilisateur
 		if (account.isCompany()) account = await Company.getFromAccount(account);
@@ -49,11 +51,11 @@ if (cookies) {
 				// Si l'utilisateur n'est pas connecte
 				<>
 					<a class="button" id="signup" href="/register">
-						{" "}
+						{' '}
 						Creer un compte
 					</a>
 					<a class="button" id="login" href="/login">
-						{" "}
+						{' '}
 						Connectez-vous
 					</a>
 				</>
@@ -68,16 +70,11 @@ if (cookies) {
 		padding: 0px;
 	}
 
-	:root {
-		--background-color: #222222;
-	}
-
 	header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		background-color: var(--background-color);
-		color: whitesmoke;
+		background-color: var(--theme-secondary);
 
 		max-width: 100%;
 		padding-block: 1rem;
@@ -95,17 +92,17 @@ if (cookies) {
 	}
 
 	.button {
-		color: whitesmoke;
 		text-decoration: none;
 		font-size: 1.5rem;
 		padding: 0.5rem 1rem;
 		margin: 0.5rem;
 		border-radius: 0.5rem;
-		background-color: #4b4e6d;
+		background-color: var(--theme-button);
+		color: inherit;
 	}
 
 	.button:hover {
-		background-color: #6b6e8d;
+		filter: brightness(1.2);
 	}
 
 	.user_icon_container {

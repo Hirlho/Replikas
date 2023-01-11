@@ -2,27 +2,25 @@
 export interface Props {
 	nom: string;
 	image: string;
-    description: string;
-
+	description: string;
 }
 
-const { nom, image, description} = Astro.props;
+const { nom, image, description } = Astro.props;
 ---
 
 <li>
-	<section id = "Description">
-	<div><img src={"/img/aboutus/" + image} alt="" /></div>
-	<h3>{nom}</h3>
-    <p>{description}</p>
+	<section id="Description">
+		<div><img src={'/img/aboutus/' + image} alt="" /></div>
+		<h3>{nom}</h3>
+		<p>{description}</p>
 	</section>
-
 </li>
 
 <style>
 	section {
 		display: flex;
 		flex-direction: column;
-		background-color: #222222;
+		background-color: var(--theme-secondary);
 		width: 100%;
 	}
 	li {
@@ -31,9 +29,6 @@ const { nom, image, description} = Astro.props;
 
 		display: flex;
 		flex-direction: column;
-		
-
-		background-color: #4b4e6d;
 
 		border-radius: 10px;
 		overflow: hidden;
@@ -50,7 +45,6 @@ const { nom, image, description} = Astro.props;
 
 	h3,
 	p {
-		color: whitesmoke;
 		margin: 0;
 		padding: 5px;
 		text-align: center;
