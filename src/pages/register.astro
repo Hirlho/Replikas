@@ -139,7 +139,10 @@ if (Astro.url.searchParams.has('error')) {
 			<div id="button">
 				<div>
 					<input type="checkbox" required />
-					<span> J'accepte les <a href="cgu">conditions générales d'utilisation</a></span>
+					<span>
+						J'accepte les <a href="cgu">conditions générales d'utilisation</a
+						></span
+					>
 				</div>
 				<Button text="S'inscrire" />
 				{error_msg && <p class="error_msg">{error_msg}</p>}
@@ -162,7 +165,7 @@ if (Astro.url.searchParams.has('error')) {
 	/*-----------------Table--------------------*/
 
 	table {
-		width: 80%;
+		width: 100%;
 		margin: 1rem auto;
 	}
 
@@ -171,7 +174,7 @@ if (Astro.url.searchParams.has('error')) {
 	}
 
 	td {
-		text-align: center;
+		text-align: start;
 	}
 
 	/*-----------------Boutton s'inscrire--------------------*/

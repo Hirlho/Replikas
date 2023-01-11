@@ -5,7 +5,7 @@ export interface Props {
 	article: Article;
 }
 
-const { article } = Astro.props;
+const article = Astro.props.article || Article.getFallback(null);
 
 const id = article.getId();
 const titre = article.getName();
