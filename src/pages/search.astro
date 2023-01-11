@@ -21,7 +21,7 @@ const articles = await ArticleModel.getBySearch(search);
 			</div>
 		</div>
 		<article>
-			{articles.map((article) => <Article id={article.getId()} />)}
+			{articles.map((article) => <Article article={article} />)}
 		</article>
 		<div class="pages">
 			<span>

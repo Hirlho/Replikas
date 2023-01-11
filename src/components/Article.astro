@@ -2,12 +2,12 @@
 import Article from '../model/Article';
 
 export interface Props {
-	id: number;
+	article: Article;
 }
 
-const { id } = Astro.props;
-const article = await Article.get(id).catch(() => Article.getFallback(id));
+const { article } = Astro.props;
 
+const id = article.getId();
 const titre = article.getName();
 const image = await article.getPoster();
 const prix = article.getPrixBase();
