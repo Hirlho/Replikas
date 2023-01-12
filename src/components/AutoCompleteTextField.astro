@@ -64,10 +64,10 @@ const { text, placeholder, name, type, length, id, required } = Astro.props;
 	}
 </style>
 
-<script is:inline>
+<script is:inline define:vars={{ id }}>
 	/*----------------AutoComplete movie input------------------*/
 
-	autocomplete(document.getElementById('myInput'));
+	autocomplete(document.getElementById(id));
 
 	function autocomplete(inp) {
 		/*the autocomplete function takes two arguments,

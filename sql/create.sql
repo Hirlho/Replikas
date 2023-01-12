@@ -45,7 +45,7 @@ CREATE TABLE article (
 );
 
 CREATE TABLE article_image (
-    art_id INTEGER REFERENCES article (art_id),
+    art_id INTEGER REFERENCES article (art_id) ON DELETE CASCADE,
     img_path varchar(255) NOT NULL
 );
 
