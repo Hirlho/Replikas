@@ -16,7 +16,7 @@ export default class Account {
 	 * @param email L'email de l'utilisateur sert de login
 	 * @param password Le mot de passe de l'utilisateur non haché
 	 * @returns L'utilisateur correspondant à l'email et au mot de passe
-	 * @throws {UtilisateurOuMotDePasseInvalideError} Si l'email ou le mot de passe est invalide
+	 * @throws {@link UtilisateurOuMotDePasseInvalideError} Si l'email ou le mot de passe est invalide
 	 */
 	public static async get(email: string, password: string): Promise<Account> {
 		const database = Database.get();
@@ -39,7 +39,7 @@ export default class Account {
 	 * Récupère un utilisateur à partir de son id.
 	 * @param id L'id de l'utilisateur
 	 * @returns L'utilisateur correspondant à l'id
-	 * @throws {RangeError} Si l'id ne correspond à aucun utilisateur
+	 * @throws {@link RangeError} Si l'id ne correspond à aucun utilisateur
 	 */
 	public static async getById(id: number): Promise<Account> {
 		const database = Database.get();
@@ -64,7 +64,7 @@ export default class Account {
 	 * @param nom Le nom de l'utilisateur
 	 * @param prenom Le prénom de l'utilisateur
 	 * @returns L'utilisateur nouvellement créé
-	 * @throws {EmailDejaUtiliseError} Si l'email est déjà utilisé
+	 * @throws {@link EmailDejaUtiliseError} Si l'email est déjà utilisé
 	 */
 	protected static async create(
 		email: string,
@@ -121,8 +121,8 @@ export default class Account {
 	 * Récupère un utilisateur à partir de son token de session.
 	 * @param token Le token de session
 	 * @returns L'utilisateur correspondant au token de session
-	 * @throws {SessionTokenInvalideError} Si le token de session est invalide ou expiré
-	 * @throws {CaCestVraimentPasDeBolError} Si plusieurs sessions sont créées pour un même utilisateur avec le même token
+	 * @throws {@link SessionTokenInvalideError} Si le token de session est invalide ou expiré
+	 * @throws {@link CaCestVraimentPasDeBolError} Si plusieurs sessions sont créées pour un même utilisateur avec le même token
 	 */
 	public static async getBySession(token: string): Promise<Account> {
 		const database = Database.get();

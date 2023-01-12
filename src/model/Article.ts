@@ -47,7 +47,7 @@ export default class Article {
 	 * Retourne l'article correspondant à l'id
 	 * @param id L'id de l'article
 	 * @returns L'article correspondant à l'id
-	 * @throws {ArticleInexistantError} Si l'article n'existe pas
+	 * @throws {@link ArticleInexistantError} Si l'article n'existe pas
 	 */
 	public static async get(id: number): Promise<Article> {
 		const database = Database.get();
