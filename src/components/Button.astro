@@ -1,12 +1,13 @@
 ---
 export interface Props {
 	text?: string;
+	id?: string;
 }
 
-const { text } = Astro.props;
+const { text, id } = Astro.props;
 ---
 
-<input type="submit" value={text} name="" id="" />
+<input type="submit" value={text} name="" id={id} />
 
 <style>
 	input {

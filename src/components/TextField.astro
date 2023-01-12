@@ -5,9 +5,11 @@ export interface Props {
 	name?: string;
 	type?: any;
 	length?: string;
+	id?: string;
+	required?: boolean;
 }
 
-const { text, placeholder, name, type, length } = Astro.props;
+const { text, placeholder, name, type, length, id, required } = Astro.props;
 ---
 
 <input
@@ -15,6 +17,8 @@ const { text, placeholder, name, type, length } = Astro.props;
 	value={text}
 	name={name}
 	type={type || 'text'}
+	id={id}
+	required={required}
 />
 
 <br />

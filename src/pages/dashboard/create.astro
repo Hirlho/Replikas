@@ -1,190 +1,152 @@
 ---
+import Button from '../../components/Button.astro';
+import TextField from '../../components/TextField.astro';
 import Layout from '../../layouts/Layout.astro';
+import Article from '../../model/Article';
+
+// TODO : Gérer le download d'images, la création d'un nouvel article et la proposition lorsqu'on écrit un nom de film
+
+/*
+if (Astro.request.method == 'POST') {
+	const formData = await Astro.request.formData();
+	const {
+		name,
+		movie,
+		description,
+		startDate,
+		startHour,
+		endDate,
+		endHour,
+		price,
+		bidding,
+	} = Object.fromEntries(formData) as {
+		name: string;
+		movie: string;
+		description: string;
+		startDate: string;
+		startHour: string;
+		endDate: string;
+		endHour: string;
+		price: string;
+		bidding: string;
+	};
+}*/
 ---
 
 <Layout title="Création article" no_searchbar>
-	<main>
-		<h1>Création d'un article</h1>
-		<h2>
-			Ici vous pourrez personnaliser votre produit à votre guise afin de
-			satisfaire la demande des clients
-		</h2>
+	<form method="post" action="/dashboard/create" id="form">
+		<div class="title">
+			<h1>Poster un nouvel article</h1>
+			<p>
+				Ici vous pourrez personnaliser votre produit à votre guise afin de
+				satisfaire la demande des clients
+			</p>
+		</div>
 		<div class="info_produit">
 			<h2>Informations principales du produit</h2>
-			<form method="get" action="/">
-				<div style="display:flex;">
-					<div style="flex:1;">
-						<label for="intitule">Intitulé :</label>
-						<br />
-						<textarea
-							id="intitule"
-							name="intitule"
-							placeholder="Ex : Sabre Laser..."
-							style="width:85%; margin-bottom:15px;padding-bottom:5px;margin-top: 10px;"
-						></textarea>
-						<br />
-						<label for="oeuvres">Œuvre(s) d'origine (film/série) :</label>
-						<br />
-						<textarea
-							id="oeuvres"
-							name="oeuvres"
-							placeholder="Ex : Star Wars : Un Nouvel Espoir"
-							style="width:85%; margin-bottom:10px;padding-bottom:5px;margin-top: 10px;"
-						></textarea>
-					</div>
-					<div style="flex:1;">
-						<label for="description">Description du produit :</label>
-						<br />
-						<textarea
-							id="description"
-							placeholder="Ex : Réplique du sabre de Dark Vador utilisé lors du tournage du film “Star Wars : Un Nouvel Espoir” Note : Les effets lumineux sont indisponibles (rajoutés via effets spéciaux)"
-							name="description"
-							style="width:100%; margin-bottom:10px; padding-bottom: 99px; margin-top: 10px;"
-						></textarea>
-					</div>
+			<div class="main_info">
+				<div class="grid_one">
+					<h3>Intitulé :</h3>
+					<TextField
+						type="text"
+						placeholder="Ex : Sabre Laser..."
+						length="15rem"
+						name="name"
+						id="name"
+					/>
+
+					<h3>Œuvre(s) d'origine (film/série) :</h3>
+					<TextField
+						type="text"
+						placeholder="Ex : Star Wars : Un Nouvel Espoir"
+						length="15rem"
+						name="movie"
+						id="movie"
+					/>
 				</div>
-			</form>
+				<div class="grid_two">
+					<h3>Description du produit :</h3>
+
+					<textarea
+						id="description"
+						placeholder="Ex : Réplique du sabre de Dark Vador utilisé lors du tournage du film “Star Wars : Un Nouvel Espoir” Note : Les effets lumineux sont indisponibles (rajoutés via effets spéciaux)"
+						name="description"
+						id="description"></textarea>
+				</div>
+			</div>
 		</div>
 		<div class="info_produit">
 			<h2>Date de l'enchère</h2>
-			<form method="get" action="/">
-				<label for="start_date"
-					>Sélectionner la date de début de l’enchère :</label
-				>
-				<br />
-				<input
-					type="date"
-					id="start_date"
-					name="start_date"
-					style="margin-top: 10px;font-size: 20px;border-radius: 5px;"
-				/>
-				<input
-					type="time"
-					id="start_time"
-					name="start_time"
-					style="font-size: 20px;border-radius: 5px;"
-				/>
-				<br />
-				<br />
-				<label for="end_date">Sélectionner une date de fin de l’enchère :</label
-				>
-				<br />
-				<input
-					type="date"
-					id="end_date"
-					name="end_date"
-					style="margin-top: 10px;font-size: 20px;border-radius: 5px;"
-				/>
-				<input
-					type="time"
-					id="end_time"
-					name="end_time"
-					style="font-size: 20px;border-radius: 5px;"
-				/>
-			</form>
+
+			<div class="auctionDate">
+				<h3>Début de l’enchère :</h3>
+				<div class="inputTime">
+					<p>Jour :</p>
+					<TextField type="date" name="startDate" id="startDate" />
+					<p>Heure :</p>
+					<TextField type="time" text="00:00" name="startHour" id="startHour" />
+				</div>
+			</div>
+
+			<div class="auctionDate">
+				<h3>Fin de l’enchère :</h3>
+				<div class="inputTime">
+					<p>Jour :</p>
+					<TextField type="date" name="endDate" id="endDate" />
+					<p>Heure :</p>
+					<TextField type="time" text="00:00" name="endHour" id="endHour" />
+				</div>
+			</div>
 		</div>
 
 		<div class="info_produit">
 			<h2>Choix du prix du produit</h2>
-			<form method="get" action="/">
-				<div style="display:flex;">
-					<div style="flex:1;">
-						<label for="base_price">Prix de base du produit :</label>
-						<br />
-						<textarea
-							id="base_price"
-							name="base_price"
-							placeholder="Ex : 120, 2300,..."
-							style="width:85%; margin-bottom:15px;padding-bottom:5px;margin-top: 10px;"
-						></textarea>
-					</div>
-					<div style="flex:1;">
-						<label for="min_bid">Enchérissement minimum :</label>
-						<br />
-						<textarea
-							id="min_bid"
-							name="min_bid"
-							placeholder="Ex : 1, 5, 10, 20, 50,..."
-							style="width:85%; margin-bottom:10px;padding-bottom:5px;margin-top: 10px;"
-						></textarea>
-					</div>
-				</div>
-			</form>
-		</div>
-
-		<div class="info_produit">
-			<h2>Ajout d’images à l’article (max 3)</h2>
-			<form method="get" action="/">
-				<div style="display:flex;">
-					<button type="button" class="button_search" style="margin-right:40px;"
-						>Chercher une image</button
-					>
-					<input
-						type="text"
-						id="image_search"
-						name="image_search"
-						placeholder="Rechercher une image"
-						style="text-align: center;font-size:16px;"
+			<div>
+				<div>
+					<h3>Prix de base du produit :</h3>
+					<TextField
+						type="number"
+						placeholder="Ex : 120, 2300,..."
+						name="price"
+						id="price"
 					/>
 				</div>
-				<div id="image_display">
-					<!-- Afficher les images ici -->
-					<p style="text-align: center;">----Afficher les images ici----</p>
+				<div>
+					<h3>Surenchère minimum :</h3>
+					<TextField
+						name=""
+						type="number"
+						placeholder="Ex : 1, 13, 50,..."
+						name="bidding"
+						id="bidding"
+					/>
 				</div>
-			</form>
+			</div>
 		</div>
-		<div class="div_buton_create">
-			<button type="button" class="buton_create">Créer l’article</button>
+		<div class="info_produit">
+			<h2>Ajout d’images à l’article</h2>
+			<div class="card">
+				<div class="drag-area">
+					<span class="visible">
+						Faites glisser les photos ici ou
+						<span class="select" role="button">Parcourir</span>
+					</span>
+					<span class="on-drop">Drop images here</span>
+					<input name="file" type="file" class="file" multiple />
+				</div>
+
+				<!-- IMAGE PREVIEW CONTAINER -->
+				<div class="container"></div>
+			</div>
 		</div>
-	</main>
+		<div class="create_button">
+			<Button text="Créer l’article" id="create_article" />
+		</div>
+	</form>
 </Layout>
 
 <style>
-	textarea {
-		resize: none;
-		border-radius: 5px;
-		font-size: 1rem;
-		font-weight: 650;
-	}
-	.button_search {
-		background-color: #1b1e25;
-		color: whitesmoke;
-		border-radius: 5px;
-		font-family: Arial;
-		font-size: 16px;
-		width: 200px;
-	}
-
-	.buton_create {
-		background-color: var(--theme-button);
-		color: whitesmoke;
-		border-radius: 5px;
-		font-family: Arial;
-		font-size: 20px;
-		width: 200px;
-		padding: 10px;
-		margin-bottom: 20px;
-		margin-left: 75%;
-		border: none;
-		color: inherit;
-	}
-	.buton_create:hover {
-		filter: brightness(1.2);
-		cursor: pointer;
-	}
-	input[type='text'] {
-		background-color: whitesmoke;
-		color: var(--theme-button);
-		border-radius: 5px;
-		font-family: Arial;
-		font-size: 15px;
-		width: 70%;
-	}
-	label {
-		color: whitesmoke;
-	}
-
-	main {
+	form {
 		margin: auto;
 		padding-top: 1.5rem;
 		padding-bottom: 1.5rem;
@@ -194,53 +156,379 @@ import Layout from '../../layouts/Layout.astro';
 		background-color: var(--theme-secondary);
 		border-radius: 15px;
 	}
+
 	.info_produit {
-		margin: auto;
-		margin-top: 25px;
-		padding-top: 1.5rem;
-		padding-bottom: 1.5rem;
-		padding-left: 3rem;
-		padding-right: 3rem;
-		max-width: 80ch;
 		background-color: var(--theme-button);
+
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		margin: 25px auto;
+		padding: 1rem 3rem;
+		max-width: 80ch;
+
 		border-radius: 15px;
 	}
 
-	.div_buton_create {
-		margin: auto;
-		margin-top: 25px;
-		padding-top: 1.5rem;
-		padding-bottom: 1.5rem;
-		padding-left: 3rem;
-		padding-right: 3rem;
-		max-width: 80ch;
+	.title {
+		margin-bottom: 3rem;
+	}
 
-		border-radius: 15px;
+	/*------------Main informations----------------*/
+
+	.main_info {
+		display: grid;
+	}
+
+	.grid_one {
+		grid-column: 1;
+	}
+
+	.grid_two {
+		grid-column: 2;
+	}
+
+	textarea {
+		background-color: whitesmoke;
+
+		border: none;
+		border-radius: 5px;
+
+		margin: 1rem;
+		padding: 0.7rem;
+
+		width: 18rem;
+		height: 7rem;
+	}
+
+	textarea:focus {
+		outline: none;
+	}
+
+	/*--------------Auction date------------------*/
+
+	.auctionDate {
+		width: 100%;
+	}
+
+	.inputTime {
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: center;
+		justify-content: center;
+	}
+
+	/*--------------Creation button----------------*/
+	.create_button {
+		text-align: end;
+		margin: 2rem 10% 1rem 0;
+	}
+
+	/*--------------Texts----------------*/
+
+	h1,
+	h2,
+	p {
+		text-align: center;
 	}
 
 	h1 {
-		font-size: 2rem;
-		font-weight: 650;
+		font-size: 2.5rem;
 		margin: 0;
-		margin-bottom: 1.5rem;
-		color: whitesmoke;
-		text-align: center;
 	}
+
 	h2 {
-		font-size: 1.25rem;
-		font-weight: 650;
+		margin: 0.5rem auto 2rem auto;
+	}
+
+	h3 {
 		margin: 0;
-		margin-bottom: 1.5rem;
-		color: whitesmoke;
-		text-align: center;
 	}
-	p {
-		color: whitesmoke;
+
+	/*--------------Drag & drop image-----------------*/
+
+	.card {
+		width: 400px;
+		height: auto;
+		padding: 15px;
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+		border-radius: 5px;
+		overflow: hidden;
+		background: #fafbff;
 	}
-	a {
-		color: blue;
+
+	.card .drag-area {
+		width: 100%;
+		height: 160px;
+		border-radius: 5px;
+		border: 2px dashed #d5d5e1;
+		color: #222;
+		font-size: 0.9rem;
+		font-weight: 500;
+		position: relative;
+		background: #dfe3f259;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		user-select: none;
+		-webkit-user-select: none;
+		margin-top: 10px;
 	}
-	a:hover {
-		color: purple;
+
+	.card .drag-area .visible {
+		font-size: 18px;
+	}
+	.card .select {
+		color: #4b61ac;
+		font-weight: bold;
+		margin-left: 5px;
+		cursor: pointer;
+		transition: 0.4s;
+	}
+
+	.card .select:hover {
+		opacity: 0.6;
+	}
+
+	.card .container {
+		width: 100%;
+		height: auto;
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-wrap: wrap;
+		max-height: 200px;
+		overflow-y: auto;
+		margin-top: 10px;
+	}
+
+	/* dragover class will used in drag and drop system */
+	.card .drag-area.dragover {
+		background: rgba(0, 0, 0, 0.4);
+	}
+
+	.card .drag-area.dragover .on-drop {
+		display: inline;
+		font-size: 28px;
+	}
+
+	.card input,
+	.card .drag-area .on-drop,
+	.card .drag-area.dragover .visible {
+		display: none;
 	}
 </style>
+<style is:inline>
+	.card .container .image {
+		margin-right: 15px;
+		margin-bottom: 8px;
+
+		width: 100px;
+		height: 100px;
+
+		position: relative;
+	}
+
+	.card .container .image img {
+		width: 100%;
+		height: 100%;
+		border-radius: 5px;
+	}
+
+	.card .container .image span {
+		position: absolute;
+		top: -2px;
+		right: 9px;
+		font-size: 20px;
+		cursor: pointer;
+	}
+</style>
+
+<script>
+	/* Script pour la vérification du contenu du formulaire */
+
+	let form = document.getElementById('form');
+
+	form.onsubmit = (event: Event) => {
+		let name = document.getElementById('name') as HTMLInputElement;
+		let movie = document.getElementById('movie') as HTMLInputElement;
+		let description = document.getElementById(
+			'description'
+		) as HTMLInputElement;
+		let startDate = document.getElementById('startDate') as HTMLInputElement;
+		let startHour = document.getElementById('startHour') as HTMLInputElement;
+		let endDate = document.getElementById('endDate') as HTMLInputElement;
+		let endHour = document.getElementById('endHour') as HTMLInputElement;
+		let price = document.getElementById('price') as HTMLInputElement;
+		let bidding = document.getElementById('bidding') as HTMLInputElement;
+		let no_error = true;
+
+		let dateDebut: Date, dateFin: Date;
+		let currentDate = new Date();
+
+		if (!name.value) {
+			no_error = false;
+			errorMessage(name, 'Entrez un intitulé');
+		} else {
+			noErrorMessage(name);
+		}
+		if (!movie.value) {
+			no_error = false;
+			errorMessage(movie, 'Entrez un nom de film');
+		} else {
+			noErrorMessage(name);
+		}
+		if (!description.value) {
+			no_error = false;
+			errorMessage(description, 'Entrez une description');
+		} else {
+			noErrorMessage(name);
+		}
+		if (!startDate.value) {
+			no_error = false;
+			errorMessage(startDate, 'Entrez une date de début');
+		} else {
+			noErrorMessage(name);
+			dateDebut = new Date(startDate.value + 'T' + startHour.value);
+		}
+		if (!endDate.value) {
+			no_error = false;
+			errorMessage(endDate, 'Entrez une date de fin');
+		} else {
+			noErrorMessage(name);
+			dateFin = new Date(endDate.value + 'T' + endHour.value);
+		}
+		if (startDate && endDate && dateDebut > dateFin) {
+			no_error = false;
+			errorMessage(
+				startDate,
+				'La date de début doit commencer avant la date de fin'
+			);
+		} else {
+			noErrorMessage(name);
+		}
+		if (startDate && dateDebut < currentDate) {
+			no_error = false;
+			errorMessage(
+				startDate,
+				"La date de début doit commencer après aujourd'hui"
+			);
+		} else {
+			noErrorMessage(name);
+		}
+		if (!price.value) {
+			no_error = false;
+			errorMessage(price, 'Entrez un prix');
+		} else {
+			noErrorMessage(name);
+		}
+		if (!bidding.value) {
+			no_error = false;
+			errorMessage(bidding, 'Entrez un prix de surenchérissement minimum');
+		} else {
+			noErrorMessage(name);
+		}
+
+		if (!no_error) {
+			event.preventDefault();
+		}
+
+		function errorMessage(elem: HTMLInputElement, err: string) {
+			elem.style.border = 'solid';
+			elem.style.borderColor = 'red';
+			elem.setCustomValidity(err);
+			elem.reportValidity();
+			elem.setCustomValidity('');
+		}
+		function noErrorMessage(elem: HTMLInputElement) {
+			elem.style.border = 'none';
+		}
+	};
+</script>
+
+<script is:inline>
+	/* Script pour la gestion du Drag & Drop d'images */
+
+	/* Variables */
+	let files = [];
+	let dragArea = document.querySelector('.drag-area');
+	let input = document.querySelector('.drag-area input');
+	let select = document.querySelector('.drag-area .select');
+	let container = document.querySelector('.container');
+
+	/* CLICK LISTENER */
+	select.addEventListener('click', () => input.click());
+
+	/* INPUT CHANGE EVENT */
+	input.addEventListener('change', () => {
+		let file = input.files;
+
+		// if user select more than 1 image or no image
+		if (file.length != 1) return;
+
+		files.push(file[0]);
+		input.files = null;
+		showImages();
+	});
+
+	/* SHOW IMAGES */
+	function showImages() {
+		let images = files.reduce(function (prev, file, index) {
+			return (prev += `<div class="image">
+    		<img src="${URL.createObjectURL(file)}" alt="image" />
+    		<span onclick="delImage(${index})">&times;</span>
+    	</div>`);
+		}, '');
+		container.innerHTML = images;
+	}
+
+	/* DELETE IMAGE */
+	function delImage(index) {
+		files.splice(index, 1);
+		showImages();
+	}
+
+	/* INPUT CHANGE EVENT */
+	input.addEventListener('change', () => {
+		let file = input.files;
+
+		// if user select no image
+		if (file.length == 0) return;
+
+		for (let i = 0; i < file.length; i++) {
+			if (file[i].type.split('/')[0] != 'image') continue;
+			if (!files.some((e) => e.name == file[i].name)) files.push(file[i]);
+		}
+
+		input.files = null;
+		showImages();
+	});
+
+	/* DRAG & DROP */
+	dragArea.addEventListener('dragover', (e) => {
+		e.preventDefault();
+		dragArea.classList.add('dragover');
+	});
+
+	/* DRAG LEAVE */
+	dragArea.addEventListener('dragleave', (e) => {
+		e.preventDefault();
+		dragArea.classList.remove('dragover');
+	});
+
+	/* DROP EVENT */
+	dragArea.addEventListener('drop', (e) => {
+		e.preventDefault();
+		dragArea.classList.remove('dragover');
+
+		let file = e.dataTransfer.files;
+		for (let i = 0; i < file.length; i++) {
+			/** Check selected file is image */
+			if (file[i].type.split('/')[0] != 'image') continue;
+
+			if (!files.some((e) => e.name == file[i].name)) files.push(file[i]);
+		}
+		showImages();
+	});
+</script>
