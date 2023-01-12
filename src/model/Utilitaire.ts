@@ -1,5 +1,10 @@
-import { SessionTokenInvalideError } from './users/Account';
+import {
+	SessionTokenInvalideError,
+	CaCestVraimentPasDeBolError,
+	AccountTypeMismatch,
+} from './users/Account';
 import Buyer from './users/Buyer';
+import Company from './users/Company';
 
 export { dateDiff };
 
@@ -62,6 +67,10 @@ export function addCookie(
  * Retourne un {@link Buyer} à partir d'un token de session
  * @param headers Les headers de la requête
  * @returns Le {@link Buyer} correspondant au token de session
+ * @throws {@link SessionTokenInvalideError} Si le token de session est invalide
+ * @throws {@link CaCestVraimentPasDeBolError} Si le token de session est associé à plusieurs comptes
+ * @throws {@link AccountTypeMismatch} Si le token de session est associé à un compte de type {@link Company}
+ *
  */
 export async function getBuyerBySession(headers: Headers): Promise<Buyer> {
 	const cookies = headers.get('cookie');
