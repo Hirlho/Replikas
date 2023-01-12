@@ -1,0 +1,52 @@
+---
+export interface Props {
+	nom: string;
+	image: string;
+	description: string;
+}
+
+const { nom, image, description } = Astro.props;
+---
+
+<li>
+	<section id="Description">
+		<div><img src={'/img/aboutus/' + image} alt="" /></div>
+		<h3>{nom}</h3>
+		<p>{description}</p>
+	</section>
+</li>
+
+<style>
+	section {
+		display: flex;
+		flex-direction: column;
+		background-color: var(--theme-secondary);
+		width: 100%;
+	}
+	li {
+		width: 300px;
+		margin: 20px;
+
+		display: flex;
+		flex-direction: column;
+
+		border-radius: 10px;
+		overflow: hidden;
+	}
+
+	div,
+	img {
+		display: flex;
+		justify-content: center;
+		height: 50px;
+		align-items: center;
+		padding-top: 7px;
+	}
+
+	h3,
+	p {
+		margin: 0;
+		padding: 5px;
+		text-align: center;
+	}
+</style>

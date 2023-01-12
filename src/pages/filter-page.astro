@@ -1,0 +1,67 @@
+---
+import Button from "../components/Button.astro";
+import TextField from "../components/TextField.astro";
+import Layout from "../layouts/Layout.astro";
+
+export interface Props {
+  date_debut?: any;
+  date_fin?: any;
+  object_name?: string;
+  movie_name?: string;
+  prix?: number;
+  prix_de_base?: number;
+  nb_participants?: number;
+}
+
+const { date_debut, date_fin, object_name, movie_name, prix, prix_de_base, nb_participants } = Astro.props;
+
+---
+
+<Layout title="filter-page">
+    <main>
+        <aside>
+            <h1>Filtres</h1>
+            <form method="post" action="/filter-page">
+                <TextField placeholder="Nom de l'objet" text={object_name} />
+                <TextField placeholder="Nom du film" text={movie_name} />
+                <h2>Prix de base :</h2>
+                <input type="range" min="" max="" />
+                <h2>Prix actuel :</h2>
+                <input type="range" />
+                <h2>Date de début des enchères :</h2>
+                <input type="date" />
+                <h2>Date de fin des enchères :</h2>
+                <input type="date" />
+                <br>
+                <Button text="Filtrer" />
+            </form>
+        </aside>
+        <section>
+            <h1>Tous les produits</h1>
+        </section>
+    </main>
+</Layout>
+<style>
+    main{
+        display: flex;
+        
+    }
+    aside{
+        background-color: #222222;
+        width: 25%;
+        text-align: center;
+    }
+    section{
+        background-color: #353A4D;
+        margin-left: 10rem;
+        width: 45%;
+        text-align: center;
+    }
+    *{
+        color: whitesmoke;   
+    }
+    h2{
+        font-size: 1rem;
+    }
+
+</style>

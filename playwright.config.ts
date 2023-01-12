@@ -1,5 +1,5 @@
-import type { PlaywrightTestConfig } from "@playwright/test";
-import { devices } from "@playwright/test";
+import type { PlaywrightTestConfig } from '@playwright/test';
+import { devices } from '@playwright/test';
 
 /**
  * Read environment variables from file.
@@ -12,12 +12,12 @@ import { devices } from "@playwright/test";
  */
 const config: PlaywrightTestConfig = {
 	webServer: {
-		command: "npx astro preview",
-		url: "http://127.0.0.1:3000",
+		command: 'npx astro preview',
+		url: 'http://127.0.0.1:3000',
 		timeout: 20 * 1000,
 		reuseExistingServer: !process.env.CI,
 	},
-	testDir: "./tests-playwright",
+	testDir: './tests-playwright',
 	/* Maximum time one test can run for. */
 	timeout: 30 * 1000,
 	expect: {
@@ -36,31 +36,31 @@ const config: PlaywrightTestConfig = {
 	/* Opt out of parallel tests on CI. */
 	workers: process.env.CI ? 1 : undefined,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
-	reporter: "html",
+	reporter: 'html',
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
 		/* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
 		actionTimeout: 0,
 		/* Base URL to use in actions like `await page.goto('/')`. */
-		baseURL: "http://127.0.0.1:3000",
+		baseURL: 'http://127.0.0.1:3000',
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-		trace: "on-first-retry",
+		trace: 'on-first-retry',
 	},
 
 	/* Configure projects for major browsers */
 	projects: [
 		{
-			name: "chromium",
+			name: 'chromium',
 			use: {
-				...devices["Desktop Chrome"],
+				...devices['Desktop Chrome'],
 			},
 		},
 
 		{
-			name: "firefox",
+			name: 'firefox',
 			use: {
-				...devices["Desktop Firefox"],
+				...devices['Desktop Firefox'],
 			},
 		},
 

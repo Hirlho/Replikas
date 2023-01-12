@@ -1,0 +1,150 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SearchBar from '../components/SearchBar.astro';
+import Article from '../components/Article.astro';
+import { default as ArticleModel } from '../model/Article';
+
+const PAGE_SIZE = 20;
+const search = Astro.url.searchParams.get('article') || '';
+const page = Math.max(parseInt(Astro.url.searchParams.get('page')) || 1, 1);
+
+let articles = await ArticleModel.getBySearch(search, {
+	limit: null,
+	offset: 0,
+});
+
+const length = articles.length;
+const hasMore = articles.length > page * PAGE_SIZE;
+if (hasMore) {
+	articles = articles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+}
+const pages = [...Array(Math.ceil(length / PAGE_SIZE)).values()];
+---
+
+<Layout title="Replikas" no_searchbar>
+	<main>
+		<div class="searchBar">
+			<div id="searchBar">
+				<SearchBar text={search} />
+			</div>
+			<div class="checkbox">
+				<input type="checkbox" id="pending" name="pending" checked />
+				<label for="pending">Enchère en cours</label>
+			</div>
+		</div>
+		<ul>
+			{articles.map((article) => <Article article={article} />)}
+		</ul>
+		<div class="pages">
+			<span>
+				{
+					page > 1 && (
+						<a href={`?article=${search}&page=${page - 1}`}>Précédent</a>
+					)
+				}
+				{
+					pages.map((_, i) => (
+						<a
+							href={`?article=${search}&page=${i + 1}`}
+							class={i + 1 === page ? 'active' : ''}
+						>
+							{i + 1}
+						</a>
+					))
+				}
+
+				{hasMore && <a href={`?article=${search}&page=${page + 1}`}>Suivant</a>}
+			</span>
+		</div>
+	</main>
+</Layout>
+
+<style>
+	main {
+		margin: 20px auto;
+		padding: 20px 2%;
+		width: 80%;
+
+		border-radius: 20px;
+
+		background-color: var(--theme-secondary);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.searchBar {
+		margin: 10px 20% 40px 20%;
+		width: 60%;
+
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	#searchBar {
+		width: 80%;
+	}
+
+	.checkbox {
+		scale: 1.2;
+	}
+
+	ul {
+		margin-inline: auto;
+		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		align-self: center;
+	}
+
+	.pages {
+		text-align: center;
+		margin: 20px 0;
+	}
+
+	.pages > span {
+		display: inline-block;
+
+		border-radius: 10px;
+
+		background-color: var(--theme-button);
+	}
+
+	.pages > span > a {
+		background-color: var(--theme-button);
+		text-decoration: none;
+		color: inherit;
+
+		display: inline-block;
+
+		height: 46px;
+		line-height: 46px;
+		padding: 0 14px;
+	}
+
+	.pages > span > a.active {
+		filter: brightness(0.8);
+	}
+
+	.pages > span > a:hover {
+		filter: brightness(1.2);
+	}
+
+	.pages > span > a:active {
+		filter: brightness(0.8);
+	}
+
+	.pages > span > a:last-child {
+		border-top-right-radius: 10px;
+		border-bottom-right-radius: 10px;
+	}
+
+	.pages > span > a:first-child {
+		border-top-left-radius: 10px;
+		border-bottom-left-radius: 10px;
+	}
+</style>
+<script></script>

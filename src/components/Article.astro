@@ -1,19 +1,36 @@
 ---
+import Article from '../model/Article';
+
 export interface Props {
-	titre: string;
-	image: string;
-	date: Date;
-	prix: number;
+	article: Article;
 }
 
-const { titre, image, date, prix } = Astro.props;
+const article = Astro.props.article || Article.getFallback(null);
+
+const id = article.getId();
+const titre = article.getName();
+const image = await article.getPoster();
+const prix = article.getPrixBase();
+const dateDebut = article.getDebutVente();
+const dateFin = article.getFinVente();
+
+const date = dateDebut > new Date() ? dateDebut : dateFin;
+const enCours = dateDebut < new Date() && dateFin > new Date();
 ---
 
 <li>
-	<div><img src={"/img/article/" + image} alt="" /></div>
-	<h3>{titre}</h3>
-	<p>{date.toLocaleDateString()}</p>
-	<p>{prix} €</p>
+	<a href={'/auction/' + id}>
+		<div><img src={image} alt={titre} /></div>
+		<h3>{titre}</h3>
+		<p>
+			{
+				enCours
+					? 'Finit le ' + date.toLocaleDateString()
+					: 'Débute le ' + date.toLocaleDateString()
+			}
+		</p>
+		<p>{prix} €</p>
+	</a>
 </li>
 
 <style>
@@ -24,21 +41,26 @@ const { titre, image, date, prix } = Astro.props;
 		display: flex;
 		flex-direction: column;
 
-		background-color: #4b4e6d;
+		background-color: var(--theme-primary);
 
 		border-radius: 10px;
 		overflow: hidden;
 	}
 
+	li a {
+		text-decoration: none;
+		color: inherit;
+	}
+
 	div,
 	img {
-		width: 300px;
+		width: 100%;
 		height: 250px;
+		object-fit: cover;
 	}
 
 	h3,
 	p {
-		color: whitesmoke;
 		margin: 0;
 		padding: 5px;
 	}

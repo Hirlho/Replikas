@@ -1,0 +1,138 @@
+---
+import Article from '../Article.astro';
+import SearchBar from '../SearchBar.astro';
+
+export interface Props {
+	typeArticles?: string;
+}
+
+const { typeArticles } = Astro.props;
+---
+
+<main>
+	<section>
+		<form method="get" action="/basket">
+			<h1>Vos articles</h1>
+			<div class="pages">
+				<input type="submit" value="Possédés" name="pageName" />
+				<input type="submit" value="À payer" name="pageName" />
+				<input id="currentPage" type="submit" value="Aimés" name="pageName" />
+			</div>
+		</form>
+		<section class="sectionSearchBar">
+			<SearchBar />
+		</section>
+		<div class="articles">
+			<Article
+				titre="Chapeau de Gandalf"
+				image="chapeau_de_gandalf.jpeg"
+				date={new Date()}
+				prix={690}
+			/>
+			<Article
+				titre="Chapeau de Gandalf"
+				image="chapeau_de_gandalf.jpeg"
+				date={new Date()}
+				prix={690}
+			/>
+			<Article
+				titre="Chapeau de Gandalf"
+				image="chapeau_de_gandalf.jpeg"
+				date={new Date()}
+				prix={690}
+			/>
+			<Article
+				titre="Chapeau de Gandalf"
+				image="chapeau_de_gandalf.jpeg"
+				date={new Date()}
+				prix={690}
+			/>
+			<Article
+				titre="Chapeau de Gandalf"
+				image="chapeau_de_gandalf.jpeg"
+				date={new Date()}
+				prix={690}
+			/>
+			<Article
+				titre="Chapeau de Gandalf"
+				image="chapeau_de_gandalf.jpeg"
+				date={new Date()}
+				prix={690}
+			/>
+		</div>
+	</section>
+</main>
+<style>
+	main {
+		width: 80%;
+		margin: 2rem auto;
+
+		background-color: var(--theme-secondary);
+		border-radius: 2rem;
+
+		padding: 2rem 3rem;
+	}
+
+	.sectionSearchBar {
+		width: 60%;
+		margin: 2rem auto;
+	}
+
+	/*-----------Nav-------------*/
+
+	form {
+		width: 80%;
+		margin: auto;
+
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.pages {
+		display: flex;
+		justify-content: space-around;
+	}
+
+	input {
+		color: whitesmoke;
+		background-color: var(--theme-secondary);
+
+		padding: 0.5rem 1rem;
+		margin: 0 1rem;
+		font-size: 2rem;
+
+		border: none;
+
+		transition: 0.5s ease;
+
+		cursor: pointer;
+	}
+
+	input:hover {
+		scale: 1.1;
+		transition: 0.5s ease;
+	}
+
+	#currentPage {
+		border: solid;
+		border-top: transparent;
+		border-left: transparent;
+		border-right: transparent;
+		border-color: whitesmoke;
+	}
+
+	/*--------------Articles----------------*/
+	.articles {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	/*--------------Texts-------------------*/
+	h1 {
+		color: whitesmoke;
+		font-size: 2.5rem;
+
+		margin: 0;
+	}
+</style>

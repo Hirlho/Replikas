@@ -1,32 +1,59 @@
 <footer>
 	<section id="replika-info">
 		<h> Replikas</h>
-		<a href="/about_us"> À propos de Replikas</a>
-		<a href="/contact">Nous contacter</a> 
-		<a href="/confidentialite"> Notre politique de confidentialité</a>
+		<a href="/aboutus"> À propos de Replikas</a>
+		<a href="/contact">Nous contacter</a>
+		<a href="/privacy_policy"> Notre politique de confidentialité</a>
 	</section>
 	<section id="replika-socials">
 		<h> Nos réseaux</h>
 		<div class="hbox">
-			<a href="https://fr-fr.facebook.com/DonaldTrump"
-				><img src="/img/icons/socials/facebook.svg" />
+			<a href="https://fr-fr.facebook.com/DonaldTrump" target="_blank"
+				><img
+					src="/img/icons/socials/facebook.svg"
+					width="48px"
+					height="48px"
+					alt="Facebook"
+				/>
 			</a>
-			<a href="https://twitter.com/elonmusk"
-				><img src="/img/icons/socials/twitter.svg" />
+			<a href="https://twitter.com/elonmusk" target="_blank"
+				><img
+					src="/img/icons/socials/twitter.svg"
+					width="48px"
+					height="48px"
+					alt="Twitter"
+				/>
 			</a>
-			<a href="https://www.instagram.com/hugodecrypte"
-				><img src="/img/icons/socials/instagram.svg" />
+			<a href="https://www.instagram.com/hugodecrypte" target="_blank"
+				><img
+					src="/img/icons/socials/instagram.svg"
+					width="48px"
+					height="48px"
+					alt="Instagram"
+				/>
 			</a>
-			<a href="https://fr.linkedin.com/in/herv%C3%A9-blanchon-4851b02"
-				><img src="/img/icons/socials/linkedin.svg" />
+			<a
+				href="https://fr.linkedin.com/in/herv%C3%A9-blanchon-4851b02"
+				target="_blank"
+				><img
+					src="/img/icons/socials/linkedin.svg"
+					width="48px"
+					height="48px"
+					alt="Linkedin"
+				/>
 			</a>
-			<a href="https://r.mtdv.me/replikas"
-				><img src="/img/icons/socials/youtube.svg" />
+			<a href="https://r.mtdv.me/replikas" target="_blank"
+				><img
+					src="/img/icons/socials/youtube.svg"
+					width="48px"
+					height="48px"
+					alt="Youtube"
+				/>
 			</a>
 		</div>
 	</section>
 	<section id="replikas-team">
-		<img src="/favicon.svg" />
+		<img src="/favicon.svg" width="24px" height="24px" alt="Replikas" />
 		<h> Replikas team</h>
 	</section>
 </footer>
@@ -36,8 +63,7 @@
 		flex-direction: column;
 		align-items: center;
 		padding: 1rem;
-		background-color: #222222;
-		color: whitesmoke;
+		background-color: var(--theme-secondary);
 
 		flex-grow: 0;
 		flex-shrink: 0;
@@ -50,8 +76,8 @@
 	footer #replika-info a {
 		font-size: 1rem;
 		margin: 0.4rem;
-		color: whitesmoke;
 		text-decoration: none;
+		color: inherit;
 	}
 	footer section {
 		margin: 0.5rem;
@@ -73,7 +99,6 @@
 	}
 	footer #replikas-team img {
 		width: 1.5rem;
-		fill: whitesmoke;
 		margin-right: -0.5rem;
 
 		filter: invert(96%) sepia(88%) saturate(13%) hue-rotate(315deg)

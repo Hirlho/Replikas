@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+import LikedPage from '../components/basketPages/LikedPage.astro';
+import NotPayedPage from '../components/basketPages/NotPayedPage.astro';
+import PossessedPage from '../components/basketPages/PossessedPage.astro';
+
+let page;
+if (!Astro.url.searchParams.get('pageName')) {
+	page = 'Possédés';
+} else {
+	page = Astro.url.searchParams.get('pageName');
+}
+---
+
+<Layout title="ArticlesUtilisateur" no_searchbar>
+	{
+		{
+			Possédés: <PossessedPage />,
+			'À payer': <NotPayedPage />,
+			Aimés: <LikedPage />,
+		}[page]
+	}
+</Layout>

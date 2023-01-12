@@ -1,14 +1,13 @@
 ---
-import Footer from "../components/Footer.astro";
-import Navbar from "../components/Navbar.astro";
+import Footer from '../components/Footer.astro';
+import Navbar from '../components/Navbar.astro';
 
 export interface Props {
 	title: string;
-	no_searchbar ?: boolean;
+	no_searchbar?: boolean;
 }
 
 const { title, no_searchbar } = Astro.props;
-
 ---
 
 <!DOCTYPE html>
@@ -17,12 +16,11 @@ const { title, no_searchbar } = Astro.props;
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<!-- Normalize css to remove default margins -->
-		<link
-			rel="stylesheet"
-			href="https://necolas.github.io/normalize.css/latest/normalize.css"
-		/>
 		<meta name="generator" content={Astro.generator} />
+		<meta
+			name="description"
+			content="Le site de ventes aux enchères de des cinéphiles"
+		/>
 		<title>{title}</title>
 	</head>
 	<body>
@@ -34,6 +32,41 @@ const { title, no_searchbar } = Astro.props;
 			<Footer />
 		</main>
 	</body>
+	<style is:global>
+		:root {
+			--theme-primary: #4b4e6d;
+			--theme-secondary: #222222;
+			--theme-button: #353a4d;
+			--theme-text: whitesmoke;
+			--theme-link: blue;
+		}
+		/* THEMES
+
+		// Default
+		:root {
+			--theme-primary: #4b4e6d;
+			--theme-secondary: #222222;
+			--theme-button: #353a4d;
+			--theme-text: whitesmoke;
+			--theme-link: blue;
+		}
+		
+		// "Rustic Charm" 
+		:root {
+			--theme-primary: #7b5e57;
+			--theme-secondary: #4c3e3a;
+			--theme-button: #b28f86;
+			--theme-text: white;
+			--theme-link: #9b8478;
+		}
+		
+		*/
+
+		.hbox {
+			display: flex;
+			flex-direction: row;
+		}
+	</style>
 	<style>
 		html,
 		body {
@@ -43,7 +76,8 @@ const { title, no_searchbar } = Astro.props;
 			margin: 0;
 		}
 		body {
-			background-color: #4b4e6d;
+			background-color: var(--theme-primary);
+			color: var(--theme-text);
 			font-family: system-ui, sans-serif;
 		}
 		main {
@@ -54,12 +88,7 @@ const { title, no_searchbar } = Astro.props;
 		}
 		section {
 			flex-grow: 1;
-		}
-	</style>
-	<style is:global>
-		.hbox {
-			display: flex;
-			flex-direction: row;
+			padding: 2rem;
 		}
 	</style>
 </html>
