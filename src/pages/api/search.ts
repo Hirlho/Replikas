@@ -1,5 +1,5 @@
 import { APIRoute } from 'astro';
-import Article from '../../model/Article';
+import TMDB from '../../model/TMDB';
 
 export const get: APIRoute = async ({ request }) => {
 	// Get URL query parameters
@@ -12,10 +12,7 @@ export const get: APIRoute = async ({ request }) => {
 		});
 	}
 
-	const matches = await Article.getBySearch(query.search, {
-		limit: query.limit,
-		offset: query.offset,
-	});
+	const matches = await TMDB.searchMovie(query.search, 'fr-FR', 8);
 
 	return new Response(JSON.stringify(matches), {
 		headers: {
