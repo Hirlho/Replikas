@@ -1,4 +1,4 @@
-import { ArticleInexistantError } from '../Article';
+import Article, { ArticleInexistantError } from '../Article';
 import Database from '../Database';
 import { EtatInnatenduError } from '../Utilitaire';
 import Account, {
@@ -122,6 +122,17 @@ export default class Buyer extends Account {
 					throw new RangeError("Le like n'existe pas");
 			}
 		);
+	}
+
+	public async getLikedArticles(): Promise<Article[]> {
+		const database = Database.get();
+		const result =
+			await database`SELECT art_id FROM interests WHERE b_id = ${this.id}`;
+		const articles = [];
+		for (const row of result) {
+			articles.push(await Article.get(row.art_id));
+		}
+		return articles;
 	}
 
 	public getNom(): string {
