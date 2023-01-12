@@ -46,7 +46,9 @@ if (Astro.request.method == 'POST') {
 		} else {
 			// Si une autre erreur non prevue est survenue
 			console.error(e);
-			return Astro.response.status(500).send('Internal server error');
+			return new Response('Internal server error', {
+				status: 500,
+			}); // FIXME Pas tres bastien scapin friendly
 		}
 	}
 }
@@ -93,19 +95,25 @@ if (Astro.url.searchParams.has('error')) {
 						/>
 					</td>
 				</tr>
+				<tr>
+					<th></th>
+					<td>
+						<Button text="Se connecter" />
+					</td>
+				</tr>
 			</table>
-			<div id="button">
-				<Button text="Se connecter" />
-			</div>
+			<div id="button"></div>
 		</form>
-		<p>
-			Vous n'êtes pas encore inscrit ?
-			<a href="register">S'inscrire</a>
-		</p>
-		<p>
-			Vous avez oublié votre mot de passe ?
-			<a href="recover-password">Mot de passe oublié</a>
-		</p>
+		<div class="links">
+			<p>
+				Vous n'êtes pas encore inscrit ?
+				<a href="/register">S'inscrire</a>
+			</p>
+			<p>
+				Vous avez oublié votre mot de passe ?
+				<a href="/recover-password">Mot de passe oublié</a>
+			</p>
+		</div>
 	</main>
 </Layout>
 <style>
@@ -131,7 +139,6 @@ if (Astro.url.searchParams.has('error')) {
 	}
 
 	td {
-		text-align: center;
 	}
 
 	/*-----------------Bouton s'inscrire--------------------*/
@@ -149,13 +156,14 @@ if (Astro.url.searchParams.has('error')) {
 		margin-bottom: 1.5rem;
 	}
 
-	p {
-		text-align: center;
-	}
-
 	.error_msg {
 		color: red;
 		text-align: center;
+	}
+
+	.links {
+		width: fit-content;
+		margin: auto;
 	}
 
 	a {

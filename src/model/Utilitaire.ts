@@ -58,6 +58,11 @@ export function addCookie(
 	headers.append('Set-Cookie', val);
 }
 
+/**
+ * Retourne un {@link Buyer} à partir d'un token de session
+ * @param headers Les headers de la requête
+ * @returns Le {@link Buyer} correspondant au token de session
+ */
 export async function getBuyerBySession(headers: Headers): Promise<Buyer> {
 	const cookies = headers.get('cookie');
 	if (cookies) {

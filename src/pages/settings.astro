@@ -3,11 +3,18 @@ import Layout from '../layouts/Layout.astro';
 import UserSetting from '../components/UserSetting.astro';
 import Buyer from '../model/users/Buyer';
 import { getBuyerBySession } from '../model/Utilitaire';
+import {
+	AccountTypeMismatch,
+	SessionTokenInvalideError,
+} from '../model/users/Account';
 
 let account: Buyer;
 try {
 	account = await getBuyerBySession(Astro.request.headers);
 } catch (e) {
+	if (e instanceof AccountTypeMismatch)
+		return Astro.redirect('/dashboard/settings');
+	else if (!(e instanceof SessionTokenInvalideError)) console.error(e);
 	return Astro.redirect('/login');
 }
 
@@ -90,6 +97,11 @@ const firstName = account.getPrenom();
 		color: rgb(216, 34, 34);
 		font-size: 22px;
 		font-weight: bold;
+	}
+	#deconnection:hover {
+		filter: brightness(1.2);
+		cursor: pointer;
+		color: rgb(255, 0, 0);
 	}
 
 	/*-------------------Parametres---------------------*/

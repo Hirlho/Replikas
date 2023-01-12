@@ -78,6 +78,12 @@ export default class TMDB {
 			: '';
 	}
 
+	/**
+	 * Recherche un film à partir d'un mot clé
+	 * @param query The search query
+	 * @param language The language of the results (default: fr-FR) ISO 639-1
+	 * @returns The list of movies matching the query
+	 */
 	public static async searchMovie(
 		query: string,
 		language = 'fr-FR'

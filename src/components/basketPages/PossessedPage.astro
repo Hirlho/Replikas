@@ -100,8 +100,8 @@ const { typeArticles } = Astro.props;
 	}
 
 	input {
-		color: whitesmoke;
 		background-color: var(--theme-secondary);
+		color: inherit;
 
 		padding: 0.5rem 1rem;
 		margin: 0 1rem;
@@ -131,12 +131,10 @@ const { typeArticles } = Astro.props;
 	.articles {
 		display: flex;
 		flex-wrap: wrap;
-		justify-content: space-around;
 	}
 
 	/*--------------Texts-------------------*/
 	h1 {
-		color: whitesmoke;
 		font-size: 2.5rem;
 
 		margin: 0;

@@ -68,6 +68,10 @@ const pages = [...Array(Math.ceil(length / PAGE_SIZE)).values()];
 		border-radius: 20px;
 
 		background-color: var(--theme-secondary);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
 	}
 
 	.searchBar {
@@ -89,10 +93,11 @@ const pages = [...Array(Math.ceil(length / PAGE_SIZE)).values()];
 	}
 
 	ul {
-		margin: 0 auto;
+		margin-inline: auto;
+		width: 100%;
 		display: flex;
 		flex-wrap: wrap;
-		justify-content: space-evenly;
+		align-self: center;
 	}
 
 	.pages {

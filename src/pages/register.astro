@@ -45,7 +45,7 @@ if (Astro.request.method == 'POST') {
 		} else {
 			// Si une autre erreur non prevue est survenue
 			console.error(e);
-			return Astro.response.status(500).send('Internal server error');
+			return new Response('Internal server error', { status: 500 }); // FIXME : Rip bastien scapin
 		}
 	}
 	return Astro.redirect('/login?info=account_created');
@@ -139,7 +139,10 @@ if (Astro.url.searchParams.has('error')) {
 			<div id="button">
 				<div>
 					<input type="checkbox" required />
-					<span> J'accepte les conditions générales d'utilisation</span>
+					<span>
+						J'accepte les <a href="cgu">conditions générales d'utilisation</a
+						></span
+					>
 				</div>
 				<Button text="S'inscrire" />
 				{error_msg && <p class="error_msg">{error_msg}</p>}
@@ -162,7 +165,7 @@ if (Astro.url.searchParams.has('error')) {
 	/*-----------------Table--------------------*/
 
 	table {
-		width: 80%;
+		width: 100%;
 		margin: 1rem auto;
 	}
 
@@ -171,7 +174,7 @@ if (Astro.url.searchParams.has('error')) {
 	}
 
 	td {
-		text-align: center;
+		text-align: start;
 	}
 
 	/*-----------------Boutton s'inscrire--------------------*/
@@ -196,5 +199,11 @@ if (Astro.url.searchParams.has('error')) {
 	.error_msg {
 		color: red;
 		text-align: center;
+	}
+	a {
+		color: var(--theme-link);
+	}
+	a:hover {
+		filter: hue-rotate(20deg);
 	}
 </style>

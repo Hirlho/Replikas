@@ -3,6 +3,10 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Paiement" no_searchbar>
+	<link
+		rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+	/>
 	<main>
 		<div class="article">
 			<article>
@@ -24,38 +28,19 @@ import Layout from '../layouts/Layout.astro';
 
 		<div class="container_info">
 			<div style="width:500px;margin-left: 30%;">
-				<li class="payment_details">
-					<h3 class="titre_payment">
-						<a onclick="showText('text1')" href="javascript:void(0);"
-							>Voir les détails du paiement</a
+				<h3 class="titre_payment">
+					<span>
+						<a href="javascript:void(0);" id="arrow" onclick="toggleText()"
+							><i class="fas fa-arrow-down" id="arrow-icon"></i>
+							Voir les détails du paiement</a
 						>
-					</h3>
-				</li>
-				<script language="JavaScript">
-					function isInViewport(element) {
-						const rect = element.getBoundingClientRect();
-						return (
-							rect.top >= 0 &&
-							rect.left >= 0 &&
-							rect.bottom <=
-								(window.innerHeight || document.documentElement.clientHeight) &&
-							rect.right <=
-								(window.innerWidth || document.documentElement.clientWidth)
-						);
-					}
-					function showText(id) {
-						if (isInViewport(document.getElementById(id))) {
-							document.getElementById(id).style.display = 'block';
-						} else {
-							document.getElementById(id).style = 'display:none';
-						}
-					}
-				</script>
+					</span>
+				</h3>
 			</div>
 			<div class="details" id="text1" style="display:none;">
 				<h2>Un mode de payement simple et sécurisé :</h2>
 				<p>
-					Afin de satisfaire nos clients Replikas met à votre disposition un
+					Afin de satisfaire nos clients, Replikas met à votre disposition un
 					système simple et entièrement sécurisé via Paypal pour vos paiements
 					en ligne.
 				</p>
@@ -94,6 +79,37 @@ import Layout from '../layouts/Layout.astro';
 	</main>
 </Layout>
 
+<script language="JavaScript">
+	function isInViewport(element) {
+		const rect = element.getBoundingClientRect();
+		return (
+			rect.top >= 0 &&
+			rect.left >= 0 &&
+			rect.bottom <=
+				(window.innerHeight || document.documentElement.clientHeight) &&
+			rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+		);
+	}
+
+	var isVisible = false;
+	var arrowIcon = document.getElementById('arrow-icon');
+	function toggleText() {
+		if (isVisible) {
+			document.getElementById('text1').style.display = 'none';
+			arrowIcon.classList.remove('fa-arrow-down');
+			arrowIcon.classList.add('fa-arrow-up');
+
+			arrowIcon.style.transform = 'rotate(180deg)';
+		} else {
+			document.getElementById('text1').style.display = 'block';
+			arrowIcon.classList.remove('fa-arrow-up');
+			arrowIcon.classList.add('fa-arrow-down');
+			arrowIcon.style.transform = 'rotate(180deg)';
+		}
+		isVisible = !isVisible;
+	}
+</script>
+
 <style>
 	a {
 		text-decoration: none;
@@ -106,7 +122,6 @@ import Layout from '../layouts/Layout.astro';
 		text-align: center;
 	}
 	.container_info {
-		margin: auto;
 		margin-top: 7%;
 		padding-top: 1.5rem;
 		padding-bottom: 1.5rem;
