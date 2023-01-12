@@ -1,6 +1,6 @@
 import { APIRoute } from 'astro';
 import Buyer from '../../model/users/Buyer';
-import { getBuyerBySession } from '../../model/Utilitaire';
+import { getAccountBySession } from '../../model/Utilitaire';
 
 export const post: APIRoute = async ({ request }) => {
 	// Get the json body
@@ -15,7 +15,9 @@ export const post: APIRoute = async ({ request }) => {
 
 	let buyer: Buyer;
 	try {
-		buyer = await getBuyerBySession(request.headers);
+		buyer = await Buyer.getFromAccount(
+			await getAccountBySession(request.headers)
+		);
 		if (query.liked) {
 			await buyer.likeArticle(query.id);
 		} else {

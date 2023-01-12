@@ -1,7 +1,7 @@
 ---
 import Article from '../model/Article';
 import Buyer from '../model/users/Buyer';
-import { getBuyerBySession } from '../model/Utilitaire';
+import { getAccountBySession } from '../model/Utilitaire';
 
 export interface Props {
 	article: Article;
@@ -16,9 +16,9 @@ const prix = article.getPrixBase();
 const dateDebut = article.getDebutVente();
 const dateFin = article.getFinVente();
 
-let buyer: Buyer = await getBuyerBySession(Astro.request.headers).catch(
-	() => null
-);
+let buyer: Buyer = await Buyer.getFromAccount(
+	await getAccountBySession(Astro.request.headers)
+).catch(() => null);
 const liked = buyer && (await article.isLikedBy(buyer));
 
 const date = dateDebut > new Date() ? dateDebut : dateFin;
