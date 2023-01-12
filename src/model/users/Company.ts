@@ -10,7 +10,7 @@ export default class Company extends Account {
 
 	/**
 	 * @inheritdoc Account.get
-	 * @throws {AccountTypeMismatch} Si l'account n'est pas une entreprise mais un acheteur
+	 * @throws {A@link ccountTypeMismatch} Si l'account n'est pas une entreprise mais un acheteur
 	 */
 	public static async get(email: string, password: string): Promise<Company> {
 		const account = await super.get(email, password);
@@ -21,8 +21,8 @@ export default class Company extends Account {
 	 * Convertit un account en entreprise
 	 * @param account L'account à convertir en entreprise
 	 * @returns L'entreprise correspondant à l'account
-	 * @throws {AccountTypeMismatch} Si l'account n'est pas une entreprise mais un acheteur
-	 * @throws {EtatInnatenduError} Si l'account existe mais pas l'entreprise
+	 * @throws {@link AccountTypeMismatch} Si l'account n'est pas une entreprise mais un acheteur
+	 * @throws {@link EtatInnatenduError} Si l'account existe mais pas l'entreprise
 	 */
 	public static async getFromAccount(account: Account): Promise<Company> {
 		if (!account.isCompany()) {
@@ -48,7 +48,7 @@ export default class Company extends Account {
 
 	/**
 	 * @inheritdoc Account.getById
-	 * @throws {AccountTypeMismatch} Si l'account n'est pas une entreprise mais un acheteur
+	 * @throws {@link AccountTypeMismatch} Si l'account n'est pas une entreprise mais un acheteur
 	 */
 	public static async getById(id: number): Promise<Company> {
 		const account = await super.getById(id);
@@ -61,7 +61,7 @@ export default class Company extends Account {
 	 * @param password Le mot de passe du compte
 	 * @param name Le nom de l'entreprise
 	 * @returns L'entreprise créée
-	 * @throws {EmailDejaUtiliseError} Si l'adresse courriel est déjà utilisée
+	 * @throws {@link EmailDejaUtiliseError} Si l'adresse courriel est déjà utilisée
 	 */
 	public static async createCompany(
 		email: string,
@@ -83,7 +83,7 @@ export default class Company extends Account {
 
 	/**
 	 * @inheritdoc Account.getBySession
-	 * @throws {AccountTypeMismatch} Si l'account n'est pas une entreprise mais un acheteur
+	 * @throws {@link AccountTypeMismatch} Si l'account n'est pas une entreprise mais un acheteur
 	 */
 	public static async getBySession(token: string): Promise<Company> {
 		const account = await super.getBySession(token);
