@@ -1,3 +1,4 @@
+import { ArticleInexistantError } from '../Article';
 import Database from '../Database';
 import { EtatInnatenduError } from '../Utilitaire';
 import Account, {
@@ -91,6 +92,36 @@ export default class Buyer extends Account {
 	public static async getBySession(token: string): Promise<Buyer> {
 		const account = await super.getBySession(token);
 		return this.getFromAccount(account);
+	}
+
+	/**
+	 * Ajoute un article dans la liste des "intérêts" de l'acheteur
+	 * @param article_id L'id de l'article à liker
+	 */
+	public async likeArticle(article_id: number): Promise<void> {
+		const database = Database.get();
+		await database`INSERT INTO interests (b_id, art_id) VALUES (${this.id}, ${article_id})`.catch(
+			(error) => {
+				if (error.code === '23503') {
+					throw new ArticleInexistantError(article_id);
+				}
+			}
+		);
+	}
+
+	/**
+	 * Retire un article de la liste des "intérêts" de l'acheteur
+	 * @param article_id L'id de l'article à unliker
+	 */
+	public async unlikeArticle(article_id: number): Promise<void> {
+		const database = Database.get();
+		await database`DELETE FROM interests WHERE b_id = ${this.id} AND art_id = ${article_id}`.catch(
+			(error) => {
+				// Si l'article n'existe pas, on ne fait rien
+				if (error.code !== '23503')
+					throw new RangeError("Le like n'existe pas");
+			}
+		);
 	}
 
 	public getNom(): string {
