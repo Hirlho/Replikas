@@ -1,5 +1,6 @@
 import Database from './Database';
 import TMDB from './TMDB';
+import Buyer from './users/Buyer';
 
 export default class Article {
 	private id: number;
@@ -184,6 +185,17 @@ export default class Article {
 			articles.push(await this.getFromResult(article));
 		}
 		return articles;
+	}
+
+	/**
+	 * @param buyer Le client qui veut savoir si il a aimé l'article
+	 * @returns Si l'article est dans la liste des articles aimés du client
+	 */
+	public async isLikedBy(buyer: Buyer): Promise<boolean> {
+		const database = Database.get();
+		const result = await database`
+			SELECT * FROM interests WHERE art_id = ${this.id} AND b_id = ${buyer.getId()}`;
+		return result.length > 0;
 	}
 
 	/**
