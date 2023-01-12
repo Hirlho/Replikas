@@ -1,5 +1,6 @@
 ---
 import Article from '../model/Article';
+import { getBuyerBySession } from '../model/Utilitaire';
 
 export interface Props {
 	article: Article;
@@ -13,14 +14,29 @@ const image = await article.getPoster();
 const prix = article.getPrixBase();
 const dateDebut = article.getDebutVente();
 const dateFin = article.getFinVente();
+const liked = await article.isLikedBy(
+	await getBuyerBySession(Astro.request.headers)
+);
 
 const date = dateDebut > new Date() ? dateDebut : dateFin;
 const enCours = dateDebut < new Date() && dateFin > new Date();
 ---
 
 <li>
+	<script is:inline src="/src/like.js"></script>
+	<!-- BCP d'instanciations pas grave le browser gere -->
+	<div class="like-container">
+		<img
+			src="/img/icons/heart.svg"
+			onclick="likeArticle(this, event)"
+			onload="updateColor(this)"
+			data-id={id}
+			data-liked={'' + liked}
+			class="filter-whitesmoke"
+		/>
+	</div>
+	<img src={image} alt={titre} class="poster" />
 	<a href={'/auction/' + id}>
-		<div><img src={image} alt={titre} /></div>
 		<h3>{titre}</h3>
 		<p>
 			{
@@ -31,37 +47,51 @@ const enCours = dateDebut < new Date() && dateFin > new Date();
 		</p>
 		<p>{prix} €</p>
 	</a>
+	<style>
+		li {
+			width: 300px;
+			margin: 20px;
+
+			display: flex;
+			flex-direction: column;
+
+			background-color: var(--theme-primary);
+
+			border-radius: 10px;
+			overflow: hidden;
+		}
+
+		li a {
+			text-decoration: none;
+			color: inherit;
+		}
+
+		.like-container {
+			position: absolute;
+			width: 300px;
+			height: fit-content;
+			display: flex;
+			justify-content: flex-end;
+		}
+
+		.like-container img {
+			width: 30px;
+			height: 30px;
+			z-index: 1;
+			margin: 5px;
+			cursor: pointer;
+		}
+
+		.poster {
+			width: 100%;
+			height: 250px;
+			object-fit: cover;
+		}
+
+		h3,
+		p {
+			margin: 0;
+			padding: 5px;
+		}
+	</style>
 </li>
-
-<style>
-	li {
-		width: 300px;
-		margin: 20px;
-
-		display: flex;
-		flex-direction: column;
-
-		background-color: var(--theme-primary);
-
-		border-radius: 10px;
-		overflow: hidden;
-	}
-
-	li a {
-		text-decoration: none;
-		color: inherit;
-	}
-
-	div,
-	img {
-		width: 100%;
-		height: 250px;
-		object-fit: cover;
-	}
-
-	h3,
-	p {
-		margin: 0;
-		padding: 5px;
-	}
-</style>
