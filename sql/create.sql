@@ -52,8 +52,7 @@ CREATE TABLE article_image (
 CREATE TABLE bid (
     b_id INTEGER REFERENCES buyer (a_id) ON DELETE CASCADE,
     art_id INTEGER REFERENCES article (art_id) ON DELETE CASCADE,
-    amount INTEGER NOT NULL,
-    PRIMARY KEY(b_id, art_id)
+    amount INTEGER NOT NULL
 );
 
 CREATE TABLE interests (
