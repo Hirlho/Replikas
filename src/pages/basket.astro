@@ -4,12 +4,12 @@ import Layout from '../layouts/Layout.astro';
 import LikedPage from '../components/basketPages/LikedPage.astro';
 import NotPayedPage from '../components/basketPages/NotPayedPage.astro';
 import PossessedPage from '../components/basketPages/PossessedPage.astro';
-import { getAccountBySession } from '../model/Utilitaire';
+import { getBuyerBySession } from '../model/Utilitaire';
 import Buyer from '../model/users/Buyer';
 
-const buyer: Buyer = await Buyer.getFromAccount(
-	await getAccountBySession(Astro.request.headers)
-).catch((err) => null);
+const buyer: Buyer = await getBuyerBySession(Astro.request.headers).catch(
+	(err) => null
+);
 
 if (!buyer) {
 	return Astro.redirect('/login');

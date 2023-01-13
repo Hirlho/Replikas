@@ -84,16 +84,32 @@ export default class Article {
 		tmdb_movie_id: number,
 		selling_company_id: number
 	): Promise<Article> {
+		console.info(
+			`Création de l'article avec les paramètres suivants : 
+				name : ${name}
+				description : ${description}
+				price : ${price}
+				min_bidding : ${min_bidding}
+				auction_start : ${auction_start}
+				auction_end : ${auction_end}
+				img_paths : ${img_paths}
+				tmdb_movie_id : ${tmdb_movie_id}
+				selling_company_id : ${selling_company_id}`
+		);
 		const movie = await TMDB.getMovie(tmdb_movie_id);
 		const database = Database.get();
 
+		console.info('Début de la transaction');
 		const [result] = await database.begin(async (sql) => {
+			console.info('Création du film');
 			await database`
 			INSERT INTO movie (m_id, m_title) VALUES (${tmdb_movie_id}, ${movie.title}) ON CONFLICT DO NOTHING`;
 
+			console.info("Création de l'article");
 			const result = await database`
             INSERT INTO article (art_name, art_description, art_price, art_min_bidding, art_auction_start, art_auction_end, m_id, c_id) VALUES (${name}, ${description}, ${price}, ${min_bidding}, ${auction_start}, ${auction_end}, ${tmdb_movie_id}, ${selling_company_id}) RETURNING *`;
 
+			console.info('Création des images');
 			for (const img_path of img_paths) {
 				await database`
 					INSERT INTO article_image (art_id, img_path) VALUES (${result[0].art_id}, ${img_path})`;
@@ -102,9 +118,9 @@ export default class Article {
 			return [result[0]];
 		});
 
+		console.info(`Article ${result.art_id} créé`);
 		return this.getFromResult(result);
 	}
-
 	/**
 	 * Retourne tous les articles de la base de données
 	 * @returns Tous les articles

@@ -1,46 +1,109 @@
 ---
 import AutoCompleteTextField from '../../components/AutoCompleteTextField.astro';
 import Button from '../../components/Button.astro';
-import DragDrop from '../../components/Drag&Drop.astro';
+import UploadInput from '../../components/UploadInput.astro';
 import TextField from '../../components/TextField.astro';
 import Layout from '../../layouts/Layout.astro';
+import fs from 'fs';
 import Article from '../../model/Article';
-
-// TODO : Gérer le download d'images, la création d'un nouvel article et la proposition lorsqu'on écrit un nom de film
+import { getCompanyBySession } from '../../model/Utilitaire';
+import { Readable } from 'node:stream';
+import { v4 as uuidv4 } from 'uuid';
+import Company from '../../model/users/Company';
+import path from 'path';
 
 if (Astro.request.method == 'POST') {
 	const formData = await Astro.request.formData();
-	const {
+
+	let {
 		name,
-		movie,
+		movie_id,
 		description,
 		startDate,
-		startHour,
 		endDate,
+		startHour,
 		endHour,
-		price,
-		bidding,
-		files,
-	} = Object.fromEntries(formData) as {
-		name: string;
-		movie: string;
-		description: string;
-		startDate: string;
-		startHour: string;
-		endDate: string;
-		endHour: string;
-		price: string;
-		bidding: string;
-		files: unknown;
-	};
+		base_price,
+		min_bidding,
+	} = Object.fromEntries(formData) as { [key: string]: any };
 
-	console.log(files);
-	console.log('lol');
+	const start = new Date(`${startDate} ${startHour}`);
+	const end = new Date(`${endDate} ${endHour}`);
+	name = name ? name.trim() : '';
+	description = description ? description.trim() : '';
+	movie_id = parseInt(movie_id);
+	base_price = parseInt(base_price);
+	min_bidding = parseInt(min_bidding);
+
+	if (
+		!(
+			name.length &&
+			!isNaN(movie_id) &&
+			description.length &&
+			!isNaN(start.getTime()) &&
+			!isNaN(end.getTime()) &&
+			!isNaN(base_price) &&
+			!isNaN(min_bidding)
+		)
+	)
+		return new Response('missing_fields', { status: 400 });
+
+	if (start.getTime() >= end.getTime() || start.getTime() <= Date.now())
+		return new Response('invalid_dates', { status: 400 });
+
+	if (base_price <= 0 || min_bidding < 0)
+		return new Response('invalid_prices', { status: 400 });
+
+	const company: Company = await getCompanyBySession(
+		Astro.request.headers
+	).catch(() => null);
+	if (!company) return new Response('invalid_session', { status: 401 });
+
+	const images: File[] = formData.getAll('images') as File[];
+	const file_paths: Map<string, string> = new Map();
+	for (let image of images) {
+		file_paths.set(
+			image.name,
+			`/img/article/uploaded/${uuidv4()}.${image.name.split('.').pop()}`
+		);
+	}
+
+	let article: Article;
+	try {
+		article = await Article.create(
+			name,
+			description,
+			base_price,
+			min_bidding,
+			start,
+			end,
+			Array.from(file_paths.values()),
+			movie_id,
+			company.getId()
+		);
+	} catch (e) {
+		return new Response('invalid_movie_id', { status: 400 });
+	}
+
+	for (let image of images) {
+		const stream = Readable.fromWeb(image.stream() as any);
+		const file = fs.createWriteStream(
+			path.join('./public', file_paths.get(image.name))
+		);
+		stream.pipe(file);
+	}
+
+	return new Response('success', { status: 200 });
 }
 ---
 
 <Layout title="Création article" no_searchbar>
-	<form method="post" action="/dashboard/create" id="form" autocomplete="off">
+	<form
+		method="post"
+		id="form"
+		autocomplete="off"
+		enctype="multipart/form-data"
+	>
 		<div class="title">
 			<h1>Poster un nouvel article</h1>
 			<p>
@@ -67,8 +130,8 @@ if (Astro.request.method == 'POST') {
 						type="text"
 						placeholder="Ex : Star Wars : Un Nouvel Espoir"
 						length="15rem"
-						name="movie"
-						id="movieInput"
+						name="movie_id"
+						id="movie_id"
 					/>
 				</div>
 				<div class="grid_two">
@@ -114,7 +177,7 @@ if (Astro.request.method == 'POST') {
 					<TextField
 						type="number"
 						placeholder="Ex : 120, 2300,..."
-						name="price"
+						name="base_price"
 						id="price"
 						minNumber={0}
 					/>
@@ -122,10 +185,9 @@ if (Astro.request.method == 'POST') {
 				<div>
 					<h3>Surenchère minimum : *</h3>
 					<TextField
-						name=""
+						name="min_bidding"
 						type="number"
 						placeholder="Ex : 1, 13, 50,..."
-						name="bidding"
 						id="bidding"
 						minNumber={0}
 					/>
@@ -134,7 +196,7 @@ if (Astro.request.method == 'POST') {
 		</div>
 		<div class="info_produit">
 			<h2>Ajout d’images à l’article</h2>
-			<DragDrop />
+			<UploadInput />
 		</div>
 		<div class="create_button">
 			<Button text="Créer l’article" id="create_article" />
@@ -247,18 +309,21 @@ if (Astro.request.method == 'POST') {
 <script is:inline>
 	/* Script pour la vérification du contenu du formulaire */
 
-	let form = document.getElementById('form');
+	let form = document.getElementById('form') as HTMLFormElement;
 
-	form.onsubmit = (event) => {
-		let name = document.getElementById('name');
-		let movie = document.getElementById('movieInput');
-		let description = document.getElementById('description');
-		let startDate = document.getElementById('startDate');
-		let startHour = document.getElementById('startHour');
-		let endDate = document.getElementById('endDate');
-		let endHour = document.getElementById('endHour');
-		let price = document.getElementById('price');
-		let bidding = document.getElementById('bidding');
+	form.onsubmit = async (event: Event) => {
+		event.preventDefault();
+		let name = document.getElementById('name') as HTMLInputElement;
+		let movie = document.getElementById('movie_id') as HTMLInputElement;
+		let description = document.getElementById(
+			'description'
+		) as HTMLInputElement;
+		let startDate = document.getElementById('startDate') as HTMLInputElement;
+		let startHour = document.getElementById('startHour') as HTMLInputElement;
+		let endDate = document.getElementById('endDate') as HTMLInputElement;
+		let endHour = document.getElementById('endHour') as HTMLInputElement;
+		let price = document.getElementById('price') as HTMLInputElement;
+		let bidding = document.getElementById('bidding') as HTMLInputElement;
 		let no_error = true;
 
 		let dateDebut, dateFin;
@@ -329,8 +394,7 @@ if (Astro.request.method == 'POST') {
 		// Movie
 		if (!movie.value || !movie.getAttribute('data-movieid')) {
 			no_error = false;
-			errorColor(movie);
-			err['Sélectionner un nom de film proposé'] = movie;
+			errorMessage(price, 'Entrez un prix valide');
 		} else {
 			noErrorMessage(movie);
 		}
@@ -343,16 +407,19 @@ if (Astro.request.method == 'POST') {
 			noErrorMessage(name);
 		}
 
-		// Show error message
-		for (let key in err) {
-			errorMessage(err[key], key);
-		}
-
-		// Show error message
-		function errorMessage(elem, errMess) {
-			elem.setCustomValidity(errMess);
-			elem.reportValidity();
-			elem.setCustomValidity('');
+		// Submit
+		if (!no_error) return;
+		const formData = new FormData(form);
+		formData.set('movie_id', movie.dataset.movieid);
+		const response = await fetch('./create', {
+			method: 'POST',
+			body: formData,
+		});
+		console.log(response);
+		if (response.status !== 200) {
+			alert(await response.text());
+		} else {
+			alert('YOUPI');
 		}
 
 		// Show border color of elem
@@ -366,10 +433,6 @@ if (Astro.request.method == 'POST') {
 			elem.style.border = 'none';
 		}
 
-		// If there is an error we don't post the form
-		if (!no_error) {
-			event.preventDefault();
-		} else {
-		}
+		return false;
 	};
 </script>

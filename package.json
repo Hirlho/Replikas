@@ -19,7 +19,8 @@
     "dotenv": "^16.0.3",
     "emailjs-com": "^3.2.0",
     "postgres": "^3.3.3",
-    "sha.js": "^2.4.11"
+    "sha.js": "^2.4.11",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.29.0",

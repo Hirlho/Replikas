@@ -3,6 +3,8 @@ import Account, {
 	CaCestVraimentPasDeBolError,
 	AccountTypeMismatch,
 } from './users/Account';
+import Buyer from './users/Buyer';
+import Company from './users/Company';
 
 export { dateDiff };
 
@@ -62,14 +64,14 @@ export function addCookie(
 }
 
 /**
- * Retourne un {@link Buyer} à partir d'un token de session
+ * Retourne un {@link Account} à partir d'un token de session
  * @param headers Les headers de la requête
- * @returns Le {@link Buyer} correspondant au token de session
+ * @returns Le {@link Account} correspondant au token de session
  * @throws {@link SessionTokenInvalideError} Si le token de session est invalide
  * @throws {@link CaCestVraimentPasDeBolError} Si le token de session est associé à plusieurs comptes
  *
  */
-export async function getAccountBySession(headers: Headers): Promise<Account> {
+async function getAccountBySession(headers: Headers): Promise<Account> {
 	const cookies = headers.get('cookie');
 	if (cookies) {
 		const token = (cookies.endsWith(';') ? cookies : cookies + ';').match(
@@ -78,6 +80,32 @@ export async function getAccountBySession(headers: Headers): Promise<Account> {
 		if (token.length > 0) return Account.getBySession(token[1]);
 	}
 	throw new SessionTokenInvalideError();
+}
+
+/**
+ * Retourne un {@link Buyer} à partir d'un token de session
+ * @param headers Les headers de la requête
+ * @returns Le {@link Buyer} correspondant au token de session
+ * @throws {@link SessionTokenInvalideError} Si le token de session est invalide
+ * @throws {@link CaCestVraimentPasDeBolError} Si le token de session est associé à plusieurs comptes
+ * @throws {@link AccountTypeMismatch} Si le compte associé au token de session n'est pas un {@link Buyer}
+ */
+export async function getBuyerBySession(headers: Headers): Promise<Buyer> {
+	const account = await getAccountBySession(headers);
+	return Buyer.getFromAccount(account);
+}
+
+/**
+ * Retourne un {@link Company} à partir d'un token de session
+ * @param headers Les headers de la requête
+ * @returns Le {@link Company} correspondant au token de session
+ * @throws {@link SessionTokenInvalideError} Si le token de session est invalide
+ * @throws {@link CaCestVraimentPasDeBolError} Si le token de session est associé à plusieurs comptes
+ * @throws {@link AccountTypeMismatch} Si le compte associé au token de session n'est pas un {@link Company}
+ */
+export async function getCompanyBySession(headers: Headers): Promise<Company> {
+	const account = await getAccountBySession(headers);
+	return Company.getFromAccount(account);
 }
 
 export class EtatInnatenduError extends Error {
