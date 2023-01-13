@@ -12,6 +12,8 @@ import { v4 as uuidv4 } from 'uuid';
 import Company from '../../model/users/Company';
 import path from 'path';
 
+// TODO Plus de vérification sur les paramètres
+
 if (Astro.request.method == 'POST') {
 	const formData = await Astro.request.formData();
 
