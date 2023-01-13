@@ -24,7 +24,7 @@
     "image-type": "^5.1.0",
     "postgres": "^3.3.3",
     "sha.js": "^2.4.11",
-    "sweetalert2": "^11.4.8",
+    "sweetalert2": "^11.7.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

@@ -437,7 +437,11 @@ if (Astro.request.method == 'POST') {
 					text: error_messages[await response.text()] || 'Erreur inconnue',
 				});
 			} else {
-				Swal.fire('The article was created successfully');
+				Swal.fire('The article was created successfully', '', 'success').then(
+					() => {
+						window.location.href = '/dashboard';
+					}
+				);
 			}
 		}
 
