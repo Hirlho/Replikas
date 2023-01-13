@@ -106,7 +106,6 @@
 	}
 
 	.card .container .image img {
-		width: 100%;
 		height: 100%;
 		border-radius: 5px;
 	}
@@ -120,15 +119,15 @@
 	}
 </style>
 
-<script is:inline>
+<script>
 	/* Script pour la gestion du Drag & Drop d'images */
 
 	/* Variables */
-	let files = [];
-	let dragArea = document.querySelector('.drag-area');
-	let input = document.querySelector('.drag-area input');
-	let select = document.querySelector('.drag-area .select');
-	let container = document.querySelector('.container');
+	let files: File[] = [];
+	let dragArea: HTMLDivElement = document.querySelector('.drag-area');
+	let input: HTMLInputElement = document.querySelector('.drag-area input');
+	let select: HTMLDivElement = document.querySelector('.drag-area .select');
+	let container: HTMLDivElement = document.querySelector('.container');
 
 	/* CLICK LISTENER */
 	select.addEventListener('click', () => input.click());
@@ -141,7 +140,7 @@
 		if (file.length != 1) return;
 
 		files.push(file[0]);
-		// input.files = null;
+		updateFileList();
 		showImages();
 	});
 
@@ -174,8 +173,7 @@
 			if (file[i].type.split('/')[0] != 'image') continue;
 			if (!files.some((e) => e.name == file[i].name)) files.push(file[i]);
 		}
-
-		// input.files = null;
+		updateFileList();
 		showImages();
 	});
 
@@ -192,7 +190,7 @@
 	});
 
 	/* DROP EVENT */
-	dragArea.addEventListener('drop', (e) => {
+	dragArea.addEventListener('drop', (e: DragEvent) => {
 		e.preventDefault();
 		dragArea.classList.remove('dragover');
 
@@ -209,8 +207,8 @@
 
 	function updateFileList() {
 		let list = new DataTransfer();
-		for (aFile of files) {
-			list.items.add(aFile);
+		for (let file of files) {
+			list.items.add(file);
 		}
 		input.files = list.files;
 	}

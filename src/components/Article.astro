@@ -1,7 +1,7 @@
 ---
 import Article from '../model/Article';
 import Buyer from '../model/users/Buyer';
-import { getBuyerBySession } from '../model/Utilitaire';
+import { getAccountBySession } from '../model/Utilitaire';
 
 export interface Props {
 	article: Article;
@@ -16,9 +16,9 @@ const prix = article.getPrixBase();
 const dateDebut = article.getDebutVente();
 const dateFin = article.getFinVente();
 
-let buyer: Buyer = await getBuyerBySession(Astro.request.headers).catch(
-	() => null
-);
+let buyer: Buyer = await Buyer.getFromAccount(
+	await getAccountBySession(Astro.request.headers)
+).catch(() => null);
 const liked = buyer && (await article.isLikedBy(buyer));
 
 const date = dateDebut > new Date() ? dateDebut : dateFin;
@@ -26,23 +26,29 @@ const enCours = dateDebut < new Date() && dateFin > new Date();
 ---
 
 <li>
-	<script is:inline src="/src/like.js"></script>
-	<!-- BCP d'instanciations pas grave le browser gere -->
-	<div class="like-area">
-		<div class="like-container">
-			<img
-				src="/img/icons/heart.svg"
-				onclick="likeArticle(this, event)"
-				onload="updateColor(this)"
-				data-id={id}
-				data-liked={'' + liked}
-				class="filter-whitesmoke"
-				alt="like-icon"
-			/>
-		</div>
-	</div>
-	<img src={image} alt={titre} class="poster" />
 	<a href={'/auction/' + id}>
+		{
+			buyer && (
+				<>
+					<script is:inline src="/src/like.js" />
+					<div class="like-area">
+						<div class="like-container">
+							<img
+								src="/img/icons/heart.svg"
+								onclick="likeArticle(this, event)"
+								onload="updateColor(this)"
+								data-id={id}
+								data-liked={'' + liked}
+								class="filter-whitesmoke"
+								alt="like-icon"
+							/>
+						</div>
+					</div>
+				</>
+			)
+		}
+		<img src={image} alt={titre} class="poster" />
+
 		<h3>{titre}</h3>
 		<p>
 			{
