@@ -10,7 +10,7 @@ async function likeArticle(element, event) {
 	const img = element;
 	const id = img.getAttribute('data-id');
 	const liked = img.getAttribute('data-liked') === 'true';
-	const url = '/api/like';
+	const url = '/api/article/like';
 	fetch(url, {
 		method: 'POST',
 		headers: {
