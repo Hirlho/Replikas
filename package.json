@@ -15,7 +15,9 @@
   "dependencies": {
     "@astrojs/node": "^3.1.0",
     "@emailjs/browser": "^3.10.0",
+    "@types/axios": "^0.14.0",
     "astro": "^1.6.10",
+    "axios": "^1.2.2",
     "dotenv": "^16.0.3",
     "emailjs-com": "^3.2.0",
     "postgres": "^3.3.3",
