@@ -23,4 +23,4 @@ pnpm-debug.log*
 /playwright/.cache/
 
 # Uploaded images
-public/img/article/uploaded/*
+# public/img/article/uploaded/*
