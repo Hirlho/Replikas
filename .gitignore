@@ -21,3 +21,6 @@ pnpm-debug.log*
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# Uploaded images
+public/img/article/uploaded/*
