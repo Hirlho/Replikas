@@ -1,9 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Article, { ArticleInexistantError } from '../../model/Article';
-import { AccountTypeMismatch } from '../../model/users/Account';
+import Bids from '../../model/Bids';
 import Company from '../../model/users/Company';
-import { dateDiff } from '../../model/Utilitaire';
+import { dateDiff, getBuyerBySession } from '../../model/Utilitaire';
 
 const id = parseInt(Astro.params.id); // L'id de l'article est dans le chemin de l'URL
 
@@ -19,14 +19,39 @@ try {
 	return new Response(`Erreur interne : ${e}`, { status: 500 }); // FIXME : pas tres bastien scapin like
 }
 
-const enCours =
-	article.getDebutVente() < new Date() && article.getFinVente() > new Date();
+if (Astro.request.method === 'POST') {
+	const buyer = await getBuyerBySession(Astro.request.headers).catch(
+		() => null
+	);
+	if (!buyer) return new Response('Vous devez être connecté', { status: 403 });
 
-const starts = dateDiff(article.getDebutVente(), new Date());
-const ends = dateDiff(article.getFinVente(), new Date());
+	const formData = await Astro.request.formData();
+	const bid = formData.get('bid') as any as number;
+	if (isNaN(bid)) return new Response('Offre invalide', { status: 400 });
+	if (
+		bid <
+		(await Bids.getEnchereMax(article)) + article.getEncherissementMin()
+	)
+		return new Response('Offre trop faible', { status: 400 });
+
+	try {
+		await Bids.placerEnchere(article, bid, buyer);
+	} catch (e) {
+		return new Response(`Erreur interne : ${e}`, { status: 500 }); // FIXME : pas tres bastien scapin like
+	}
+
+	return new Response('Offre placée', { status: 200 });
+}
+const debutVente = article.getDebutVente();
+const finVente = article.getFinVente();
+
+const enCours = debutVente < new Date() && finVente > new Date();
+
+const starts = dateDiff(debutVente, new Date());
+const ends = dateDiff(finVente, new Date());
 
 const nom = article.getName();
-const prix = article.getPrixBase();
+const prix = await Bids.getEnchereMax(article);
 const encherissement_min = article.getEncherissementMin();
 const image = await article.getPoster();
 const description = article.getDescription();
@@ -37,20 +62,8 @@ const description = article.getDescription();
 		<h2>
 			{
 				enCours
-					? 'Se termine dans ' +
-					  ends.day +
-					  'j ' +
-					  ends.hour +
-					  'h ' +
-					  ends.min +
-					  'min'
-					: 'Commence dans ' +
-					  starts.day +
-					  'j ' +
-					  starts.hour +
-					  'h ' +
-					  starts.min +
-					  'min'
+					? `Se termine dans ${ends.day}j ${ends.hour}h ${ends.min}min`
+					: `Débute dans ${starts.day}j ${starts.hour}h ${starts.min}min`
 			}
 		</h2>
 		<article>
@@ -59,28 +72,37 @@ const description = article.getDescription();
 			</div>
 			<div class="informations">
 				<h2>{nom}</h2>
-				<p>
-					{enCours ? 'Valeur actuelle :' : 'Valeur de départ : '}
+				<p id="timeDiff">
+					{enCours ? 'Enchère actuelle :' : 'Prix de départ : '}
 				</p>
-				<h2>{article.getPrixBase()} €</h2>
+				<h2 id="current-price">{prix} €</h2>
 				<p>Placer une offre :</p>
 				<form>
 					<div>
-						<input
+						<button
 							class="button"
 							type="submit"
-							value={prix + encherissement_min + ' €'}
-						/>
-						<input
+							name="bid"
+							value={prix + encherissement_min}
+						>
+							{prix + encherissement_min + ' €'}
+						</button>
+						<button
 							class="button"
 							type="submit"
-							value={prix + encherissement_min * 3 + ' €'}
-						/>
-						<input
+							name="bid"
+							value={prix + encherissement_min * 3}
+						>
+							{prix + encherissement_min + ' €'}
+						</button>
+						<button
 							class="button"
 							type="submit"
-							value={prix + encherissement_min * 5 + ' €'}
-						/>
+							name="bid"
+							value={prix + encherissement_min * 5}
+						>
+							{prix + encherissement_min + ' €'}
+						</button>
 					</div>
 					<input
 						type="number"
@@ -102,6 +124,36 @@ const description = article.getDescription();
 		</article>
 	</main>
 </Layout>
+
+<script define:vars={{ id, dateDiff, debutVente, finVente }}>
+	const currentPrice = document.getElementById('current-price');
+	const timeDiff = document.getElementById('timeDiff');
+
+	async function updatePrice() {
+		await fetch('/api/article/info?id=' + id)
+			.then((res) => res.json())
+			.then((data) => {
+				currentPrice.innerText = data.max_bid + ' €';
+			});
+	}
+
+	function updateDates() {
+		const now = new Date();
+		const starts = dateDiff(debutVente, now);
+		const ends = dateDiff(finVente, now);
+
+		if (starts.day > 0) {
+			timeDiff.innerText = `Débute dans ${starts.day}j ${starts.hour}h ${starts.min}min`;
+		} else if (ends.day > 0) {
+			timeDiff.innerText = `Se termine dans ${ends.day}j ${ends.hour}h ${ends.min}min`;
+		} else {
+			timeDiff.innerText = '';
+		}
+	}
+
+	setInterval(updatePrice, 1000);
+	setInterval(updateDates, 1000);
+</script>
 
 <style>
 	h2 {
@@ -161,11 +213,13 @@ const description = article.getDescription();
 	}
 
 	.button {
+		color: inherit;
 		background-color: var(--theme-button);
 
 		border: none;
 		border-radius: 5px;
 
 		padding: 5px;
+		cursor: pointer;
 	}
 </style>

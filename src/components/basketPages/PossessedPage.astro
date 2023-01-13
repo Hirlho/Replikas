@@ -1,12 +1,13 @@
 ---
+import Buyer from '../../model/users/Buyer';
 import Article from '../Article.astro';
 import SearchBar from '../SearchBar.astro';
 
 export interface Props {
-	typeArticles?: string;
+	buyer: Buyer;
 }
 
-const { typeArticles } = Astro.props;
+const { buyer } = Astro.props;
 ---
 
 <main>

@@ -1,6 +1,8 @@
+import Article from '../src/model/Article';
 import Database from '../src/model/Database';
 import { UtilisateurOuMotDePasseInvalideError } from '../src/model/users/Account';
 import Buyer from '../src/model/users/Buyer';
+import Company from '../src/model/users/Company';
 
 test('Crée un utilisateur et lui assigne un id automatiquement', async () => {
 	const user = await Buyer.createBuyer(
@@ -45,10 +47,32 @@ test("Récupère l'utilisateur à partir du token de session", async () => {
 	expect(user2.getId()).toBe(user.getId());
 });
 
+test('Test likeArticle', async () => {
+	const article = await Article.create(
+		'test',
+		'test',
+		1,
+		1,
+		new Date(),
+		new Date(),
+		[],
+		550,
+		1
+	);
+	const user = await Buyer.get('elon.musk@teslamotors.com', 'ILoveTesla');
+	await user.likeArticle(article.getId());
+	const result = await user.getLikedArticles();
+	expect(result[0].getId()).toBe(article.getId());
+	await user.unlikeArticle(article.getId());
+	const result2 = await user.getLikedArticles();
+	expect(result2.length).toBe(0);
+});
+
 afterAll(async () => {
 	const database = Database.get();
 
 	await database`DELETE FROM account WHERE a_login = 'elon.musk@teslamotors.com'`;
+	await database`DELETE FROM article WHERE art_name = 'test'`;
 
 	await Database.close();
 });

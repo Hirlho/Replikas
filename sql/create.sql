@@ -45,26 +45,25 @@ CREATE TABLE article (
 );
 
 CREATE TABLE article_image (
-    art_id INTEGER REFERENCES article (art_id),
+    art_id INTEGER REFERENCES article (art_id) ON DELETE CASCADE,
     img_path varchar(255) NOT NULL
 );
 
 CREATE TABLE bid (
-    b_id INTEGER REFERENCES buyer (a_id),
-    art_id INTEGER REFERENCES article (art_id),
-    amount INTEGER NOT NULL,
-    PRIMARY KEY(b_id, art_id)
+    b_id INTEGER REFERENCES buyer (a_id) ON DELETE CASCADE,
+    art_id INTEGER REFERENCES article (art_id) ON DELETE CASCADE,
+    amount INTEGER NOT NULL
 );
 
 CREATE TABLE interests (
-    b_id INTEGER REFERENCES buyer (a_id),
-    art_id INTEGER REFERENCES article (art_id),
+    b_id INTEGER REFERENCES buyer (a_id) ON DELETE CASCADE,
+    art_id INTEGER REFERENCES article (art_id) ON DELETE CASCADE,
     PRIMARY KEY(b_id, art_id)
 );
 
 CREATE TABLE aquired (
-    b_id INTEGER REFERENCES buyer (a_id),
-    art_id INTEGER REFERENCES article (art_id),
+    b_id INTEGER REFERENCES buyer (a_id) ON DELETE CASCADE,
+    art_id INTEGER REFERENCES article (art_id) ON DELETE CASCADE,
     is_paid BOOLEAN NOT NULL,
     PRIMARY KEY(b_id, art_id)
 );

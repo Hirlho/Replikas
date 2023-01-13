@@ -1,5 +1,5 @@
-import postgres from "postgres";
-import Config from "./Config";
+import postgres from 'postgres';
+import Config from './Config';
 
 export default class Database {
 	private static _instance: Database;
@@ -13,6 +13,7 @@ export default class Database {
 			user: config.user,
 			password: config.password,
 			database: config.name,
+			idle_timeout: 20,
 		});
 	}
 

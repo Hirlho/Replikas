@@ -1,6 +1,7 @@
 ---
 export interface Props {
 	text?: string;
+	minNumber?: number;
 	placeholder?: string;
 	name?: string;
 	type?: any;
@@ -9,7 +10,8 @@ export interface Props {
 	required?: boolean;
 }
 
-const { text, placeholder, name, type, length, id, required } = Astro.props;
+const { text, placeholder, name, type, length, id, required, minNumber } =
+	Astro.props;
 ---
 
 <input
@@ -19,6 +21,7 @@ const { text, placeholder, name, type, length, id, required } = Astro.props;
 	type={type || 'text'}
 	id={id}
 	required={required}
+	min={minNumber}
 />
 
 <br />

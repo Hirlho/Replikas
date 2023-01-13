@@ -1,3 +1,4 @@
+import Article, { ArticleInexistantError } from '../Article';
 import Database from '../Database';
 import { EtatInnatenduError } from '../Utilitaire';
 import Account, {
@@ -11,7 +12,7 @@ export default class Buyer extends Account {
 
 	/**
 	 * @inheritdoc Account.get
-	 * @throws {AccountTypeMismatch} Si l'account n'est pas un acheteur mais une entreprise
+	 * @throws {@link AccountTypeMismatch} Si l'account n'est pas un acheteur mais une entreprise
 	 */
 	public static async get(email: string, password: string): Promise<Buyer> {
 		const account = await super.get(email, password);
@@ -22,8 +23,8 @@ export default class Buyer extends Account {
 	 * Convertit un account en acheteur
 	 * @param account L'account à convertir en acheteur
 	 * @returns L'acheteur correspondant à l'account
-	 * @throws {AccountTypeMismatch} Si l'account n'est pas un acheteur mais une entreprise
-	 * @throws {EtatInnatenduError} Si l'account existe mais pas l'acheteur
+	 * @throws {@link AccountTypeMismatch} Si l'account n'est pas un acheteur mais une entreprise
+	 * @throws {@link EtatInnatenduError} Si l'account existe mais pas l'acheteur
 	 */
 	public static async getFromAccount(account: Account): Promise<Buyer> {
 		if (account.isCompany()) {
@@ -48,7 +49,7 @@ export default class Buyer extends Account {
 
 	/**
 	 * @inheritdoc Account.getById
-	 * @throws {AccountTypeMismatch} Si l'account n'est pas un acheteur mais une entreprise
+	 * @throws {@link AccountTypeMismatch} Si l'account n'est pas un acheteur mais une entreprise
 	 */
 	public static async getById(id: number): Promise<Buyer> {
 		const account = await super.getById(id);
@@ -62,7 +63,7 @@ export default class Buyer extends Account {
 	 * @param last_name Le nom de famille de l'acheteur
 	 * @param first_name Le prénom de l'acheteur
 	 * @returns L'acheteur nouvellement créé
-	 * @throws {EmailDejaUtiliseError} Si l'adresse courriel est déjà utilisée
+	 * @throws {@link EmailDejaUtiliseError} Si l'adresse courriel est déjà utilisée
 	 */
 	public static async createBuyer(
 		email: string,
@@ -86,11 +87,52 @@ export default class Buyer extends Account {
 
 	/**
 	 * @inheritdoc Account.getBySession
-	 * @throws {AccountTypeMismatch} Si l'account n'est pas un acheteur mais une entreprise
+	 * @throws {@link AccountTypeMismatch} Si l'account n'est pas un acheteur mais une entreprise
 	 */
 	public static async getBySession(token: string): Promise<Buyer> {
 		const account = await super.getBySession(token);
 		return this.getFromAccount(account);
+	}
+
+	/**
+	 * Ajoute un article dans la liste des "intérêts" de l'acheteur
+	 * @param article_id L'id de l'article à liker
+	 */
+	public async likeArticle(article_id: number): Promise<void> {
+		const database = Database.get();
+		await database`INSERT INTO interests (b_id, art_id) VALUES (${this.id}, ${article_id})`.catch(
+			(error) => {
+				if (error.code === '23503') {
+					throw new ArticleInexistantError(article_id);
+				}
+			}
+		);
+	}
+
+	/**
+	 * Retire un article de la liste des "intérêts" de l'acheteur
+	 * @param article_id L'id de l'article à unliker
+	 */
+	public async unlikeArticle(article_id: number): Promise<void> {
+		const database = Database.get();
+		await database`DELETE FROM interests WHERE b_id = ${this.id} AND art_id = ${article_id}`.catch(
+			(error) => {
+				// Si l'article n'existe pas, on ne fait rien
+				if (error.code !== '23503')
+					throw new RangeError("Le like n'existe pas");
+			}
+		);
+	}
+
+	public async getLikedArticles(): Promise<Article[]> {
+		const database = Database.get();
+		const result =
+			await database`SELECT art_id FROM interests WHERE b_id = ${this.id}`;
+		const articles = [];
+		for (const row of result) {
+			articles.push(await Article.get(row.art_id));
+		}
+		return articles;
 	}
 
 	public getNom(): string {

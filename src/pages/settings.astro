@@ -8,9 +8,9 @@ import {
 	SessionTokenInvalideError,
 } from '../model/users/Account';
 
-let account: Buyer;
+let buyer: Buyer;
 try {
-	account = await getBuyerBySession(Astro.request.headers);
+	buyer = await getBuyerBySession(Astro.request.headers);
 } catch (e) {
 	if (e instanceof AccountTypeMismatch)
 		return Astro.redirect('/dashboard/settings');
@@ -18,9 +18,9 @@ try {
 	return Astro.redirect('/login');
 }
 
-const mail = account.getEmail();
-const lastName = account.getNom();
-const firstName = account.getPrenom();
+const mail = buyer.getEmail();
+const lastName = buyer.getNom();
+const firstName = buyer.getPrenom();
 ---
 
 <Layout title="Replikas" no_searchbar>

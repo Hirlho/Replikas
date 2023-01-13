@@ -1,5 +1,6 @@
 import Database from './Database';
 import TMDB from './TMDB';
+import Buyer from './users/Buyer';
 
 export default class Article {
 	private id: number;
@@ -47,7 +48,7 @@ export default class Article {
 	 * Retourne l'article correspondant à l'id
 	 * @param id L'id de l'article
 	 * @returns L'article correspondant à l'id
-	 * @throws {ArticleInexistantError} Si l'article n'existe pas
+	 * @throws {@link ArticleInexistantError} Si l'article n'existe pas
 	 */
 	public static async get(id: number): Promise<Article> {
 		const database = Database.get();
@@ -83,22 +84,43 @@ export default class Article {
 		tmdb_movie_id: number,
 		selling_company_id: number
 	): Promise<Article> {
+		console.info(
+			`Création de l'article avec les paramètres suivants : 
+				name : ${name}
+				description : ${description}
+				price : ${price}
+				min_bidding : ${min_bidding}
+				auction_start : ${auction_start}
+				auction_end : ${auction_end}
+				img_paths : ${img_paths}
+				tmdb_movie_id : ${tmdb_movie_id}
+				selling_company_id : ${selling_company_id}`
+		);
 		const movie = await TMDB.getMovie(tmdb_movie_id);
 		const database = Database.get();
-		const result = await database`
-            INSERT INTO article (art_name, art_description, art_price, art_min_bidding, art_auction_start, art_auction_end, m_id, c_id) VALUES (${name}, ${description}, ${price}, ${min_bidding}, ${auction_start}, ${auction_end}, ${tmdb_movie_id}, ${selling_company_id}) RETURNING *`;
 
-		for (const img_path of img_paths) {
+		console.info('Début de la transaction');
+		const [result] = await database.begin(async (sql) => {
+			console.info('Création du film');
 			await database`
-				INSERT INTO article_image (art_id, img_path) VALUES (${result[0].art_id}, ${img_path})`;
-		}
-
-		await database`
 			INSERT INTO movie (m_id, m_title) VALUES (${tmdb_movie_id}, ${movie.title}) ON CONFLICT DO NOTHING`;
 
-		return this.getFromResult(result[0]);
-	}
+			console.info("Création de l'article");
+			const result = await database`
+            INSERT INTO article (art_name, art_description, art_price, art_min_bidding, art_auction_start, art_auction_end, m_id, c_id) VALUES (${name}, ${description}, ${price}, ${min_bidding}, ${auction_start}, ${auction_end}, ${tmdb_movie_id}, ${selling_company_id}) RETURNING *`;
 
+			console.info('Création des images');
+			for (const img_path of img_paths) {
+				await database`
+					INSERT INTO article_image (art_id, img_path) VALUES (${result[0].art_id}, ${img_path})`;
+			}
+
+			return [result[0]];
+		});
+
+		console.info(`Article ${result.art_id} créé`);
+		return this.getFromResult(result);
+	}
 	/**
 	 * Retourne tous les articles de la base de données
 	 * @returns Tous les articles
@@ -184,6 +206,17 @@ export default class Article {
 			articles.push(await this.getFromResult(article));
 		}
 		return articles;
+	}
+
+	/**
+	 * @param buyer Le client qui veut savoir si il a aimé l'article
+	 * @returns Si l'article est dans la liste des articles aimés du client
+	 */
+	public async isLikedBy(buyer: Buyer): Promise<boolean> {
+		const database = Database.get();
+		const result = await database`
+			SELECT * FROM interests WHERE art_id = ${this.id} AND b_id = ${buyer.getId()}`;
+		return result.length > 0;
 	}
 
 	/**
