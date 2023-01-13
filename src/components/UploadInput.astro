@@ -1,4 +1,9 @@
 ---
+export interface Props {
+	name?: string;
+}
+
+const { name } = Astro.props;
 ---
 
 <div class="card">
@@ -9,7 +14,7 @@
 		</span>
 		<span class="on-drop">Drop images here</span>
 		<input
-			name="files"
+			name={name}
 			type="file"
 			class="file"
 			accept="image/jpeg, image/png, image/jpg"
