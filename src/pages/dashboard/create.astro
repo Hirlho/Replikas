@@ -41,15 +41,6 @@ if (Astro.request.method == 'POST') {
 	base_price = parseInt(base_price);
 	min_bidding = parseInt(min_bidding);
 
-	console.log(
-		name.length,
-		!isNaN(movie_id),
-		description.length,
-		!isNaN(start.getTime()),
-		!isNaN(end.getTime()),
-		!isNaN(base_price),
-		!isNaN(min_bidding)
-	);
 	if (
 		!(
 			name.length &&

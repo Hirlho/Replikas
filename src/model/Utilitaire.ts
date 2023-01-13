@@ -169,6 +169,10 @@ function uploadImage(file: File, path: string) {
 			reject(file.name);
 		});
 		const readStream = Readable.fromWeb(file.stream() as any);
+		readStream.on('error', (err) => {
+			console.error('[READ_STREAM_ERROR] : ' + err);
+			reject(file.name);
+		});
 		readStream.pipe(writeStream);
 	});
 }
