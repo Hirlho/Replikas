@@ -20,9 +20,11 @@
     "axios": "^1.2.2",
     "dotenv": "^16.0.3",
     "emailjs-com": "^3.2.0",
+    "image-conversion": "^2.1.1",
+    "image-type": "^5.1.0",
     "postgres": "^3.3.3",
     "sha.js": "^2.4.11",
-    "sweetalert2": "^11.7.0",
+    "sweetalert2": "^11.4.8",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
