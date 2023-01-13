@@ -29,7 +29,7 @@ if (cookies) {
 ---
 
 <header>
-	<a href="/" aria-label="Retour au menu principal"><Logo /></a>
+	<a id="logo" href="/" aria-label="Retour au menu principal"><Logo /></a>
 
 	<h2>{page_name}</h2>
 
@@ -77,18 +77,23 @@ if (cookies) {
 		background-color: var(--theme-secondary);
 
 		max-width: 100%;
-		padding-block: 1rem;
-		padding-inline: 2rem;
-
-		z-index: 1;
+		padding: 8px 1rem;
 
 		flex-grow: 0;
 		flex-shrink: 0;
 	}
 
+	#logo {
+		scale: 0.9;
+		width: 16rem;
+	}
+
 	#right {
 		display: flex;
+		justify-content: flex-end;
 		align-items: center;
+
+		width: 100%;
 	}
 
 	.button {

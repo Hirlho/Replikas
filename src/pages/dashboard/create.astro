@@ -8,7 +8,6 @@ import Article from '../../model/Article';
 
 // TODO : Gérer le download d'images, la création d'un nouvel article et la proposition lorsqu'on écrit un nom de film
 
-/*
 if (Astro.request.method == 'POST') {
 	const formData = await Astro.request.formData();
 	const {
@@ -21,6 +20,7 @@ if (Astro.request.method == 'POST') {
 		endHour,
 		price,
 		bidding,
+		files,
 	} = Object.fromEntries(formData) as {
 		name: string;
 		movie: string;
@@ -31,8 +31,12 @@ if (Astro.request.method == 'POST') {
 		endHour: string;
 		price: string;
 		bidding: string;
+		files: unknown;
 	};
-}*/
+
+	console.log(files);
+	console.log('lol');
+}
 ---
 
 <Layout title="Création article" no_searchbar>
@@ -44,11 +48,12 @@ if (Astro.request.method == 'POST') {
 				satisfaire la demande des clients
 			</p>
 		</div>
+		<p>Champs obligatoires notés : *</p>
 		<div class="info_produit">
 			<h2>Informations principales du produit</h2>
 			<div class="main_info">
 				<div class="grid_one">
-					<h3>Intitulé :</h3>
+					<h3>Intitulé : *</h3>
 					<TextField
 						type="text"
 						placeholder="Ex : Sabre Laser..."
@@ -57,17 +62,17 @@ if (Astro.request.method == 'POST') {
 						id="name"
 					/>
 
-					<h3>Œuvre(s) d'origine (film/série) :</h3>
+					<h3>Œuvre(s) d'origine (film/série) : *</h3>
 					<AutoCompleteTextField
 						type="text"
 						placeholder="Ex : Star Wars : Un Nouvel Espoir"
 						length="15rem"
 						name="movie"
-						id="myInput"
+						id="movieInput"
 					/>
 				</div>
 				<div class="grid_two">
-					<h3>Description du produit :</h3>
+					<h3>Description du produit : *</h3>
 
 					<textarea
 						id="description"
@@ -81,7 +86,7 @@ if (Astro.request.method == 'POST') {
 			<h2>Date de l'enchère</h2>
 
 			<div class="auctionDate">
-				<h3>Début de l’enchère :</h3>
+				<h3>Début de l’enchère : *</h3>
 				<div class="inputTime">
 					<p>Jour :</p>
 					<TextField type="date" name="startDate" id="startDate" />
@@ -91,7 +96,7 @@ if (Astro.request.method == 'POST') {
 			</div>
 
 			<div class="auctionDate">
-				<h3>Fin de l’enchère :</h3>
+				<h3>Fin de l’enchère : *</h3>
 				<div class="inputTime">
 					<p>Jour :</p>
 					<TextField type="date" name="endDate" id="endDate" />
@@ -105,22 +110,24 @@ if (Astro.request.method == 'POST') {
 			<h2>Choix du prix du produit</h2>
 			<div>
 				<div>
-					<h3>Prix de base du produit :</h3>
+					<h3>Prix de base du produit : *</h3>
 					<TextField
 						type="number"
 						placeholder="Ex : 120, 2300,..."
 						name="price"
 						id="price"
+						minNumber={0}
 					/>
 				</div>
 				<div>
-					<h3>Surenchère minimum :</h3>
+					<h3>Surenchère minimum : *</h3>
 					<TextField
 						name=""
 						type="number"
 						placeholder="Ex : 1, 13, 50,..."
 						name="bidding"
 						id="bidding"
+						minNumber={0}
 					/>
 				</div>
 			</div>
@@ -237,104 +244,132 @@ if (Astro.request.method == 'POST') {
 	}
 </style>
 
-<script>
+<script is:inline>
 	/* Script pour la vérification du contenu du formulaire */
 
 	let form = document.getElementById('form');
 
-	form.onsubmit = (event: Event) => {
-		let name = document.getElementById('name') as HTMLInputElement;
-		let movie = document.getElementById('movie') as HTMLInputElement;
-		let description = document.getElementById(
-			'description'
-		) as HTMLInputElement;
-		let startDate = document.getElementById('startDate') as HTMLInputElement;
-		let startHour = document.getElementById('startHour') as HTMLInputElement;
-		let endDate = document.getElementById('endDate') as HTMLInputElement;
-		let endHour = document.getElementById('endHour') as HTMLInputElement;
-		let price = document.getElementById('price') as HTMLInputElement;
-		let bidding = document.getElementById('bidding') as HTMLInputElement;
+	form.onsubmit = (event) => {
+		let name = document.getElementById('name');
+		let movie = document.getElementById('movieInput');
+		let description = document.getElementById('description');
+		let startDate = document.getElementById('startDate');
+		let startHour = document.getElementById('startHour');
+		let endDate = document.getElementById('endDate');
+		let endHour = document.getElementById('endHour');
+		let price = document.getElementById('price');
+		let bidding = document.getElementById('bidding');
 		let no_error = true;
 
-		let dateDebut: Date, dateFin: Date;
+		let dateDebut, dateFin;
 		let currentDate = new Date();
 
-		if (!name.value) {
-			no_error = false;
-			errorMessage(name, 'Entrez un intitulé');
-		} else {
-			noErrorMessage(name);
-		}
-		if (!movie.value) {
-			no_error = false;
-			errorMessage(movie, 'Entrez un nom de film');
-		} else {
-			noErrorMessage(name);
-		}
-		if (!description.value) {
-			no_error = false;
-			errorMessage(description, 'Entrez une description');
-		} else {
-			noErrorMessage(name);
-		}
-		if (!startDate.value) {
-			no_error = false;
-			errorMessage(startDate, 'Entrez une date de début');
-		} else {
-			noErrorMessage(name);
-			dateDebut = new Date(startDate.value + 'T' + startHour.value);
-		}
-		if (!endDate.value) {
-			no_error = false;
-			errorMessage(endDate, 'Entrez une date de fin');
-		} else {
-			noErrorMessage(name);
-			dateFin = new Date(endDate.value + 'T' + endHour.value);
-		}
-		if (startDate && endDate && dateDebut > dateFin) {
-			no_error = false;
-			errorMessage(
-				startDate,
-				'La date de début doit commencer avant la date de fin'
-			);
-		} else {
-			noErrorMessage(name);
-		}
-		if (startDate && dateDebut < currentDate) {
-			no_error = false;
-			errorMessage(
-				startDate,
-				"La date de début doit commencer après aujourd'hui"
-			);
-		} else {
-			noErrorMessage(name);
-		}
-		if (!price.value) {
-			no_error = false;
-			errorMessage(price, 'Entrez un prix');
-		} else {
-			noErrorMessage(name);
-		}
+		let err = {};
+
+		/*--------------Error verifications---------------*/
+
+		// Value
 		if (!bidding.value) {
 			no_error = false;
-			errorMessage(bidding, 'Entrez un prix de surenchérissement minimum');
+			errorColor(bidding);
+			err['Entrez un prix de surenchérissement minimum'] = bidding;
+		} else {
+			noErrorMessage(bidding);
+		}
+		// Price
+		if (!price.value) {
+			no_error = false;
+			errorColor(price);
+			err['Entrez un prix'] = price;
+		} else {
+			noErrorMessage(price);
+		}
+		// Start date
+		if (!startDate.value) {
+			no_error = false;
+			errorColor(startDate);
+			err['Entrez une date de début'] = startDate;
+		} else {
+			noErrorMessage(startDate);
+			dateDebut = new Date(startDate.value + 'T' + startHour.value);
+		}
+		// End Date
+		if (!endDate.value) {
+			no_error = false;
+			errorColor(endDate);
+			err['Entrez une date de fin'] = endDate;
+		} else {
+			noErrorMessage(endDate);
+			dateFin = new Date(endDate.value + 'T' + endHour.value);
+		}
+		// Start date must be smaller than end date
+		if (startDate && endDate && dateDebut > dateFin) {
+			no_error = false;
+			errorColor(startDate); // TODO: Je sais pas pourquoi ça l'affiche pas
+			err['La date de début doit commencer avant la date de fin'] = startDate;
+		} else {
+			noErrorMessage(startDate);
+		}
+		// Start date must be greater than current date
+		if (startDate && dateDebut < currentDate) {
+			no_error = false;
+			errorColor(startDate);
+			err["La date de début doit commencer après aujourd'hui"] = startDate;
+		} else {
+			noErrorMessage(startDate);
+		}
+		// Description
+		if (!description.value) {
+			no_error = false;
+			errorColor(description);
+			err['Entrez une description'] = description;
+		} else {
+			noErrorMessage(description);
+		}
+		// Movie
+		if (!movie.value || !movie.getAttribute('data-movieid')) {
+			no_error = false;
+			errorColor(movie);
+			err['Sélectionner un nom de film proposé'] = movie;
+		} else {
+			noErrorMessage(movie);
+		}
+		// Name
+		if (!name.value) {
+			no_error = false;
+			errorColor(name);
+			err['Entrez un intitulé'] = name;
 		} else {
 			noErrorMessage(name);
 		}
 
-		if (!no_error) {
-			event.preventDefault();
+		// Show error message
+		for (let key in err) {
+			errorMessage(err[key], key);
 		}
 
-		function errorMessage(elem: HTMLInputElement, err: string) {
-			elem.style.border = 'solid';
-			elem.style.borderColor = 'red';
-			elem.setCustomValidity(err);
+		// Show error message
+		function errorMessage(elem, errMess) {
+			elem.setCustomValidity(errMess);
 			elem.reportValidity();
 			elem.setCustomValidity('');
 		}
-		function noErrorMessage(elem: HTMLInputElement) {
+
+		// Show border color of elem
+		function errorColor(elem) {
+			elem.style.border = 'solid';
+			elem.style.borderColor = 'red';
+		}
+
+		// Hide border of elem
+		function noErrorMessage(elem) {
 			elem.style.border = 'none';
+		}
+
+		// If there is an error we don't post the form
+		if (!no_error) {
+			event.preventDefault();
+		} else {
 		}
 	};
 </script>

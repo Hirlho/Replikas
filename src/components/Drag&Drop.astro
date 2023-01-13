@@ -8,7 +8,13 @@
 			<span class="select" role="button">Parcourir</span>
 		</span>
 		<span class="on-drop">Drop images here</span>
-		<input name="file" type="file" class="file" multiple />
+		<input
+			name="files"
+			type="file"
+			class="file"
+			accept="image/jpeg, image/png, image/jpg"
+			multiple
+		/>
 	</div>
 
 	<!-- IMAGE PREVIEW CONTAINER -->
@@ -135,7 +141,7 @@
 		if (file.length != 1) return;
 
 		files.push(file[0]);
-		input.files = null;
+		// input.files = null;
 		showImages();
 	});
 
@@ -153,6 +159,7 @@
 	/* DELETE IMAGE */
 	function delImage(index) {
 		files.splice(index, 1);
+		updateFileList();
 		showImages();
 	}
 
@@ -168,7 +175,7 @@
 			if (!files.some((e) => e.name == file[i].name)) files.push(file[i]);
 		}
 
-		input.files = null;
+		// input.files = null;
 		showImages();
 	});
 
@@ -196,6 +203,15 @@
 
 			if (!files.some((e) => e.name == file[i].name)) files.push(file[i]);
 		}
+		updateFileList();
 		showImages();
 	});
+
+	function updateFileList() {
+		let list = new DataTransfer();
+		for (aFile of files) {
+			list.items.add(aFile);
+		}
+		input.files = list.files;
+	}
 </script>
