@@ -90,7 +90,7 @@ export default class TMDB {
 		limit?: number
 	): Promise<TMDBMovie[]> {
 		const response = await fetch(
-			`${this._baseUrl}/search/movie?api_key=${this._apiKey}&language=${language}&query=${query}`
+			`${this._baseUrl}/search/movie?api_key=${this._apiKey}&language=${language}&query=${query}&include_adult=false`
 		);
 		const data = await response.json();
 		return data.results.slice(0, limit);
