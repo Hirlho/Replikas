@@ -127,7 +127,6 @@ if (Astro.request.method == 'POST') {
 
 					<h3>Œuvre(s) d'origine (film/série) : *</h3>
 					<AutoCompleteTextField
-						type="text"
 						placeholder="Ex : Star Wars : Un Nouvel Espoir"
 						length="15rem"
 						name="movie_id"
@@ -306,7 +305,7 @@ if (Astro.request.method == 'POST') {
 	}
 </style>
 
-<script is:inline>
+<script>
 	/* Script pour la vérification du contenu du formulaire */
 
 	let form = document.getElementById('form') as HTMLFormElement;
@@ -329,7 +328,10 @@ if (Astro.request.method == 'POST') {
 		let dateDebut, dateFin;
 		let currentDate = new Date();
 
-		let err = {};
+		let err: {
+			element: HTMLInputElement | HTMLTextAreaElement;
+			msg: string;
+		}[] = [];
 
 		/*--------------Error verifications---------------*/
 
@@ -337,7 +339,10 @@ if (Astro.request.method == 'POST') {
 		if (!bidding.value) {
 			no_error = false;
 			errorColor(bidding);
-			err['Entrez un prix de surenchérissement minimum'] = bidding;
+			err.push({
+				element: bidding,
+				msg: 'Entrez un prix de surenchérissement minimum',
+			});
 		} else {
 			noErrorMessage(bidding);
 		}
@@ -345,15 +350,39 @@ if (Astro.request.method == 'POST') {
 		if (!price.value) {
 			no_error = false;
 			errorColor(price);
-			err['Entrez un prix'] = price;
+			err.push({ element: price, msg: 'Entrez un prix' });
 		} else {
 			noErrorMessage(price);
 		}
-		// Start date
-		if (!startDate.value) {
+		// Start date must be smaller than end date
+		if (startDate && endDate && dateDebut > dateFin) {
 			no_error = false;
 			errorColor(startDate);
-			err['Entrez une date de début'] = startDate;
+			errorColor(endDate);
+			err.push({
+				element: startDate,
+				msg: 'La date de début doit commencer avant la date de fin',
+			});
+		} else {
+			noErrorMessage(startDate);
+		}
+		// Start date must be greater than current date
+		if (startDate && dateDebut < currentDate) {
+			no_error = false;
+			errorColor(startDate);
+			err.push({
+				element: startDate,
+				msg: "La date de début doit commencer après aujourd'hui",
+			});
+		} else {
+			noErrorMessage(startDate);
+		}
+		// Start date
+		if (!startDate.value) {
+			console.log('lol');
+			no_error = false;
+			errorColor(startDate);
+			err.push({ element: startDate, msg: 'Entrez une date de début' });
 		} else {
 			noErrorMessage(startDate);
 			dateDebut = new Date(startDate.value + 'T' + startHour.value);
@@ -362,39 +391,24 @@ if (Astro.request.method == 'POST') {
 		if (!endDate.value) {
 			no_error = false;
 			errorColor(endDate);
-			err['Entrez une date de fin'] = endDate;
+			err.push({ element: endDate, msg: 'Entrez une date de fin' });
 		} else {
 			noErrorMessage(endDate);
 			dateFin = new Date(endDate.value + 'T' + endHour.value);
-		}
-		// Start date must be smaller than end date
-		if (startDate && endDate && dateDebut > dateFin) {
-			no_error = false;
-			errorColor(startDate); // TODO: Je sais pas pourquoi ça l'affiche pas
-			err['La date de début doit commencer avant la date de fin'] = startDate;
-		} else {
-			noErrorMessage(startDate);
-		}
-		// Start date must be greater than current date
-		if (startDate && dateDebut < currentDate) {
-			no_error = false;
-			errorColor(startDate);
-			err["La date de début doit commencer après aujourd'hui"] = startDate;
-		} else {
-			noErrorMessage(startDate);
 		}
 		// Description
 		if (!description.value) {
 			no_error = false;
 			errorColor(description);
-			err['Entrez une description'] = description;
+			err.push({ element: description, msg: 'Entrez une description' });
 		} else {
 			noErrorMessage(description);
 		}
 		// Movie
 		if (!movie.value || !movie.getAttribute('data-movieid')) {
 			no_error = false;
-			errorMessage(price, 'Entrez un prix valide');
+			errorColor(movie);
+			err.push({ element: movie, msg: 'Entrez un prix valide' });
 		} else {
 			noErrorMessage(movie);
 		}
@@ -402,20 +416,26 @@ if (Astro.request.method == 'POST') {
 		if (!name.value) {
 			no_error = false;
 			errorColor(name);
-			err['Entrez un intitulé'] = name;
+			err.push({ element: name, msg: 'Entrez un intitulé' });
 		} else {
 			noErrorMessage(name);
 		}
 
+		console.log(err);
+
+		// Affichage message d'erreur
+		for (let elem of err) {
+			elem.element.setCustomValidity(elem.msg);
+		}
+
 		// Submit
-		if (!no_error) return;
+		if (no_error) return;
 		const formData = new FormData(form);
 		formData.set('movie_id', movie.dataset.movieid);
 		const response = await fetch('./create', {
 			method: 'POST',
 			body: formData,
 		});
-		console.log(response);
 		if (response.status !== 200) {
 			alert(await response.text());
 		} else {
@@ -432,7 +452,5 @@ if (Astro.request.method == 'POST') {
 		function noErrorMessage(elem) {
 			elem.style.border = 'none';
 		}
-
-		return false;
 	};
 </script>

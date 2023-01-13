@@ -2,21 +2,18 @@
 import TextField from './TextField.astro';
 
 export interface Props {
-	text?: string;
 	placeholder?: string;
 	name?: string;
-	type?: any;
 	length?: string;
 	id?: string;
-	required?: boolean;
 }
 
-const { text, placeholder, name, type, length, id, required } = Astro.props;
+const { placeholder, name, length, id } = Astro.props;
 ---
 
 <div class="autocomplete">
 	<TextField
-		type={text}
+		type="text"
 		placeholder={placeholder}
 		length={length}
 		name={name}
