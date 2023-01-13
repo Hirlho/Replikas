@@ -1,0 +1,88 @@
+---
+---
+
+<div id="breadcrumb"></div>
+
+<script>
+	import Id from '../pages/auction/[id].astro';
+
+	const breadcrumb = document.getElementById('breadcrumb');
+
+	const url = new URL(window.location.href);
+	const history = JSON.parse(sessionStorage.getItem('history') || '[]');
+	console.log(history);
+	history.push(url.pathname.replace('/', ''));
+	sessionStorage.setItem('history', JSON.stringify(history));
+	if (history.length > 0) {
+		console.log(history);
+		const historyLength = history.length;
+		console.log(historyLength);
+		/*
+		for (let i = 0; i < historyLength; i++) {
+			const link = document.createElement('a');
+			link.href = history[i];
+			link.innerText = history[i];
+			breadcrumb.appendChild(link);
+
+			if (i < historyLength - 1) {
+				const slash = document.createElement('span');
+				slash.innerText = ' > ';
+				breadcrumb.appendChild(slash);
+			}
+
+			if (i == historyLength - 1) {
+				const slash = document.createElement('span');
+				slash.innerText = ' > ';
+				breadcrumb.appendChild(slash);
+			}
+		}*/
+		updateBreadCrumb();
+	}
+
+	const home = document.getElementById('home');
+	home.addEventListener('click', () => {
+		sessionStorage.clear();
+	});
+	//si je clique sur un élément du breadcrumb, je supprime tout ce qui est après dans le tableau
+	//je supprime tout ce qui est après dans le tableau
+	const breadcrumbLinks = document.querySelectorAll('#breadcrumb a');
+	breadcrumbLinks.forEach((link) => {
+		link.addEventListener('click', () => {
+			const history = JSON.parse(sessionStorage.getItem('history') || '[]');
+			const index = history.indexOf(url.pathname.replace('/', ''));
+			history.splice(index - 1, history.length);
+			sessionStorage.setItem('history', JSON.stringify(history));
+			updateBreadCrumb();
+		});
+	});
+
+	function updateBreadCrumb() {
+		const history = JSON.parse(sessionStorage.getItem('history') || '[]');
+
+		const link = document.createElement('a');
+		link.href = '/';
+		link.innerText = 'home';
+		link.setAttribute('id', 'home');
+		breadcrumb.appendChild(link);
+		const slash = document.createElement('span');
+		slash.innerText = ' > ';
+		breadcrumb.appendChild(slash);
+		//quand j'appuies sur le logo je supprime tout le tableau
+		for (let i = 1; i < history.length; i++) {
+			createLink(history[i], history[i]);
+		}
+			
+
+	}
+
+	function createLink(text: string, href: string) {
+		const link = document.createElement('a');
+		link.href = href;
+		link.innerText = text;
+		breadcrumb.appendChild(link);
+		const slash = document.createElement('span');
+		slash.innerText = ' > ';
+		breadcrumb.appendChild(slash);
+	}
+	
+</script>
