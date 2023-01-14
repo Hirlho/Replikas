@@ -1,56 +1,54 @@
 ---
-import TextField from '../components/TextField.astro';
 import Layout from '../layouts/Layout.astro';
+import TextField from '../components/TextField.astro';
 import Button from '../components/Button.astro';
-import Account, {
-	UtilisateurOuMotDePasseInvalideError,
-} from '../model/users/Account';
-import { addCookie } from '../model/Utilitaire';
+import Buyer from '../model/users/Buyer';
+import { EmailDejaUtiliseError } from '../model/users/Account';
 
-// Si on a reçu un formulaire
 if (Astro.request.method == 'POST') {
 	const formData = await Astro.request.formData();
-	if (!(formData.has('email') && formData.has('password')))
-		// On vérifie que les champs sont bien remplis
-		return Astro.redirect('/login?error=missing_field');
+	const { last_name, first_name, email, password, password_confirm } =
+		Object.fromEntries(formData) as {
+			last_name: string;
+			first_name: string;
+			email: string;
+			password: string;
+			password_confirm: string;
+		};
 
-	const email = formData.get('email').toString();
-	const password = formData.get('password').toString();
+	if (
+		![last_name, first_name, email, password, password_confirm].every(
+			(value) => value
+		)
+	)
+		return Astro.redirect('/register?error=missing_field');
+	if (password != password_confirm)
+		return Astro.redirect('/register?error=password_mismatch');
+	// Vérification du mail
+	if (
+		!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(email)
+	)
+		return Astro.redirect('/register?error=invalid_email');
+	// Mot de passe fort https://www.section.io/engineering-education/password-strength-checker-javascript/
+	if (
+		!/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})/.test(
+			password
+		)
+	)
+		return Astro.redirect('/register?error=weak_password');
 
 	try {
-		// On récupère l'utilisateur, ou on lève une erreur si les identifiants sont invalides
-		const user = await Account.get(email, password);
-		// On crée un token
-		const token = await user.createSession();
-		// On crée les headers de la réponse
-		const headers = new Headers();
-		// On ajoute le token de session aux cookies du client
-		addCookie(headers, {
-			name: 'token',
-			value: token,
-			maxAge: Account.SESSION_DURATION,
-			secure: import.meta.env.MODE == 'production',
-			path: '/',
-		});
-		// Redirection vers la page d'accueil
-		headers.append('Location', '/');
-		// Envoi de la réponse
-		return new Response('', {
-			status: 302,
-			headers,
-		});
+		await Buyer.createBuyer(email, password, last_name, first_name);
 	} catch (e) {
-		if (e instanceof UtilisateurOuMotDePasseInvalideError) {
-			// Si les identifiants sont invalides
-			return Astro.redirect('/login?error=invalid_credentials');
+		if (e instanceof EmailDejaUtiliseError) {
+			return Astro.redirect('/register?error=already_exists');
 		} else {
 			// Si une autre erreur non prevue est survenue
 			console.error(e);
-			return new Response('Internal server error', {
-				status: 500,
-			}); // FIXME Pas tres bastien scapin friendly
+			return new Response('Internal server error', { status: 500 }); // FIXME : Rip bastien scapin
 		}
 	}
+	return Astro.redirect('/login?info=account_created');
 }
 
 // Si on a reçu un paramètre "error"
@@ -58,29 +56,57 @@ let error_msg = '';
 if (Astro.url.searchParams.has('error')) {
 	// On affiche un message d'erreur
 	const error = Astro.url.searchParams.get('error');
-	if (error == 'invalid_credentials') {
-		error_msg = 'Identifiants invalides';
-	} else if (error == 'missing_field') {
+	if (error == 'missing_field') {
 		error_msg = 'Veuillez remplir tous les champs';
+	} else if (error == 'password_mismatch') {
+		error_msg = 'Les mots de passe ne correspondent pas';
+	} else if (error == 'invalid_email') {
+		error_msg = "L'adresse email n'est pas valide";
+	} else if (error == 'weak_password') {
+		error_msg =
+			'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial';
+	} else if (error == 'already_exists') {
+		error_msg = 'Un compte avec cette adresse email existe déjà';
 	}
 }
 ---
 
-<Layout title="Login" no_searchbar>
+<Layout title="Register" no_searchbar>
 	<main>
-		<h1>Connectez-vous à votre compte</h1>
-
-		{error_msg && <p class="error_msg">{error_msg}</p>}
-		<form method="post" action="/login">
+		<form method="post" class="formlist">
+			<h1>Créer votre compte</h1>
 			<table>
+				<tr>
+					<th>Nom :</th>
+					<td>
+						<TextField
+							text=""
+							placeholder="Entrez votre nom"
+							length="15rem"
+							name="last_name"
+						/>
+					</td>
+				</tr>
+				<tr>
+					<th>Prénom :</th>
+					<td>
+						<TextField
+							text=""
+							placeholder="Entrez votre prénom"
+							length="15rem"
+							name="first_name"
+						/>
+					</td>
+				</tr>
 				<tr>
 					<th>E-mail :</th>
 					<td>
 						<TextField
+							text=""
 							placeholder="Entrez votre e-mail"
-							name="email"
 							type="email"
-							length="20rem"
+							length="15rem"
+							name="email"
 						/>
 					</td>
 				</tr>
@@ -88,50 +114,59 @@ if (Astro.url.searchParams.has('error')) {
 					<th>Mot de passe :</th>
 					<td>
 						<TextField
+							text=""
 							placeholder="Entrez votre mot de passe"
-							name="password"
 							type="password"
-							length="20rem"
+							length="15rem"
+							name="password"
 						/>
 					</td>
 				</tr>
 				<tr>
-					<th></th>
+					<th>Confirmer le mot de passe :</th>
 					<td>
-						<Button text="Se connecter" />
+						<TextField
+							text=""
+							placeholder="Confirmer le mot de passe"
+							type="password"
+							length="15rem"
+							name="password_confirm"
+						/>
 					</td>
 				</tr>
 			</table>
-			<div id="button"></div>
+
+			<div id="button">
+				<div>
+					<input type="checkbox" required />
+					<span>
+						J'accepte les <a href="cgu">conditions générales d'utilisation</a
+						></span
+					>
+				</div>
+				<Button text="S'inscrire" />
+				{error_msg && <p class="error_msg">{error_msg}</p>}
+			</div>
 		</form>
-		<div class="links">
-			<p>
-				Vous n'êtes pas encore inscrit ?
-				<a href="/register">S'inscrire</a>
-			</p>
-			<p>
-				Vous avez oublié votre mot de passe ?
-				<a href="/recover-password">Mot de passe oublié</a>
-			</p>
-		</div>
 	</main>
 </Layout>
+
 <style>
-	main {
-		margin: auto;
-		padding-top: 1.5rem;
-		padding-bottom: 1.5rem;
-		padding-left: 3rem;
-		padding-right: 3rem;
+	.formlist {
+		padding: 1.5rem 3rem;
+		margin: 1rem auto;
 		max-width: 80ch;
+
+		border-radius: 1rem;
+
 		background-color: var(--theme-secondary);
-		border-radius: 15px;
 	}
 
 	/*-----------------Table--------------------*/
+
 	table {
-		width: 80%;
-		margin: auto;
+		width: 100%;
+		margin: 1rem auto;
 	}
 
 	th {
@@ -139,33 +174,32 @@ if (Astro.url.searchParams.has('error')) {
 	}
 
 	td {
+		text-align: start;
 	}
 
-	/*-----------------Bouton s'inscrire--------------------*/
+	/*-----------------Boutton s'inscrire--------------------*/
+
 	#button {
-		/* centre le bouton */
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	#button div {
 		text-align: center;
+		margin-bottom: 1rem;
 	}
 
 	/*-----------------Texts--------------------*/
 	h1 {
 		font-size: 2rem;
-		font-weight: 650;
-
 		text-align: center;
-		margin-bottom: 1.5rem;
+		margin: 2rem 0;
 	}
-
 	.error_msg {
 		color: red;
 		text-align: center;
 	}
-
-	.links {
-		width: fit-content;
-		margin: auto;
-	}
-
 	a {
 		color: var(--theme-link);
 	}
