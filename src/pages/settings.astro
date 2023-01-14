@@ -13,7 +13,7 @@ try {
 	buyer = await getBuyerBySession(Astro.request.headers);
 } catch (e) {
 	if (e instanceof AccountTypeMismatch)
-		return Astro.redirect('/dashboard/companySettings');
+		return Astro.redirect('/dashboard/settings');
 	else if (!(e instanceof SessionTokenInvalideError)) console.error(e);
 	return Astro.redirect('/login');
 }
