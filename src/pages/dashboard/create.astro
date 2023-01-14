@@ -4,15 +4,19 @@ import Button from '../../components/Button.astro';
 import UploadInput from '../../components/UploadInput.astro';
 import TextField from '../../components/TextField.astro';
 import Layout from '../../layouts/Layout.astro';
-import fs from 'fs';
 import Article from '../../model/Article';
-import { getCompanyBySession } from '../../model/Utilitaire';
-import { Readable } from 'node:stream';
-import { v4 as uuidv4 } from 'uuid';
+import { getCompanyBySession, uploadImages } from '../../model/Utilitaire';
 import Company from '../../model/users/Company';
-import path from 'path';
 
 // TODO Plus de vérification sur les paramètres
+
+const company: Company = await getCompanyBySession(Astro.request.headers).catch(
+	(err) => null
+);
+
+if (!company) {
+	return Astro.redirect('/login');
+}
 
 if (Astro.request.method == 'POST') {
 	const formData = await Astro.request.formData();
@@ -71,13 +75,11 @@ if (Astro.request.method == 'POST') {
 	if (!company) return new Response('invalid_session', { status: 401 });
 
 	const images: File[] = formData.getAll('images') as File[];
-	const file_paths: Map<string, string> = new Map();
-	for (let image of images) {
-		file_paths.set(
-			image.name,
-			`/img/article/uploaded/${uuidv4()}.${image.name.split('.').pop()}`
-		);
-	}
+	const file_paths = await uploadImages(images).catch((e) => {
+		console.error(e);
+		return null;
+	});
+	if (!file_paths) return new Response('invalid_images', { status: 400 });
 
 	let article: Article;
 	try {
@@ -88,20 +90,12 @@ if (Astro.request.method == 'POST') {
 			min_bidding,
 			start,
 			end,
-			Array.from(file_paths.values()),
+			Array.from(file_paths.values()).map((path: any) => path.relative),
 			movie_id,
 			company.getId()
 		);
 	} catch (e) {
 		return new Response('invalid_movie_id', { status: 400 });
-	}
-
-	for (let image of images) {
-		const stream = Readable.fromWeb(image.stream() as any);
-		const file = fs.createWriteStream(
-			path.join('./public', file_paths.get(image.name))
-		);
-		stream.pipe(file);
 	}
 
 	return new Response('success', { status: 200 });
@@ -318,6 +312,15 @@ if (Astro.request.method == 'POST') {
 
 <script>
 	import Swal from 'sweetalert2';
+
+	const error_messages = {
+		missing_fields: 'Veuillez remplir tous les champs obligatoires',
+		invalid_dates: 'Veuillez entrer des dates et heures valides',
+		invalid_prices: 'Veuillez entrer des prix valides',
+		invalid_images:
+			'Erreur lors de la mise en ligne des images (préferer des images jpg ou png)',
+		invalid_movie_id: 'Veuillez sélectionner un film dans la liste proposée',
+	};
 	/* Script pour la vérification du contenu du formulaire */
 
 	let form = document.getElementById('form') as HTMLFormElement;
@@ -436,9 +439,17 @@ if (Astro.request.method == 'POST') {
 				body: formData,
 			});
 			if (response.status !== 200) {
-				alert(await response.text());
+				Swal.fire({
+					icon: 'error',
+					title: "Erreur lors de la création de l'article :",
+					text: error_messages[await response.text()] || 'Erreur inconnue',
+				});
 			} else {
-				Swal.fire('The article was created successfully');
+				Swal.fire('The article was created successfully', '', 'success').then(
+					() => {
+						window.location.href = '/dashboard';
+					}
+				);
 			}
 		}
 
