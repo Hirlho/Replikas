@@ -60,11 +60,6 @@ if (Astro.request.method == 'POST') {
 	if (base_price <= 0 || min_bidding < 0)
 		return new Response('invalid_prices', { status: 400 });
 
-	const company: Company = await getCompanyBySession(
-		Astro.request.headers
-	).catch(() => null);
-	if (!company) return new Response('invalid_session', { status: 401 });
-
 	const images: File[] = formData.getAll('images') as File[];
 	const file_paths = await uploadImages(images).catch((e) => {
 		console.error(e);
