@@ -1,26 +1,24 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import UserSetting from '../components/UserSetting.astro';
-import Buyer from '../model/users/Buyer';
-import { getBuyerBySession } from '../model/Utilitaire';
+import Layout from '../../layouts/Layout.astro';
+import UserSetting from '../../components/UserSetting.astro';
+import { getBuyerBySession, getCompanyBySession } from '../../model/Utilitaire';
 import {
 	AccountTypeMismatch,
 	SessionTokenInvalideError,
-} from '../model/users/Account';
+} from '../../model/users/Account';
+import Company from '../../model/users/Company';
 
-let buyer: Buyer;
+let company: Company;
 try {
-	buyer = await getBuyerBySession(Astro.request.headers);
+	company = await getCompanyBySession(Astro.request.headers);
 } catch (e) {
-	if (e instanceof AccountTypeMismatch)
-		return Astro.redirect('/dashboard/companySettings');
+	if (e instanceof AccountTypeMismatch) return Astro.redirect('/settings');
 	else if (!(e instanceof SessionTokenInvalideError)) console.error(e);
 	return Astro.redirect('/login');
 }
 
-const mail = buyer.getEmail();
-const lastName = buyer.getNom();
-const firstName = buyer.getPrenom();
+const mail = company.getEmail();
+const name = company.getNom();
 ---
 
 <Layout title="Replikas" no_searchbar>
@@ -37,8 +35,7 @@ const firstName = buyer.getPrenom();
 		</aside>
 		<main class="parameters">
 			<h2 id="monCompte">Mon compte</h2>
-			<UserSetting parametre="Nom" value={lastName} />
-			<UserSetting parametre="Prénom" value={firstName} />
+			<UserSetting parametre="Nom" value={name} />
 			<UserSetting parametre="Adresse mail" value={mail} />
 			<UserSetting parametre="Mot de passe" />
 			<h2 id="accessibilite">Accessibilité</h2>

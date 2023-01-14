@@ -208,6 +208,26 @@ export default class Article {
 		return articles;
 	}
 
+	public static async mostAwaited(limit: 8): Promise<Article[]> {
+		// TODO
+		const database = Database.get();
+		const result = await database`
+				SELECT * 
+				FROM article
+				WHERE art_id IN (
+					SELECT art_id
+					FROM bid
+					GROUP BY art_id
+					ORDER BY count(art_id) DESC
+					LIMIT ${limit}
+					)`;
+		const articles: Article[] = [];
+		for (const article of result) {
+			articles.push(await this.getFromResult(article));
+		}
+		return articles;
+	}
+
 	/**
 	 * @param buyer Le client qui veut savoir si il a aimé l'article
 	 * @returns Si l'article est dans la liste des articles aimés du client
