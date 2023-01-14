@@ -1,31 +1,19 @@
 ---
-import Buyer from '../../model/users/Buyer';
 import Article from '../Article.astro';
 import SearchBar from '../SearchBar.astro';
-
-export interface Props {
-	buyer: Buyer;
-}
-
-const { buyer } = Astro.props;
 ---
 
 <section class="content">
-	<form method="get" action="/basket">
+	<form method="get" action="/dashboard">
 		<h1>Vos articles</h1>
 		<div class="pages">
-			<input type="submit" value="Possédés" name="pageName" />
-			<input id="currentPage" type="submit" value="À payer" name="pageName" />
-			<input type="submit" value="Aimés" name="pageName" />
+			<input type="submit" value="En cours" name="pageName" />
+			<input id="currentPage" type="submit" value="À venir" name="pageName" />
 		</div>
 	</form>
 	<section class="sectionSearchBar">
 		<SearchBar />
 	</section>
-	<p>
-		Si 3 jours après avoir gagné une enchère, vous n'avez pas payé l'article
-		celui-ci ne vous appartiendra plus.
-	</p>
 	<div class="articles">
 		<Article article={} />
 	</div>
