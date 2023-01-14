@@ -8,6 +8,8 @@ export interface Props {
 }
 
 const { buyer } = Astro.props;
+
+const articles = await buyer.getAquiredArticles(true);
 ---
 
 <section class="content">
@@ -22,9 +24,9 @@ const { buyer } = Astro.props;
 	<section class="sectionSearchBar">
 		<SearchBar />
 	</section>
-	<div class="articles">
-		<Article article={} />
-	</div>
+	<ul class="articles">
+		{articles.map((article) => <Article article={article} />)}
+	</ul>
 </section>
 
 <style>

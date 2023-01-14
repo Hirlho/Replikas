@@ -124,10 +124,30 @@ export default class Buyer extends Account {
 		);
 	}
 
+	/**
+	 *
+	 * @returns Une liste des articles likés par l'utilisateur
+	 */
 	public async getLikedArticles(): Promise<Article[]> {
 		const database = Database.get();
 		const result =
 			await database`SELECT art_id FROM interests WHERE b_id = ${this.id}`;
+		const articles = [];
+		for (const row of result) {
+			articles.push(await Article.get(row.art_id));
+		}
+		return articles;
+	}
+
+	/**
+	 *
+	 * @param is_paid permet de chercher les article payés ou non
+	 * @returns Une liste des articles possédés par l'achereur
+	 */
+	public async getAquiredArticles(is_paid = true): Promise<Article[]> {
+		const database = Database.get();
+		const result = await database`
+			SELECT art_id FROM aquired WHERE b_id = ${this.id} AND is_paid = ${is_paid}`;
 		const articles = [];
 		for (const row of result) {
 			articles.push(await Article.get(row.art_id));

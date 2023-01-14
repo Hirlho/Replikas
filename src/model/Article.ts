@@ -208,8 +208,12 @@ export default class Article {
 		return articles;
 	}
 
+	/**
+	 *
+	 * @param limit combien d'article il faut afficher
+	 * @returns Une liste des articles les plus liké de taille 'limit'
+	 */
 	public static async mostAwaited(limit = 8): Promise<Article[]> {
-		// TODO
 		const database = Database.get();
 		const result = await database`
 			SELECT a.* FROM article a NATURAL JOIN interests 
