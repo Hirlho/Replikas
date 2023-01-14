@@ -7,7 +7,7 @@ import Buyer from './users/Buyer';
 import Company from './users/Company';
 import path from 'path';
 import fs from 'fs';
-import os from 'os';
+import stream from 'stream';
 import { v4 as uuidv4 } from 'uuid';
 import { Readable } from 'node:stream';
 
@@ -162,14 +162,18 @@ export async function uploadImages(
  */
 function uploadImage(file: File, path: string) {
 	return new Promise((resolve, reject) => {
-		const writeStream = fs.createWriteStream(path);
-		writeStream.on('finish', () => resolve(0));
-		writeStream.on('error', (err) => {
-			console.error('[WRITE_STREAM_ERROR] : ' + err);
-			reject(file.name);
-		});
-		const readStream = Readable.fromWeb(file.stream() as any);
-		readStream.pipe(writeStream);
+		stream.pipeline(
+			Readable.fromWeb(file.stream() as any),
+			fs.createWriteStream(path),
+			(err) => {
+				if (err) {
+					console.error('[FILE_UPLOAD_STREAM_ERROR] : ' + err);
+					reject(file.name);
+				} else {
+					resolve(0);
+				}
+			}
+		);
 	});
 }
 
