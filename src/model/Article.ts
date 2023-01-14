@@ -208,19 +208,13 @@ export default class Article {
 		return articles;
 	}
 
-	public static async mostAwaited(limit: 8): Promise<Article[]> {
+	public static async mostAwaited(limit = 8): Promise<Article[]> {
 		// TODO
 		const database = Database.get();
 		const result = await database`
-				SELECT * 
-				FROM article
-				WHERE art_id IN (
-					SELECT art_id
-					FROM bid
-					GROUP BY art_id
-					ORDER BY count(art_id) DESC
-					LIMIT ${limit}
-					)`;
+			SELECT a.* FROM article a NATURAL JOIN interests 
+			WHERE art_auction_start > NOW() 
+			GROUP BY(art_id) ORDER BY count(art_id) DESC LIMIT 8;`;
 		const articles: Article[] = [];
 		for (const article of result) {
 			articles.push(await this.getFromResult(article));

@@ -4,7 +4,7 @@ import Article from '../components/Article.astro';
 import { default as ArticleModel } from '../model/Article';
 
 const mostBids = await ArticleModel.mostBids({ limit: 8, offset: 0 });
-// const;
+const mostAwaited = await ArticleModel.mostAwaited();
 ---
 
 <Layout title="Replikas">
@@ -27,7 +27,7 @@ const mostBids = await ArticleModel.mostBids({ limit: 8, offset: 0 });
 		<div>
 			<h1>Les plus attendus</h1>
 			<ul>
-				{mostBids.map((article) => <Article article={article} />)}
+				{mostAwaited.map((article) => <Article article={article} />)}
 			</ul>
 		</div>
 	</main>
