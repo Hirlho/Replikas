@@ -1,4 +1,5 @@
 ---
+import Breadcrumb from '../components/Breadcrumb.astro';
 import Footer from '../components/Footer.astro';
 import Navbar from '../components/Navbar.astro';
 
@@ -26,6 +27,8 @@ const { title, no_searchbar } = Astro.props;
 	<body>
 		<main>
 			{no_searchbar ? <Navbar /> : <Navbar search_bar />}
+			<Breadcrumb 
+			/>
 			<section>
 				<slot />
 			</section>
@@ -101,5 +104,4 @@ const { title, no_searchbar } = Astro.props;
 			padding: 2rem;
 		}
 	</style>
-	<script is:inline src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </html>

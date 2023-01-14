@@ -1,6 +1,6 @@
 import { APIRoute } from 'astro';
-import Buyer from '../../model/users/Buyer';
-import { getBuyerBySession } from '../../model/Utilitaire';
+import Buyer from '../../../model/users/Buyer';
+import { getBuyerBySession } from '../../../model/Utilitaire';
 
 export const post: APIRoute = async ({ request }) => {
 	// Get the json body
