@@ -104,13 +104,12 @@ const { name } = Astro.props;
 		margin-right: 15px;
 		margin-bottom: 8px;
 
-		width: 100px;
-		height: 100px;
-
 		position: relative;
 	}
 
 	.card .container .image img {
+		max-width: 10rem;
+
 		height: 100%;
 		border-radius: 5px;
 	}
@@ -124,15 +123,15 @@ const { name } = Astro.props;
 	}
 </style>
 
-<script>
+<script is:inline>
 	/* Script pour la gestion du Drag & Drop d'images */
 
 	/* Variables */
-	let files: File[] = [];
-	let dragArea: HTMLDivElement = document.querySelector('.drag-area');
-	let input: HTMLInputElement = document.querySelector('.drag-area input');
-	let select: HTMLDivElement = document.querySelector('.drag-area .select');
-	let container: HTMLDivElement = document.querySelector('.container');
+	let files = [];
+	let dragArea = document.querySelector('.drag-area');
+	let input = document.querySelector('.drag-area input');
+	let select = document.querySelector('.drag-area .select');
+	let container = document.querySelector('.container');
 
 	/* CLICK LISTENER */
 	select.addEventListener('click', () => input.click());
@@ -195,7 +194,7 @@ const { name } = Astro.props;
 	});
 
 	/* DROP EVENT */
-	dragArea.addEventListener('drop', (e: DragEvent) => {
+	dragArea.addEventListener('drop', (e) => {
 		e.preventDefault();
 		dragArea.classList.remove('dragover');
 
