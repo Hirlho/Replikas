@@ -1,7 +1,8 @@
 ---
-import Breadcrumb from '../components/Breadcrumb.astro';
 import Footer from '../components/Footer.astro';
 import Navbar from '../components/Navbar.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+
 
 export interface Props {
 	title: string;
@@ -27,7 +28,7 @@ const { title, no_searchbar } = Astro.props;
 	<body>
 		<main>
 			{no_searchbar ? <Navbar /> : <Navbar search_bar />}
-			<Breadcrumb 
+			<Breadcrumb {}
 			/>
 			<section>
 				<slot />
