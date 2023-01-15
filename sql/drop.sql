@@ -1,3 +1,4 @@
+DROP TABLE notification;
 DROP TABLE aquired;
 DROP TABLE interests;
 DROP TABLE bid;
