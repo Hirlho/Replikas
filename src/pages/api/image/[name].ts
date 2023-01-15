@@ -21,6 +21,7 @@ export const get: APIRoute = async ({ params, request }) => {
 	return new Response(file, {
 		headers: {
 			'Content-Type': `image/${path.split('.').pop()}`,
+			'Cache-Control': 'max-age=31536000',
 		},
 		status: 200,
 	});
