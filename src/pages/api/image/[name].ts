@@ -10,11 +10,9 @@ export const get: APIRoute = async ({ params, request }) => {
 		});
 	}
 
-	const path = `${Config.get().uploads_dir}/${name}`;
+	let path = `${Config.get().uploads_dir}/${name}`;
 	if (!fs.existsSync(path)) {
-		return new Response('Image not found', {
-			status: 404,
-		});
+		path = 'public/img/article/placeholder.jpg';
 	}
 
 	const file = await fs.promises.readFile(path);
