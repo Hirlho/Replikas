@@ -183,6 +183,47 @@ export default class Article {
 		return articles;
 	}
 
+	public static async getBySearchFilter(
+		objectName: string,
+		movieName: string,
+		startDate: Date,
+		endDate: Date,
+		basePriceMin: number,
+		basePriceMax: number,
+		currentPriceMin: number,
+		currentPriceMax: number,
+		params = { limit: 20, offset: 0 }
+		): Promise<Article[]>{
+			
+			console.log(objectName, movieName, startDate, endDate, basePriceMax, basePriceMin, params);
+		const database = Database.get();
+		//const t0 = performance.now();
+		const result = await database`
+			SELECT 
+					a.* 
+			FROM
+					article a, movie c
+			WHERE
+					a.m_id = c.m_id AND
+					art_min_bidding>${basePriceMin} AND
+					art_min_bidding<${basePriceMax} AND
+					art_price>${currentPriceMin} AND
+					art_price<${currentPriceMax} AND
+					art_auction_start=${startDate} AND
+					art_auction_end=${endDate} AND
+					art_name LIKE ${'%"+objectName+"%'} AND
+					m_title LIKE ${'%"movieName"%'}
+			LIMIT ${params.limit} OFFSET ${params.offset || 0}`;
+		
+		const articles: Article[] = [];
+		for (const article of result) {
+			articles.push(await this.getFromResult(article));
+		}
+		//const t1 = performance.now();
+		//console.info(`Search took ${t1 - t0} milliseconds.`);
+		return articles;
+	}
+
 	/**
 	 * @param params Les paramètres de la recherche
 	 * @returns Les articles ayant le plus d'enchèrissements
