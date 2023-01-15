@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
+import path from 'path';
 config();
 
 function getEnv(key: string): string {
@@ -26,6 +27,7 @@ type ConfigType = {
 		password: string;
 		name: string;
 	};
+	uploads_dir: string;
 };
 
 export default class Config {
@@ -44,6 +46,7 @@ export default class Config {
 				password: getEnv('DB_PASS'),
 				name: getEnv('DB_NAME'),
 			},
+			uploads_dir: path.join(path.resolve(), 'uploads'),
 		};
 	}
 

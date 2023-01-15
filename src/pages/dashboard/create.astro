@@ -61,7 +61,7 @@ if (Astro.request.method == 'POST') {
 		return new Response('invalid_prices', { status: 400 });
 
 	const images: File[] = formData.getAll('images') as File[];
-	const file_paths = await uploadImages(images).catch((e) => {
+	const file_paths: string[] = await uploadImages(images).catch((e) => {
 		console.error(e);
 		return null;
 	});
@@ -76,7 +76,7 @@ if (Astro.request.method == 'POST') {
 			min_bidding,
 			start,
 			end,
-			Array.from(file_paths.values()).map((path: any) => path.relative),
+			file_paths,
 			movie_id,
 			company.getId()
 		);
