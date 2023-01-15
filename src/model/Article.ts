@@ -300,16 +300,19 @@ export default class Article {
 		return this.tmdb_movie_id;
 	}
 
+	/**
+	 * @returns Les url relatifs des images de l'article (convertit en route api)
+	 */
 	public getImages(): string[] {
-		return this.img_paths;
+		return this.img_paths.map((path) => `/api/image/${path}`);
 	}
 
 	/**
-	 * @returns L'url de l'image principale de l'article, si il n'a pas d'images on va chercher le poster sur TMDB
+	 * @returns L'url de l'image principale de l'article (convertit en route api), si il n'a pas d'images on va chercher le poster sur TMDB
 	 */
 	public async getPoster(): Promise<string> {
 		if (this.img_paths.length > 0) {
-			return this.img_paths[0];
+			return `/api/image/${this.img_paths[0]}`;
 		} else {
 			return await TMDB.getMoviePosterURL(this.tmdb_movie_id, 'w342').catch(
 				() => {
