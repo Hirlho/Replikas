@@ -5,7 +5,7 @@ import Bids from '../../../../model/Bids';
 export const get: APIRoute = async ({ params, request }) => {
 	const id = parseInt(params.id);
 	if (isNaN(id)) {
-		return new Response('Missing search query', {
+		return new Response('Invalid parameters', {
 			status: 400,
 		});
 	}
