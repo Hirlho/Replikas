@@ -48,6 +48,9 @@ if (Astro.request.method === 'POST') {
 
 	return new Response('Offre placée', { status: 200 });
 }
+
+const SUGGESTION_MULTIPLIERS = [1, 3, 5];
+
 const debutVente = article.getDebutVente();
 const finVente = article.getFinVente();
 
@@ -64,7 +67,15 @@ const description = article.getDescription();
 ---
 
 <Layout title="Replikas" no_searchbar>
-	<main>
+	<section>
+		<div
+			id="data"
+			data-id={id}
+			data-debutVente={debutVente}
+			data-finVente={finVente}
+			data-multipliers={SUGGESTION_MULTIPLIERS}
+		>
+		</div>
 		<h2 id="timeDiff">
 			{
 				enCours
@@ -85,33 +96,23 @@ const description = article.getDescription();
 				<p>Placer une offre :</p>
 				<form>
 					<div>
-						<button
-							class="button suggestion-value"
-							type="submit"
-							name="bid"
-							value={prix + encherissement_min}
-						>
-							{prix + encherissement_min + ' €'}
-						</button>
-						<button
-							class="button suggestion-value"
-							type="submit"
-							name="bid"
-							value={prix + encherissement_min * 3}
-						>
-							{prix + encherissement_min + ' €'}
-						</button>
-						<button
-							class="button suggestion-value"
-							type="submit"
-							name="bid"
-							value={prix + encherissement_min * 5}
-						>
-							{prix + encherissement_min + ' €'}
-						</button>
+						{
+							SUGGESTION_MULTIPLIERS.map((multiplier) => (
+								<button
+									class="button suggestion-value"
+									type="submit"
+									name="bid"
+									value={prix + encherissement_min * multiplier}
+								>
+									{prix + encherissement_min * multiplier + ' €'}
+								</button>
+							))
+						}
 					</div>
 					<input
+						id="manual-bid"
 						type="number"
+						name="bid"
 						min={prix + encherissement_min}
 						placeholder={prix + encherissement_min + ' ou plus'}
 					/>
@@ -128,12 +129,27 @@ const description = article.getDescription();
 				</p>
 			</div>
 		</article>
-	</main>
+	</section>
 </Layout>
 
-<script define:vars={{ id, debutVente, finVente }}>
+<script>
+	import Swal from 'sweetalert2';
+
+	const data = document.getElementById('data').dataset;
+	const id = parseInt(data.id);
+	const debutVente = new Date(data.debutVente);
+	const finVente = new Date(data.finVente);
+	const multipliers = JSON.parse(`[${data.multipliers}]`);
+
 	const currentPrice = document.getElementById('current-price');
 	const timeDiff = document.getElementById('timeDiff');
+	const suggestionValues = document.querySelectorAll(
+		'.suggestion-value'
+	) as NodeListOf<HTMLButtonElement>;
+	const manualBidInput = document.getElementById(
+		'manual-bid'
+	) as HTMLInputElement;
+	const form = document.querySelector('form');
 
 	/**
 	 * Duplicate of the one in the server
@@ -161,7 +177,13 @@ const description = article.getDescription();
 		await fetch(`/api/article/${id}/info`)
 			.then((res) => res.json())
 			.then((data) => {
-				currentPrice.innerText = data.max_bid + ' €';
+				currentPrice.innerText = data.current_bid + ' €';
+				suggestionValues.forEach((suggestion, i) => {
+					suggestion.value = data.current_bid + data.min_bid * multipliers[i];
+					suggestion.innerText = suggestion.value + ' €';
+				});
+				manualBidInput.min = data.current_bid + data.min_bid;
+				manualBidInput.placeholder = manualBidInput.min + ' ou plus';
 			});
 	}
 
@@ -180,6 +202,49 @@ const description = article.getDescription();
 
 	setInterval(updatePrice, 1000);
 	setInterval(updateDates, 1000);
+	suggestionValues.forEach((suggestion) => {
+		suggestion.addEventListener('click', (e) => {
+			e.preventDefault();
+			manualBidInput.value = suggestion.value;
+		});
+	});
+
+	form.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		const formData = new FormData(form);
+		const response = await fetch('', {
+			method: 'POST',
+			body: formData,
+		});
+		if (response.status === 200) {
+			Swal.fire({
+				title: 'Offre placée',
+				icon: 'success',
+			});
+		} else if (response.status === 403) {
+			Swal.fire({
+				title: 'Vous devez être connecté',
+				icon: 'error',
+				footer: `<a href="/login" style="margin-inline:	6px">
+							 Connectez 
+						</a> vous ou 
+						<a href="/register" style="margin-inline: 6px">
+							 inscrivez 
+						</a> vous pour pouvoir enchérir`,
+			});
+		} else if (response.status === 400) {
+			Swal.fire({
+				title: 'Offre invalide',
+				icon: 'error',
+				footer: "Votre offre doit être supérieure à l'offre actuelle",
+			});
+		} else {
+			Swal.fire({
+				title: 'Erreur inconnue',
+				icon: 'error',
+			});
+		}
+	});
 </script>
 
 <style>
@@ -187,10 +252,10 @@ const description = article.getDescription();
 		margin-top: 0;
 	}
 
-	main {
+	section {
 		margin: 20px auto;
 		padding: 40px 4%;
-		width: 80%;
+		width: 90%;
 
 		border-radius: 20px;
 

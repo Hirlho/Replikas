@@ -16,9 +16,10 @@ export const get: APIRoute = async ({ params, request }) => {
 			status: 404,
 		});
 	}
-	const max_bid = await Bids.getEnchereMax(article);
+	const current_bid = await Bids.getEnchereMax(article);
+	const min_bid = article.getEncherissementMin();
 
-	return new Response(JSON.stringify({ max_bid }), {
+	return new Response(JSON.stringify({ current_bid, min_bid }), {
 		headers: {
 			'content-type': 'application/json',
 		},
