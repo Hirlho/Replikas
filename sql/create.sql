@@ -88,3 +88,4 @@ ALTER TABLE article_image OWNER TO replikas_usr;
 ALTER TABLE bid OWNER TO replikas_usr;
 ALTER TABLE interests OWNER TO replikas_usr;
 ALTER TABLE aquired OWNER TO replikas_usr;
+ALTER TABLE notification OWNER TO replikas_usr;

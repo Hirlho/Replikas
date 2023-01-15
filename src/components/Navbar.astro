@@ -8,9 +8,10 @@ import Company from '../model/users/Company';
 export interface Props {
 	page_name?: string;
 	search_bar?: boolean;
+
 }
 
-const { page_name, search_bar } = Astro.props;
+const { page_name, search_bar} = Astro.props;
 // Recuperer les infos de l'utilisateur
 let account: Account | Buyer | Company;
 const cookies = Astro.request.headers.get('cookie');
@@ -38,6 +39,23 @@ if (cookies) {
 	</nav>
 
 	<div id="right">
+
+		{account && account.isCompany() ? (
+			<div id = "pages">
+				<a href="/dashboard">Mes articles</a>
+				<a href="/dashboard/create">Ajout d'article</a>
+			</div>
+		) : (
+			account ?(<div id="pages">
+				<a href="/basket">Mes Articles</a>
+			</div>
+				):(
+					<div></div>
+						)
+						
+		)
+		}
+
 		{search_bar && <SearchBar />}
 		{
 			account ? ( // Si l'utilisateur est connecte

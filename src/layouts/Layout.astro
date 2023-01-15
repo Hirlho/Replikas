@@ -9,7 +9,7 @@ export interface Props {
 	no_searchbar?: boolean;
 }
 
-const { title, no_searchbar } = Astro.props;
+const { title, no_searchbar} = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -28,6 +28,7 @@ const { title, no_searchbar } = Astro.props;
 	<body>
 		<main>
 			{no_searchbar ? <Navbar /> : <Navbar search_bar />}
+
 			<Breadcrumb {}
 			/>
 			<section>
