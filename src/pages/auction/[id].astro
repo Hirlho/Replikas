@@ -65,7 +65,7 @@ const description = article.getDescription();
 
 <Layout title="Replikas" no_searchbar>
 	<main>
-		<h2>
+		<h2 id="timeDiff">
 			{
 				enCours
 					? `Se termine dans ${ends.day}j ${ends.hour}h ${ends.min}min ${ends.sec}s`
@@ -78,7 +78,7 @@ const description = article.getDescription();
 			</div>
 			<div class="informations">
 				<h2>{nom}</h2>
-				<p id="timeDiff">
+				<p>
 					{enCours ? 'Enchère actuelle :' : 'Prix de départ : '}
 				</p>
 				<h2 id="current-price">{prix} €</h2>
@@ -86,7 +86,7 @@ const description = article.getDescription();
 				<form>
 					<div>
 						<button
-							class="button"
+							class="button suggestion-value"
 							type="submit"
 							name="bid"
 							value={prix + encherissement_min}
@@ -94,7 +94,7 @@ const description = article.getDescription();
 							{prix + encherissement_min + ' €'}
 						</button>
 						<button
-							class="button"
+							class="button suggestion-value"
 							type="submit"
 							name="bid"
 							value={prix + encherissement_min * 3}
@@ -102,7 +102,7 @@ const description = article.getDescription();
 							{prix + encherissement_min + ' €'}
 						</button>
 						<button
-							class="button"
+							class="button suggestion-value"
 							type="submit"
 							name="bid"
 							value={prix + encherissement_min * 5}
@@ -158,7 +158,7 @@ const description = article.getDescription();
 	}
 
 	async function updatePrice() {
-		await fetch('/api/article/info?id=' + id)
+		await fetch(`/api/article/${id}/info`)
 			.then((res) => res.json())
 			.then((data) => {
 				currentPrice.innerText = data.max_bid + ' €';
