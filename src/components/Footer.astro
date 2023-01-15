@@ -1,14 +1,22 @@
+---
+---
+
 <footer>
 	<section id="replika-info">
-		<h> Replikas</h>
-		<a href="/aboutus"> À propos de Replikas</a>
-		<a href="/contact">Nous contacter</a>
-		<a href="/privacy_policy"> Notre politique de confidentialité</a>
+		<h1>Replikas</h1>
+		<a class="hoverScale" href="/aboutus"> À propos de Replikas</a>
+		<a class="hoverScale" href="/contact">Nous contacter</a>
+		<a class="hoverScale" href="/privacy_policy">
+			Notre politique de confidentialité</a
+		>
 	</section>
 	<section id="replika-socials">
-		<h> Nos réseaux</h>
+		<h1>Nos réseaux</h1>
 		<div class="hbox">
-			<a href="https://fr-fr.facebook.com/DonaldTrump" target="_blank"
+			<a
+				class="hoverScale"
+				href="https://fr-fr.facebook.com/DonaldTrump"
+				target="_blank"
 				><img
 					src="/img/icons/socials/facebook.svg"
 					width="48px"
@@ -16,7 +24,7 @@
 					alt="Facebook"
 				/>
 			</a>
-			<a href="https://twitter.com/elonmusk" target="_blank"
+			<a class="hoverScale" href="https://twitter.com/elonmusk" target="_blank"
 				><img
 					src="/img/icons/socials/twitter.svg"
 					width="48px"
@@ -24,7 +32,10 @@
 					alt="Twitter"
 				/>
 			</a>
-			<a href="https://www.instagram.com/hugodecrypte" target="_blank"
+			<a
+				class="hoverScale"
+				href="https://www.instagram.com/hugodecrypte"
+				target="_blank"
 				><img
 					src="/img/icons/socials/instagram.svg"
 					width="48px"
@@ -33,6 +44,7 @@
 				/>
 			</a>
 			<a
+				class="hoverScale"
 				href="https://fr.linkedin.com/in/herv%C3%A9-blanchon-4851b02"
 				target="_blank"
 				><img
@@ -42,7 +54,7 @@
 					alt="Linkedin"
 				/>
 			</a>
-			<a href="https://r.mtdv.me/replikas" target="_blank"
+			<a class="hoverScale" href="https://r.mtdv.me/replikas" target="_blank"
 				><img
 					src="/img/icons/socials/youtube.svg"
 					width="48px"
@@ -60,9 +72,10 @@
 			alt="Replikas"
 			class="filter-whitesmoke"
 		/>
-		<h> Replikas team</h>
+		<h1>Replikas team</h1>
 	</section>
 </footer>
+
 <style>
 	footer {
 		display: flex;
@@ -74,37 +87,54 @@
 		flex-grow: 0;
 		flex-shrink: 0;
 	}
-	footer h {
+
+	footer h1 {
 		font-size: 1.5rem;
 		margin: 1rem;
 		font-weight: bold;
 	}
+
 	footer #replika-info a {
 		font-size: 1rem;
 		margin: 0.4rem;
 		text-decoration: none;
 		color: inherit;
 	}
+
 	footer section {
 		margin: 0.5rem;
 	}
+
 	footer #replika-info {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 	}
+
 	footer #replika-socials {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 	}
+
 	footer #replikas-team {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 	}
+
 	footer #replikas-team img {
 		width: 1.5rem;
 		margin-right: -0.5rem;
+	}
+
+	/*------------Scale up buttons on hover-------------*/
+	.hoverScale {
+		transition: 0.5s ease;
+	}
+
+	.hoverScale:hover {
+		scale: 1.2;
+		transition: 0.5s ease;
 	}
 </style>
