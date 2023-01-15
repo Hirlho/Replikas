@@ -5,6 +5,13 @@ import Account, {
 } from './users/Account';
 import Buyer from './users/Buyer';
 import Company from './users/Company';
+import path from 'path';
+import fs from 'fs';
+import stream from 'stream';
+import { v4 as uuidv4 } from 'uuid';
+import { Readable } from 'node:stream';
+import Config from './Config';
+import Article from './Article';
 
 export { dateDiff };
 
@@ -107,9 +114,93 @@ export async function getCompanyBySession(headers: Headers): Promise<Company> {
 	const account = await getAccountBySession(headers);
 	return Company.getFromAccount(account);
 }
+/**
+ * Upload les images d'un article dans ./public/images/articles/uploaded avec un nom unique
+ * @param files Les {@link File} du formulaire d'upload
+ * @returns Un {@link Map} contenant le nom du fichier et son chemin par rapport à /public
+ */
+export async function uploadImages(files: File[]): Promise<string[]> {
+	const upload_dir = path.join(Config.get().uploads_dir);
+	if (!fs.existsSync(upload_dir)) {
+		await fs.promises.mkdir(upload_dir, { recursive: true }).catch((err) => {
+			throw err;
+		});
+	}
+
+	const files_names: string[] = [];
+	let err: string = await Promise.all(
+		files.map((file) => {
+			const ext = path.extname(file.name);
+			let name: string;
+			do {
+				name = uuidv4() + ext;
+			} while (fs.existsSync(path.join(upload_dir, name)));
+			files_names.push(name);
+			uploadImage(file, path.join(upload_dir, name));
+		})
+	)
+		.then(() => '')
+		.catch((err) => {
+			return err;
+		});
+	if (err) {
+		// Suppression des images uploadées
+		await Promise.all(
+			files_names.map((file_name) =>
+				fs.promises
+					.unlink(path.join(upload_dir, file_name))
+					.catch((err) => null)
+			)
+		);
+		throw new UploadError(err);
+	}
+	return files_names;
+}
+
+/**
+ * Upload une image dans un dossier
+ * @param file Le {@link File} à uploader
+ * @param file_path Le chemin du dossier où uploader l'image
+ * @returns Un {@link Promise} résolu quand l'upload est terminé
+ */
+async function uploadImage(file: File, file_path: string) {
+	const arrayBuffer = await file.arrayBuffer().catch((err) => {
+		console.error('[ARRAY_BUFFER_ERROR] : ' + err);
+		throw file.name;
+	});
+	let buffer: Buffer;
+	try {
+		buffer = Buffer.from(arrayBuffer);
+	} catch (err) {
+		console.error('[BUFFER_ERROR] : ' + err);
+		throw file.name;
+	}
+	return new Promise((resolve, reject) => {
+		const writeStream = fs.createWriteStream(file_path);
+		writeStream.on('finish', () => resolve(0));
+		writeStream.on('error', (err) => {
+			console.error('[WRITE_STREAM_ERROR] : ' + err);
+			reject(file.name);
+		});
+		const readStream = new Readable();
+		readStream.push(buffer);
+		readStream.push(null);
+		readStream.on('error', (err) => {
+			console.error('[READ_STREAM_ERROR] : ' + err);
+			reject(file.name);
+		});
+		readStream.pipe(writeStream);
+	});
+}
 
 export class EtatInnatenduError extends Error {
 	constructor(description: string) {
 		super(`[Etat innatendu] ${description}`);
+	}
+}
+
+export class UploadError extends Error {
+	constructor(file: string) {
+		super(`Erreur lors de l'upload de ${file}`);
 	}
 }

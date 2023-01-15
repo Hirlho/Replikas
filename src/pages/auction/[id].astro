@@ -1,9 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Article, { ArticleInexistantError } from '../../model/Article';
-import { AccountTypeMismatch } from '../../model/users/Account';
+import Bids from '../../model/Bids';
 import Company from '../../model/users/Company';
-import { dateDiff } from '../../model/Utilitaire';
+import { dateDiff, getBuyerBySession } from '../../model/Utilitaire';
 
 const id = parseInt(Astro.params.id); // L'id de l'article est dans le chemin de l'URL
 
@@ -19,38 +19,68 @@ try {
 	return new Response(`Erreur interne : ${e}`, { status: 500 }); // FIXME : pas tres bastien scapin like
 }
 
-const enCours =
-	article.getDebutVente() < new Date() && article.getFinVente() > new Date();
+if (Astro.request.method === 'POST') {
+	const buyer = await getBuyerBySession(Astro.request.headers).catch(
+		() => null
+	);
+	if (!buyer) return new Response('Vous devez être connecté', { status: 403 });
 
-const starts = dateDiff(article.getDebutVente(), new Date());
-const ends = dateDiff(article.getFinVente(), new Date());
+	if (article.getFinVente() < new Date())
+		return new Response('Enchère terminée', { status: 400 });
+
+	if (article.getDebutVente() > new Date())
+		return new Response('Enchère pas encore commencée', { status: 400 });
+
+	const formData = await Astro.request.formData();
+	const bid = formData.get('bid') as any as number;
+	if (isNaN(bid)) return new Response('Offre invalide', { status: 400 });
+	if (
+		bid <
+		(await Bids.getEnchereMax(article)) + article.getEncherissementMin()
+	)
+		return new Response('Offre trop faible', { status: 400 });
+
+	try {
+		await Bids.placerEnchere(article, bid, buyer);
+	} catch (e) {
+		return new Response(`Erreur interne : ${e}`, { status: 500 }); // FIXME : pas tres bastien scapin like
+	}
+
+	return new Response('Offre placée', { status: 200 });
+}
+
+const SUGGESTION_MULTIPLIERS = [1, 3, 5];
+
+const debutVente = article.getDebutVente();
+const finVente = article.getFinVente();
+
+const enCours = debutVente < new Date() && finVente > new Date();
+
+const starts = dateDiff(debutVente, new Date());
+const ends = dateDiff(finVente, new Date());
 
 const nom = article.getName();
-const prix = article.getPrixBase();
+const prix = await Bids.getEnchereMax(article);
 const encherissement_min = article.getEncherissementMin();
 const image = await article.getPoster();
 const description = article.getDescription();
 ---
 
 <Layout title="Replikas" no_searchbar>
-	<main>
-		<h2>
+	<section>
+		<div
+			id="data"
+			data-id={id}
+			data-debutvente={debutVente}
+			data-finvente={finVente}
+			data-multipliers={SUGGESTION_MULTIPLIERS}
+		>
+		</div>
+		<h2 id="timeDiff">
 			{
 				enCours
-					? 'Se termine dans ' +
-					  ends.day +
-					  'j ' +
-					  ends.hour +
-					  'h ' +
-					  ends.min +
-					  'min'
-					: 'Commence dans ' +
-					  starts.day +
-					  'j ' +
-					  starts.hour +
-					  'h ' +
-					  starts.min +
-					  'min'
+					? `Se termine dans ${ends.day}j ${ends.hour}h ${ends.min}min ${ends.sec}s`
+					: `Débute dans ${starts.day}j ${starts.hour}h ${starts.min}min ${starts.sec}s`
 			}
 		</h2>
 		<article>
@@ -60,30 +90,29 @@ const description = article.getDescription();
 			<div class="informations">
 				<h2>{nom}</h2>
 				<p>
-					{enCours ? 'Valeur actuelle :' : 'Valeur de départ : '}
+					{enCours ? 'Enchère actuelle :' : 'Prix de départ : '}
 				</p>
-				<h2>{article.getPrixBase()} €</h2>
+				<h2 id="current-price">{prix} €</h2>
 				<p>Placer une offre :</p>
 				<form>
 					<div>
-						<input
-							class="button"
-							type="submit"
-							value={prix + encherissement_min + ' €'}
-						/>
-						<input
-							class="button"
-							type="submit"
-							value={prix + encherissement_min * 3 + ' €'}
-						/>
-						<input
-							class="button"
-							type="submit"
-							value={prix + encherissement_min * 5 + ' €'}
-						/>
+						{
+							SUGGESTION_MULTIPLIERS.map((multiplier) => (
+								<button
+									class="button suggestion-value"
+									type="submit"
+									name="bid"
+									value={prix + encherissement_min * multiplier}
+								>
+									{prix + encherissement_min * multiplier + ' €'}
+								</button>
+							))
+						}
 					</div>
 					<input
+						id="manual-bid"
 						type="number"
+						name="bid"
 						min={prix + encherissement_min}
 						placeholder={prix + encherissement_min + ' ou plus'}
 					/>
@@ -100,18 +129,142 @@ const description = article.getDescription();
 				</p>
 			</div>
 		</article>
-	</main>
+	</section>
 </Layout>
+
+<script>
+	import Swal from 'sweetalert2';
+
+	const data = document.getElementById('data').dataset;
+	const id = parseInt(data.id);
+	const debutvente = new Date(data.debutvente);
+	const finvente = new Date(data.finvente);
+	const multipliers = JSON.parse(`[${data.multipliers}]`);
+
+	const currentPrice = document.getElementById('current-price');
+	const timeDiff = document.getElementById('timeDiff');
+	const suggestionValues = document.querySelectorAll(
+		'.suggestion-value'
+	) as NodeListOf<HTMLButtonElement>;
+	const manualBidInput = document.getElementById(
+		'manual-bid'
+	) as HTMLInputElement;
+	const form = document.querySelector('form');
+
+	/**
+	 * Duplicate of the one in the server
+	 */
+	function dateDiff(date1, date2) {
+		var diff = {
+			sec: 0,
+			min: 0,
+			hour: 0,
+			day: 0,
+		};
+		var diff_temps = date1.getTime() - date2.getTime();
+		diff_temps = Math.floor(diff_temps / 1000);
+		diff.sec = diff_temps % 60;
+		diff_temps = Math.floor((diff_temps - diff.sec) / 60);
+		diff.min = diff_temps % 60;
+		diff_temps = Math.floor((diff_temps - diff.min) / 60);
+		diff.hour = diff_temps % 24;
+		diff_temps = Math.floor((diff_temps - diff.hour) / 24);
+		diff.day = diff_temps;
+		return diff;
+	}
+
+	async function updatePrice() {
+		await fetch(`/api/article/${id}/info`)
+			.then((res) => res.json())
+			.then((data) => {
+				currentPrice.innerText = data.current_bid + ' €';
+				suggestionValues.forEach((suggestion, i) => {
+					suggestion.value = data.current_bid + data.min_bid * multipliers[i];
+					suggestion.innerText = suggestion.value + ' €';
+				});
+				manualBidInput.min = data.current_bid + data.min_bid;
+				manualBidInput.placeholder = manualBidInput.min + ' ou plus';
+			});
+	}
+
+	function updateDates() {
+		const now = new Date();
+		const starts = dateDiff(new Date(debutvente), now);
+		const ends = dateDiff(new Date(finvente), now);
+		if (
+			starts.sec >= 0 &&
+			starts.min >= 0 &&
+			starts.hour >= 0 &&
+			starts.day >= 0
+		) {
+			timeDiff.innerText = `Débute dans ${starts.day}j ${starts.hour}h ${starts.min}min ${starts.sec}s`;
+		} else if (
+			ends.sec >= 0 &&
+			ends.min >= 0 &&
+			ends.hour >= 0 &&
+			ends.day >= 0
+		) {
+			timeDiff.innerText = `Se termine dans ${ends.day}j ${ends.hour}h ${ends.min}min ${ends.sec}s`;
+		} else {
+			timeDiff.innerText = '';
+		}
+	}
+
+	setInterval(updatePrice, 1000);
+	setInterval(updateDates, 1000);
+	suggestionValues.forEach((suggestion) => {
+		suggestion.addEventListener('click', (e) => {
+			e.preventDefault();
+			manualBidInput.value = suggestion.value;
+		});
+	});
+
+	form.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		const formData = new FormData(form);
+		const response = await fetch('', {
+			method: 'POST',
+			body: formData,
+		});
+		if (response.status === 200) {
+			Swal.fire({
+				title: 'Offre placée',
+				icon: 'success',
+			});
+		} else if (response.status === 403) {
+			Swal.fire({
+				title: 'Vous devez être connecté',
+				icon: 'error',
+				footer: `<a href="/login?redirect=/auction/${id}" style="margin-inline: 6px; text-decoration: none; color: var(--theme-link);">
+							 Connectez 
+						</a> vous ou 
+						<a href="/register?redirect=/auction/${id}" style="margin-inline: 6px; text-decoration: none; color: var(--theme-link);">
+							 inscrivez 
+						</a> vous pour pouvoir enchérir`,
+			});
+		} else if (response.status === 400) {
+			Swal.fire({
+				title: await response.text(),
+				icon: 'error',
+			});
+		} else {
+			Swal.fire({
+				title: 'Erreur inconnue',
+				icon: 'error',
+			});
+		}
+	});
+</script>
 
 <style>
 	h2 {
 		margin-top: 0;
 	}
 
-	main {
+	section {
 		margin: 20px auto;
 		padding: 40px 4%;
-		width: 80%;
+		width: 90%;
 
 		border-radius: 20px;
 
@@ -161,11 +314,13 @@ const description = article.getDescription();
 	}
 
 	.button {
+		color: inherit;
 		background-color: var(--theme-button);
 
 		border: none;
 		border-radius: 5px;
 
 		padding: 5px;
+		cursor: pointer;
 	}
 </style>

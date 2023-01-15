@@ -30,8 +30,8 @@ export default class Article {
 		article.description = result.art_description;
 		article.price = result.art_price;
 		article.min_bidding = result.art_min_bidding;
-		article.auction_start = result.art_auction_start;
-		article.auction_end = result.art_auction_end;
+		article.auction_start = new Date(result.art_auction_start);
+		article.auction_end = new Date(result.art_auction_end);
 		article.tmdb_movie_id = result.m_id;
 		article.selling_company_id = result.c_id;
 
@@ -250,6 +250,24 @@ export default class Article {
 	}
 
 	/**
+	 *
+	 * @param limit combien d'article il faut afficher
+	 * @returns Une liste des articles les plus liké de taille 'limit'
+	 */
+	public static async mostAwaited(limit = 8): Promise<Article[]> {
+		const database = Database.get();
+		const result = await database`
+			SELECT a.* FROM article a NATURAL JOIN interests 
+			WHERE art_auction_start > NOW() 
+			GROUP BY(art_id) ORDER BY count(art_id) DESC LIMIT 8;`;
+		const articles: Article[] = [];
+		for (const article of result) {
+			articles.push(await this.getFromResult(article));
+		}
+		return articles;
+	}
+
+	/**
 	 * @param buyer Le client qui veut savoir si il a aimé l'article
 	 * @returns Si l'article est dans la liste des articles aimés du client
 	 */
@@ -323,16 +341,19 @@ export default class Article {
 		return this.tmdb_movie_id;
 	}
 
+	/**
+	 * @returns Les url relatifs des images de l'article (convertit en route api)
+	 */
 	public getImages(): string[] {
-		return this.img_paths;
+		return this.img_paths.map((path) => `/api/image/${path}`);
 	}
 
 	/**
-	 * @returns L'url de l'image principale de l'article, si il n'a pas d'images on va chercher le poster sur TMDB
+	 * @returns L'url de l'image principale de l'article (convertit en route api), si il n'a pas d'images on va chercher le poster sur TMDB
 	 */
 	public async getPoster(): Promise<string> {
 		if (this.img_paths.length > 0) {
-			return this.img_paths[0];
+			return `/api/image/${this.img_paths[0]}`;
 		} else {
 			return await TMDB.getMoviePosterURL(this.tmdb_movie_id, 'w342').catch(
 				() => {

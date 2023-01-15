@@ -8,68 +8,32 @@ export interface Props {
 }
 
 const { buyer } = Astro.props;
+
+const articles = await buyer.getAquiredArticles(true);
 ---
 
-<main>
-	<section>
-		<form method="get" action="/basket">
-			<h1>Vos articles</h1>
-			<div class="pages">
-				<input
-					id="currentPage"
-					type="submit"
-					value="Possédés"
-					name="pageName"
-				/>
-				<input type="submit" value="À payer" name="pageName" />
-				<input type="submit" value="Aimés" name="pageName" />
-			</div>
-		</form>
-		<section class="sectionSearchBar">
-			<SearchBar />
-		</section>
-		<div class="articles">
-			<Article
-				titre="Chapeau de Gandalf"
-				image="chapeau_de_gandalf.jpeg"
-				date={new Date()}
-				prix={690}
-			/>
-			<Article
-				titre="Chapeau de Gandalf"
-				image="chapeau_de_gandalf.jpeg"
-				date={new Date()}
-				prix={690}
-			/>
-			<Article
-				titre="Chapeau de Gandalf"
-				image="chapeau_de_gandalf.jpeg"
-				date={new Date()}
-				prix={690}
-			/>
-			<Article
-				titre="Chapeau de Gandalf"
-				image="chapeau_de_gandalf.jpeg"
-				date={new Date()}
-				prix={690}
-			/>
-			<Article
-				titre="Chapeau de Gandalf"
-				image="chapeau_de_gandalf.jpeg"
-				date={new Date()}
-				prix={690}
-			/>
-			<Article
-				titre="Chapeau de Gandalf"
-				image="chapeau_de_gandalf.jpeg"
-				date={new Date()}
-				prix={690}
-			/>
+<section class="content">
+	<form method="get" action="/basket">
+		<h1>Vos articles</h1>
+		<div class="pages">
+			<input id="currentPage" type="submit" value="Possédés" name="pageName" />
+			<input type="submit" value="À payer" name="pageName" />
+			<input type="submit" value="Aimés" name="pageName" />
 		</div>
+	</form>
+	<section class="sectionSearchBar">
+		<SearchBar />
 	</section>
-</main>
+	<ul class="articles">
+		{articles.map((article) => <Article article={article} />)}
+	</ul>
+</section>
+
 <style>
-	main {
+	section {
+		display: flex;
+		flex-direction: column;
+
 		width: 80%;
 		margin: 2rem auto;
 
@@ -79,25 +43,26 @@ const { buyer } = Astro.props;
 		padding: 2rem 3rem;
 	}
 
-	.sectionSearchBar {
-		width: 60%;
-		margin: 2rem auto;
-	}
-
-	/*-----------Nav-------------*/
+	/*---------------Nav-----------------*/
 
 	form {
-		width: 80%;
-		margin: auto;
+		display: grid;
+	}
 
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
+	h1 {
+		font-size: 3rem;
+
+		grid-column: 1;
+
+		width: 20rem;
+		margin: 0;
 	}
 
 	.pages {
+		grid-column: 2;
+
 		display: flex;
-		justify-content: space-around;
+		justify-content: center;
 	}
 
 	input {
@@ -105,7 +70,7 @@ const { buyer } = Astro.props;
 		color: inherit;
 
 		padding: 0.5rem 1rem;
-		margin: 0 1rem;
+		margin: 0 3rem;
 		font-size: 2rem;
 
 		border: none;
@@ -128,16 +93,16 @@ const { buyer } = Astro.props;
 		border-color: whitesmoke;
 	}
 
+	/*------------Search bar--------------*/
+
+	.sectionSearchBar {
+		width: 60%;
+		margin: 2rem auto;
+	}
+
 	/*--------------Articles----------------*/
 	.articles {
 		display: flex;
 		flex-wrap: wrap;
-	}
-
-	/*--------------Texts-------------------*/
-	h1 {
-		font-size: 2.5rem;
-
-		margin: 0;
 	}
 </style>

@@ -52,8 +52,7 @@ CREATE TABLE article_image (
 CREATE TABLE bid (
     b_id INTEGER REFERENCES buyer (a_id) ON DELETE CASCADE,
     art_id INTEGER REFERENCES article (art_id) ON DELETE CASCADE,
-    amount INTEGER NOT NULL,
-    PRIMARY KEY(b_id, art_id)
+    amount INTEGER NOT NULL
 );
 
 CREATE TABLE interests (
@@ -69,6 +68,13 @@ CREATE TABLE aquired (
     PRIMARY KEY(b_id, art_id)
 );
 
+CREATE TABLE notification (
+    n_id SERIAL PRIMARY KEY,
+    a_id INTEGER REFERENCES account (a_id) ON DELETE CASCADE,
+    n_date TIMESTAMP NOT NULL,
+    n_text varchar(300) NOT NULL
+);
+
 
 -- PERMISSONS
 ALTER TABLE test OWNER TO replikas_usr;
@@ -82,3 +88,4 @@ ALTER TABLE article_image OWNER TO replikas_usr;
 ALTER TABLE bid OWNER TO replikas_usr;
 ALTER TABLE interests OWNER TO replikas_usr;
 ALTER TABLE aquired OWNER TO replikas_usr;
+ALTER TABLE notification OWNER TO replikas_usr;

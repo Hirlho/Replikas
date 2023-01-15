@@ -1,5 +1,7 @@
 import postgres from 'postgres';
 import Config from './Config';
+import fs from 'fs';
+import path from 'path';
 
 export default class Database {
 	private static _instance: Database;

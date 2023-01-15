@@ -1,3 +1,4 @@
+import Article from '../Article';
 import Database from '../Database';
 import { EtatInnatenduError } from '../Utilitaire';
 import Account, {
@@ -88,6 +89,30 @@ export default class Company extends Account {
 	public static async getBySession(token: string): Promise<Company> {
 		const account = await super.getBySession(token);
 		return this.getFromAccount(account);
+	}
+
+	public async getOnGoingSales(): Promise<Article[]> {
+		const database = Database.get();
+		const result = await database`
+			SELECT art_id FROM article 
+			WHERE c_id = ${this.id} AND art_auction_start < NOW() AND art_auction_end > NOW()`;
+		const articles = [];
+		for (const row of result) {
+			articles.push(await Article.get(row.art_id));
+		}
+		return articles;
+	}
+
+	public async getComingSoonSales(): Promise<Article[]> {
+		const database = Database.get();
+		const result = await database`
+			SELECT art_id FROM article 
+			WHERE c_id = ${this.id} AND art_auction_start > NOW()`;
+		const articles = [];
+		for (const row of result) {
+			articles.push(await Article.get(row.art_id));
+		}
+		return articles;
 	}
 
 	public getNom(): string {

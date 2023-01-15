@@ -44,6 +44,7 @@ INSERT INTO movie VALUES (97020, 'Robocop');
 INSERT INTO movie VALUES (245891, 'John Wick');
 INSERT INTO movie VALUES (1924, 'Superman');
 
+insert into notification (a_id, n_date, n_text) values(1, current_timestamp, 'Test');
 
 INSERT INTO article (art_name, art_description, art_price, art_min_bidding, art_auction_start, art_auction_end, c_id, m_id)
 VALUES

@@ -89,7 +89,7 @@ const { placeholder, name, length, id } = Astro.props;
 
 			this.parentNode.appendChild(a);
 
-			/*Get the movie lisy*/
+			/*Get the movie list*/
 			let movies = await autocompleteMatch(val);
 
 			for (i = 0; i < movies.length; i++) {
@@ -104,6 +104,7 @@ const { placeholder, name, length, id } = Astro.props;
 					movies[i].id +
 					"'>";
 				suggestion.addEventListener('click', function (e) {
+					// FIXME : Problem when string contains single quote
 					inp.value = this.getElementsByTagName('input')[0].value;
 
 					inp.dataset.movieid =
