@@ -234,9 +234,8 @@ const description = article.getDescription();
 			});
 		} else if (response.status === 400) {
 			Swal.fire({
-				title: 'Offre invalide',
+				title: await response.text(),
 				icon: 'error',
-				footer: "Votre offre doit être supérieure à l'offre actuelle",
 			});
 		} else {
 			Swal.fire({
