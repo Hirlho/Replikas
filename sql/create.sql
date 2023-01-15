@@ -68,19 +68,13 @@ CREATE TABLE aquired (
     PRIMARY KEY(b_id, art_id)
 );
 
-CREATE TABLE c_notification (
-    a_id INTEGER REFERENCES company (a_id) ON DELETE CASCADE,
+CREATE TABLE notification (
+    n_id SERIAL PRIMARY KEY,
+    a_id INTEGER REFERENCES account (a_id) ON DELETE CASCADE,
     n_date TIMESTAMP NOT NULL,
-    n_text varchar(300) NOT NULL,
-    PRIMARY KEY(a_id);
+    n_text varchar(300) NOT NULL
 );
 
-CREATE TABLE b_notification (
-    a_id INTEGER REFERENCES buyer (a_id) ON DELETE CASCADE,
-    n_date TIMESTAMP NOT NULL,
-    n_text varchar(300) NOT NULL,
-    PRIMARY KEY(a_id);
-);
 
 -- PERMISSONS
 ALTER TABLE test OWNER TO replikas_usr;
