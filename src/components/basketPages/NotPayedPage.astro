@@ -8,6 +8,8 @@ export interface Props {
 }
 
 const { buyer } = Astro.props;
+
+const articles = await buyer.getAquiredArticles(false);
 ---
 
 <section class="content">
@@ -26,9 +28,9 @@ const { buyer } = Astro.props;
 		Si 3 jours après avoir gagné une enchère, vous n'avez pas payé l'article
 		celui-ci ne vous appartiendra plus.
 	</p>
-	<div class="articles">
-		<Article article={} />
-	</div>
+	<ul class="articles">
+		{articles.map((article) => <Article article={article} />)}
+	</ul>
 </section>
 
 <style>

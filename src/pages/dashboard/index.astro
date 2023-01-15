@@ -24,8 +24,8 @@ if (!Astro.url.searchParams.get('pageName')) {
 <Layout title="Replikas" no_searchbar>
 	{
 		{
-			'En cours': <Ongoing />,
-			'À venir': <ComingSoon />,
+			'En cours': <Ongoing company={company} />,
+			'À venir': <ComingSoon company={company} />,
 		}[page]
 	}
 </Layout>

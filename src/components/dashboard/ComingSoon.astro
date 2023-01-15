@@ -1,6 +1,15 @@
 ---
+import Company from '../../model/users/Company';
 import Article from '../Article.astro';
 import SearchBar from '../SearchBar.astro';
+
+export interface Props {
+	company: Company;
+}
+
+const { company } = Astro.props;
+
+const articles = await company.getComingSoonSales();
 ---
 
 <section class="content">
@@ -15,7 +24,7 @@ import SearchBar from '../SearchBar.astro';
 		<SearchBar />
 	</section>
 	<div class="articles">
-		<Article article={} />
+		{articles.map((article) => <Article article={article} />)}
 	</div>
 </section>
 

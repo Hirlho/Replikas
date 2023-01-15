@@ -24,9 +24,9 @@ const articles = await buyer.getLikedArticles();
 	<section class="sectionSearchBar">
 		<SearchBar />
 	</section>
-	<div class="articles">
+	<ul class="articles">
 		{articles.map((article) => <Article article={article} />)}
-	</div>
+	</ul>
 </section>
 
 <style>

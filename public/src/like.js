@@ -10,16 +10,13 @@ async function likeArticle(element, event) {
 	const img = element;
 	const id = img.getAttribute('data-id');
 	const liked = img.getAttribute('data-liked') === 'true';
-	const url = '/api/article/like';
+	const url = `/api/article/${id}/like`;
+	const method = liked ? 'DELETE' : 'POST';
 	fetch(url, {
-		method: 'POST',
+		method: method,
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({
-			id,
-			liked: !liked,
-		}),
 	})
 		.then((res) => {
 			if (res.status === 200) {

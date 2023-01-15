@@ -10,6 +10,8 @@ import fs from 'fs';
 import stream from 'stream';
 import { v4 as uuidv4 } from 'uuid';
 import { Readable } from 'node:stream';
+import Config from './Config';
+import Article from './Article';
 
 export { dateDiff };
 
@@ -117,26 +119,25 @@ export async function getCompanyBySession(headers: Headers): Promise<Company> {
  * @param files Les {@link File} du formulaire d'upload
  * @returns Un {@link Map} contenant le nom du fichier et son chemin par rapport à /public
  */
-export async function uploadImages(
-	files: File[]
-): Promise<Map<string, { absolute: string; relative: string }>> {
-	const upload_dir = path.join(path.resolve(), '/public/img/article/uploaded');
-	if (fs.existsSync(upload_dir)) {
-		await fs.promises.mkdir(upload_dir, { recursive: true });
-	}
-
-	const paths: Map<string, { absolute: string; relative: string }> = new Map();
-	for (const file of files) {
-		const ext = path.extname(file.name);
-		const name = uuidv4() + ext;
-		paths.set(file.name, {
-			absolute: path.join(upload_dir, name),
-			relative: path.join('/img/article/uploaded', name),
+export async function uploadImages(files: File[]): Promise<string[]> {
+	const upload_dir = path.join(Config.get().uploads_dir);
+	if (!fs.existsSync(upload_dir)) {
+		await fs.promises.mkdir(upload_dir, { recursive: true }).catch((err) => {
+			throw err;
 		});
 	}
 
+	const files_names: string[] = [];
 	let err: string = await Promise.all(
-		files.map((file) => uploadImage(file, paths.get(file.name).absolute))
+		files.map((file) => {
+			const ext = path.extname(file.name);
+			let name: string;
+			do {
+				name = uuidv4() + ext;
+			} while (fs.existsSync(path.join(upload_dir, name)));
+			files_names.push(name);
+			uploadImage(file, path.join(upload_dir, name));
+		})
 	)
 		.then(() => '')
 		.catch((err) => {
@@ -145,35 +146,50 @@ export async function uploadImages(
 	if (err) {
 		// Suppression des images uploadées
 		await Promise.all(
-			Array.from(paths.values()).map((path) =>
-				fs.promises.unlink(path.absolute).catch((err) => null)
+			files_names.map((file_name) =>
+				fs.promises
+					.unlink(path.join(upload_dir, file_name))
+					.catch((err) => null)
 			)
 		);
 		throw new UploadError(err);
 	}
-	return paths;
+	return files_names;
 }
 
 /**
  * Upload une image dans un dossier
  * @param file Le {@link File} à uploader
- * @param path Le chemin du dossier où uploader l'image
+ * @param file_path Le chemin du dossier où uploader l'image
  * @returns Un {@link Promise} résolu quand l'upload est terminé
  */
-function uploadImage(file: File, path: string) {
+async function uploadImage(file: File, file_path: string) {
+	const arrayBuffer = await file.arrayBuffer().catch((err) => {
+		console.error('[ARRAY_BUFFER_ERROR] : ' + err);
+		throw file.name;
+	});
+	let buffer: Buffer;
+	try {
+		buffer = Buffer.from(arrayBuffer);
+	} catch (err) {
+		console.error('[BUFFER_ERROR] : ' + err);
+		throw file.name;
+	}
 	return new Promise((resolve, reject) => {
-		stream.pipeline(
-			Readable.fromWeb(file.stream() as any),
-			fs.createWriteStream(path),
-			(err) => {
-				if (err) {
-					console.error('[FILE_UPLOAD_STREAM_ERROR] : ' + err);
-					reject(file.name);
-				} else {
-					resolve(0);
-				}
-			}
-		);
+		const writeStream = fs.createWriteStream(file_path);
+		writeStream.on('finish', () => resolve(0));
+		writeStream.on('error', (err) => {
+			console.error('[WRITE_STREAM_ERROR] : ' + err);
+			reject(file.name);
+		});
+		const readStream = new Readable();
+		readStream.push(buffer);
+		readStream.push(null);
+		readStream.on('error', (err) => {
+			console.error('[READ_STREAM_ERROR] : ' + err);
+			reject(file.name);
+		});
+		readStream.pipe(writeStream);
 	});
 }
 
