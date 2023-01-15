@@ -8,10 +8,9 @@ import Company from '../model/users/Company';
 export interface Props {
 	page_name?: string;
 	search_bar?: boolean;
-
 }
 
-const { page_name, search_bar} = Astro.props;
+const { page_name, search_bar } = Astro.props;
 // Recuperer les infos de l'utilisateur
 let account: Account | Buyer | Company;
 const cookies = Astro.request.headers.get('cookie');
@@ -39,21 +38,25 @@ if (cookies) {
 	</nav>
 
 	<div id="right">
-
-		{account && account.isCompany() ? (
-			<div id = "pages">
-				<a href="/dashboard">Mes articles</a>
-				<a href="/dashboard/create">Ajout d'article</a>
-			</div>
-		) : (
-			account ?(<div id="pages">
-				<a href="/basket">Mes Articles</a>
-			</div>
-				):(
-					<div></div>
-						)
-						
-		)
+		{
+			account && account.isCompany() ? (
+				<div class="pages">
+					<a class="pageLink" href="/dashboard">
+						Mes articles
+					</a>
+					<a class="pageLink" href="/dashboard/create">
+						Ajout d'article
+					</a>
+				</div>
+			) : account ? (
+				<div class="pages">
+					<a class="pageLink" href="/basket">
+						Mes Articles
+					</a>
+				</div>
+			) : (
+				<div />
+			)
 		}
 
 		{search_bar && <SearchBar />}
@@ -82,7 +85,7 @@ if (cookies) {
 				)
 			) : (
 				// Si l'utilisateur n'est pas connecte
-				<>
+				<div>
 					<a class="button" id="signup" href="/register">
 						{' '}
 						Creer un compte
@@ -91,7 +94,7 @@ if (cookies) {
 						{' '}
 						Connectez-vous
 					</a>
-				</>
+				</div>
 			)
 		}
 	</div>
@@ -116,11 +119,13 @@ if (cookies) {
 		flex-shrink: 0;
 	}
 
+	/*-----------Logo-------------*/
 	#logo {
 		scale: 0.9;
 		width: 16rem;
 	}
 
+	/*------------Navigation---------------*/
 	#right {
 		display: flex;
 		justify-content: flex-end;
@@ -128,6 +133,31 @@ if (cookies) {
 
 		width: 100%;
 	}
+
+	/*------------Pages--------------*/
+	.pages {
+		margin-right: 2rem;
+	}
+
+	.pageLink {
+		color: var(--theme-text);
+		text-decoration: none;
+
+		padding: 0.5rem 1rem;
+		margin: 0 3rem;
+		font-size: 1.7rem;
+
+		transition: 0.5s ease;
+
+		cursor: pointer;
+	}
+
+	.pageLink:hover {
+		scale: 1.1;
+		transition: 0.5s ease;
+	}
+
+	/*-----------User account buton && disconnected buttons-------------*/
 
 	.button {
 		text-decoration: none;
