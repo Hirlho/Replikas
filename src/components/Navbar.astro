@@ -39,7 +39,24 @@ if (cookies) {
 	</nav>
 
 	<div id="right">
-		{search_bar && <SearchBar />*}
+
+		{account && account.isCompany() ? (
+			<div id = "pages">
+				<a href="/dashboard">Mes articles</a>
+				<a href="/dashboard/create">Ajout d'article</a>
+			</div>
+		) : (
+			account ?(<div id="pages">
+				<a href="/basket">Mes Articles</a>
+			</div>
+				):(
+					<div></div>
+						)
+						
+		)
+		}
+
+		{search_bar && <SearchBar />}
 		{
 			account ? ( // Si l'utilisateur est connecte
 				account.isCompany() ? (
