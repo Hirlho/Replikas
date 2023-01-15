@@ -1,5 +1,7 @@
 import postgres from 'postgres';
 import Config from './Config';
+import fs from 'fs';
+import path from 'path';
 
 export default class Database {
 	private static _instance: Database;
@@ -14,6 +16,20 @@ export default class Database {
 			password: config.password,
 			database: config.name,
 			idle_timeout: 20,
+		});
+
+		this._client.subscribe('delete:article_image', (row: postgres.Row) => {
+			console.log('delete:article_image', row);
+			const file_path = path.join(Config.get().uploads_dir, row.name);
+			try {
+				fs.unlinkSync(file_path);
+			} catch (e) {
+				console.error(
+					'[UPLOAD_IMAGE_DELETE] Error while deleting file',
+					file_path,
+					e
+				);
+			}
 		});
 	}
 
