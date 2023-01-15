@@ -71,8 +71,8 @@ const description = article.getDescription();
 		<div
 			id="data"
 			data-id={id}
-			data-debutVente={debutVente}
-			data-finVente={finVente}
+			data-debutvente={debutVente}
+			data-finvente={finVente}
 			data-multipliers={SUGGESTION_MULTIPLIERS}
 		>
 		</div>
@@ -137,8 +137,8 @@ const description = article.getDescription();
 
 	const data = document.getElementById('data').dataset;
 	const id = parseInt(data.id);
-	const debutVente = new Date(data.debutVente);
-	const finVente = new Date(data.finVente);
+	const debutvente = new Date(data.debutvente);
+	const finvente = new Date(data.finvente);
 	const multipliers = JSON.parse(`[${data.multipliers}]`);
 
 	const currentPrice = document.getElementById('current-price');
@@ -189,8 +189,8 @@ const description = article.getDescription();
 
 	function updateDates() {
 		const now = new Date();
-		const starts = dateDiff(new Date(debutVente), now);
-		const ends = dateDiff(new Date(finVente), now);
+		const starts = dateDiff(new Date(debutvente), now);
+		const ends = dateDiff(new Date(finvente), now);
 		if (starts.day > 0) {
 			timeDiff.innerText = `Débute dans ${starts.day}j ${starts.hour}h ${starts.min}min ${starts.sec}s`;
 		} else if (ends.day > 0) {
@@ -225,18 +225,17 @@ const description = article.getDescription();
 			Swal.fire({
 				title: 'Vous devez être connecté',
 				icon: 'error',
-				footer: `<a href="/login?redirect=/auction/${id}" style="margin-inline: 6px">
+				footer: `<a href="/login?redirect=/auction/${id}" style="margin-inline: 6px; text-decoration: none; color: var(--theme-link);">
 							 Connectez 
 						</a> vous ou 
-						<a href="/register?redirect=/auction/${id}" style="margin-inline: 6px">
+						<a href="/register?redirect=/auction/${id}" style="margin-inline: 6px; text-decoration: none; color: var(--theme-link);">
 							 inscrivez 
 						</a> vous pour pouvoir enchérir`,
 			});
 		} else if (response.status === 400) {
 			Swal.fire({
-				title: 'Offre invalide',
+				title: await response.text(),
 				icon: 'error',
-				footer: "Votre offre doit être supérieure à l'offre actuelle",
 			});
 		} else {
 			Swal.fire({

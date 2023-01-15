@@ -30,8 +30,8 @@ export default class Article {
 		article.description = result.art_description;
 		article.price = result.art_price;
 		article.min_bidding = result.art_min_bidding;
-		article.auction_start = result.art_auction_start;
-		article.auction_end = result.art_auction_end;
+		article.auction_start = new Date(result.art_auction_start);
+		article.auction_end = new Date(result.art_auction_end);
 		article.tmdb_movie_id = result.m_id;
 		article.selling_company_id = result.c_id;
 
