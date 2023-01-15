@@ -160,20 +160,33 @@ export async function uploadImages(
  * @param path Le chemin du dossier où uploader l'image
  * @returns Un {@link Promise} résolu quand l'upload est terminé
  */
-function uploadImage(file: File, path: string) {
+async function uploadImage(file: File, path: string) {
+	const arrayBuffer = await file.arrayBuffer().catch((err) => {
+		console.error('[ARRAY_BUFFER_ERROR] : ' + err);
+		throw file.name;
+	});
+	let buffer: Buffer;
+	try {
+		buffer = Buffer.from(arrayBuffer);
+	} catch (err) {
+		console.error('[BUFFER_ERROR] : ' + err);
+		throw file.name;
+	}
 	return new Promise((resolve, reject) => {
-		stream.pipeline(
-			Readable.fromWeb(file.stream() as any),
-			fs.createWriteStream(path),
-			(err) => {
-				if (err) {
-					console.error('[FILE_UPLOAD_STREAM_ERROR] : ' + err);
-					reject(file.name);
-				} else {
-					resolve(0);
-				}
-			}
-		);
+		const writeStream = fs.createWriteStream(path);
+		writeStream.on('finish', () => resolve(0));
+		writeStream.on('error', (err) => {
+			console.error('[WRITE_STREAM_ERROR] : ' + err);
+			reject(file.name);
+		});
+		const readStream = new Readable();
+		readStream.push(buffer);
+		readStream.push(null);
+		readStream.on('error', (err) => {
+			console.error('[READ_STREAM_ERROR] : ' + err);
+			reject(file.name);
+		});
+		readStream.pipe(writeStream);
 	});
 }
 
