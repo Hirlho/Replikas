@@ -191,9 +191,19 @@ const description = article.getDescription();
 		const now = new Date();
 		const starts = dateDiff(new Date(debutvente), now);
 		const ends = dateDiff(new Date(finvente), now);
-		if (starts.day > 0) {
+		if (
+			starts.sec >= 0 &&
+			starts.min >= 0 &&
+			starts.hour >= 0 &&
+			starts.day >= 0
+		) {
 			timeDiff.innerText = `Débute dans ${starts.day}j ${starts.hour}h ${starts.min}min ${starts.sec}s`;
-		} else if (ends.day > 0) {
+		} else if (
+			ends.sec >= 0 &&
+			ends.min >= 0 &&
+			ends.hour >= 0 &&
+			ends.day >= 0
+		) {
 			timeDiff.innerText = `Se termine dans ${ends.day}j ${ends.hour}h ${ends.min}min ${ends.sec}s`;
 		} else {
 			timeDiff.innerText = '';
