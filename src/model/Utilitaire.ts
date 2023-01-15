@@ -78,7 +78,7 @@ export function addCookie(
  * @throws {@link CaCestVraimentPasDeBolError} Si le token de session est associé à plusieurs comptes
  *
  */
-async function getAccountBySession(headers: Headers): Promise<Account> {
+export async function getAccountBySession(headers: Headers): Promise<Account> {
 	const cookies = headers.get('cookie');
 	if (cookies) {
 		const token = (cookies.endsWith(';') ? cookies : cookies + ';').match(
