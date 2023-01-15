@@ -16,7 +16,7 @@ if (Astro.request.method == 'POST') {
 			password_confirm: string;
 		};
 
-	const redirect = Astro.url.searchParams.get('redirect');
+	const redirect = Astro.url.searchParams.get('redirect') || '';
 	if (
 		![last_name, first_name, email, password, password_confirm].every(
 			(value) => value
