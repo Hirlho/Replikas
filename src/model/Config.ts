@@ -1,12 +1,18 @@
-import { config } from "dotenv";
+import { config } from 'dotenv';
 config();
 
 function getEnv(key: string): string {
 	const value = process.env[key];
 	if (!value) {
-		throw new Error(`${key} is not defined, please check your .env file.`);
+		throw new UndefinedConfigEntry(key);
 	}
 	return value;
+}
+
+export class UndefinedConfigEntry extends Error {
+	constructor(key: string) {
+		super(`La variable d'environnement (.env) ${key} n'est pas définie`);
+	}
 }
 
 type ConfigType = {
@@ -29,14 +35,14 @@ export default class Config {
 	private constructor() {
 		this._config = {
 			tmdb: {
-				apiKey: getEnv("TMDB_API_KEY"),
+				apiKey: getEnv('TMDB_API_KEY'),
 			},
 			db: {
-				host: getEnv("DB_HOST"),
-				port: parseInt(getEnv("DB_PORT")),
-				user: getEnv("DB_USER"),
-				password: getEnv("DB_PASS"),
-				name: getEnv("DB_NAME"),
+				host: getEnv('DB_HOST'),
+				port: parseInt(getEnv('DB_PORT')),
+				user: getEnv('DB_USER'),
+				password: getEnv('DB_PASS'),
+				name: getEnv('DB_NAME'),
 			},
 		};
 	}
