@@ -97,6 +97,7 @@ export default class Buyer extends Account {
 	/**
 	 * Ajoute un article dans la liste des "intérêts" de l'acheteur
 	 * @param article_id L'id de l'article à liker
+	 * @throws {@link ArticleInexistantError} Si l'article n'existe pas
 	 */
 	public async likeArticle(article_id: number): Promise<void> {
 		const database = Database.get();
