@@ -16,6 +16,7 @@ if (Astro.request.method == 'POST') {
 
 	const email = formData.get('email').toString();
 	const password = formData.get('password').toString();
+	const redirect = Astro.url.searchParams.get('redirect');
 
 	try {
 		// On récupère l'utilisateur, ou on lève une erreur si les identifiants sont invalides
@@ -33,7 +34,8 @@ if (Astro.request.method == 'POST') {
 			path: '/',
 		});
 		// Redirection vers la page d'accueil
-		headers.append('Location', '/');
+		if (redirect) headers.append('Location', redirect);
+		else headers.append('Location', '/');
 		// Envoi de la réponse
 		return new Response('', {
 			status: 302,
@@ -71,7 +73,7 @@ if (Astro.url.searchParams.has('error')) {
 		<h1>Connectez-vous à votre compte</h1>
 
 		{error_msg && <p class="error_msg">{error_msg}</p>}
-		<form method="post" action="/login">
+		<form method="post">
 			<table>
 				<tr>
 					<th>E-mail :</th>

@@ -225,10 +225,10 @@ const description = article.getDescription();
 			Swal.fire({
 				title: 'Vous devez être connecté',
 				icon: 'error',
-				footer: `<a href="/login" style="margin-inline:	6px">
+				footer: `<a href="/login?redirect=/auction/${id}" style="margin-inline: 6px">
 							 Connectez 
 						</a> vous ou 
-						<a href="/register" style="margin-inline: 6px">
+						<a href="/register?redirect=/auction/${id}" style="margin-inline: 6px">
 							 inscrivez 
 						</a> vous pour pouvoir enchérir`,
 			});
