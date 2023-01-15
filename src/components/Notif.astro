@@ -1,0 +1,25 @@
+---
+import Notification from '../model/Notification';
+
+export interface Props {
+	notif: Notification;
+}
+
+const { notif } = Astro.props;
+---
+
+<div>
+	<p>{notif.getDate()}</p>
+	<p>{notif.getText()}</p>
+</div>
+
+<style>
+	div {
+		background-color: var(--theme-text);
+		color: var(--theme-secondary);
+
+		padding: 1rem;
+
+		text-align: center;
+	}
+</style>

@@ -7,6 +7,8 @@ import {
 	SessionTokenInvalideError,
 } from '../../model/users/Account';
 import Company from '../../model/users/Company';
+import Notification from '../../model/Notification';
+import Notif from '../../components/Notif.astro';
 
 let company: Company;
 try {
@@ -19,6 +21,7 @@ try {
 
 const mail = company.getEmail();
 const name = company.getNom();
+const notifications = await Notification.getUserNotifications(company.getId());
 ---
 
 <Layout title="Replikas" no_searchbar>
@@ -43,6 +46,7 @@ const name = company.getNom();
 		</main>
 		<aside class="notifications">
 			<h2>Notifications</h2>
+			{notifications.map((notif) => <Notif notif={notif} />)}
 		</aside>
 	</div>
 </Layout>
