@@ -63,7 +63,9 @@ const ends = dateDiff(finVente, new Date());
 const nom = article.getName();
 const prix = await Bids.getEnchereMax(article);
 const encherissement_min = article.getEncherissementMin();
-const images = article.getImages() || [await article.getPoster()];
+const images = article.getImages().length
+	? article.getImages()
+	: [await article.getPoster()];
 const description = article.getDescription();
 
 console.log(images);
@@ -226,16 +228,23 @@ console.log(images);
 		top: 0;
 
 		grid-area: 'sidebar';
-		overflow: auto;
+		overflow-y: auto;
 
 		max-height: 80vh;
 
 		border-radius: 2rem;
+
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
+	.sideBar::-webkit-scrollbar {
+		display: none;
 	}
 
 	.img {
 		width: 100%;
-		overflow-y: scroll;
+		overflow-y: hidden;
 	}
 
 	.img > img {
@@ -400,8 +409,12 @@ console.log(images);
 		}
 	}
 
-	setInterval(updatePrice, 1000);
-	setInterval(updateDates, 1000);
+	// Wait for client to be idle, then update every second
+	setTimeout(() => {
+		setInterval(updatePrice, 1000);
+		setInterval(updateDates, 1000);
+	}, 5000);
+
 	suggestionValues.forEach((suggestion) => {
 		suggestion.addEventListener('click', (e) => {
 			e.preventDefault();
