@@ -3,6 +3,7 @@ import shajs from 'sha.js';
 
 export default class Account {
 	static SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days
+	static SALT_BAE = "g4cO#'=%sn{*Y?3v";
 
 	static {
 		Database.getInstance().on('clean', Account.clean);
@@ -25,7 +26,9 @@ export default class Account {
 	public static async get(email: string, password: string): Promise<Account> {
 		const database = Database.get();
 		const account = new Account();
-		const hash = shajs('sha256').update(password).digest('hex');
+		const hash = shajs('sha256')
+			.update(password + Account.SALT_BAE)
+			.digest('hex');
 		const result = await database`
 			SELECT * FROM account WHERE a_login = ${email} AND a_password = ${hash}`;
 		if (result.count === 0) {
@@ -77,7 +80,9 @@ export default class Account {
 	): Promise<Account> {
 		const database = Database.get();
 		const account = new Account();
-		const hash = shajs('sha256').update(password).digest('hex');
+		const hash = shajs('sha256')
+			.update(password + Account.SALT_BAE)
+			.digest('hex');
 		// Mail de test pour les tests playwright qui ne respecte pas la contrainte unique
 		if (email === 'dooverwrite@testmail.com')
 			await database`DELETE FROM account WHERE a_login = ${email}`;
@@ -177,7 +182,9 @@ export default class Account {
 		password: string
 	): Promise<void> {
 		const database = Database.get();
-		const hash = shajs('sha256').update(password).digest('hex');
+		const hash = shajs('sha256')
+			.update(password + Account.SALT_BAE)
+			.digest('hex');
 		const response = await database`
 			UPDATE account SET a_password = ${hash} WHERE a_id = (SELECT a_id FROM password_recovery WHERE pr_token = ${token})`;
 		if (response.count === 0) {
