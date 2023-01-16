@@ -16,39 +16,44 @@ if (Astro.request.method == 'POST') {
 			password_confirm: string;
 		};
 
+	const redirect = Astro.url.searchParams.get('redirect') || '';
 	if (
 		![last_name, first_name, email, password, password_confirm].every(
 			(value) => value
 		)
 	)
-		return Astro.redirect('/register?error=missing_field');
+		return Astro.redirect('/register?error=missing_field&redirect=' + redirect);
 	if (password != password_confirm)
-		return Astro.redirect('/register?error=password_mismatch');
+		return Astro.redirect(
+			'/register?error=password_mismatch&redirect=' + redirect
+		);
 	// Vérification du mail
 	if (
 		!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(email)
 	)
-		return Astro.redirect('/register?error=invalid_email');
+		return Astro.redirect('/register?error=invalid_email&redirect=' + redirect);
 	// Mot de passe fort https://www.section.io/engineering-education/password-strength-checker-javascript/
 	if (
 		!/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})/.test(
 			password
 		)
 	)
-		return Astro.redirect('/register?error=weak_password');
+		return Astro.redirect('/register?error=weak_password&redirect=' + redirect);
 
 	try {
 		await Buyer.createBuyer(email, password, last_name, first_name);
 	} catch (e) {
 		if (e instanceof EmailDejaUtiliseError) {
-			return Astro.redirect('/register?error=already_exists');
+			return Astro.redirect(
+				'/register?error=already_exists&redirect=' + redirect
+			);
 		} else {
 			// Si une autre erreur non prevue est survenue
 			console.error(e);
 			return new Response('Internal server error', { status: 500 }); // FIXME : Rip bastien scapin
 		}
 	}
-	return Astro.redirect('/login?info=account_created');
+	return Astro.redirect('/login?info=account_created&redirect=' + redirect);
 }
 
 // Si on a reçu un paramètre "error"

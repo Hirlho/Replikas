@@ -2,8 +2,10 @@
 import Layout from '../layouts/Layout.astro';
 import Article from '../components/Article.astro';
 import { default as ArticleModel } from '../model/Article';
+import ArticleContainer from '../layouts/ArticleContainer.astro';
 
-const articles = await ArticleModel.mostBids();
+const mostBids = await ArticleModel.mostBids({ limit: 8, offset: 0 });
+const mostAwaited = await ArticleModel.mostAwaited();
 ---
 
 <Layout title="Replikas">
@@ -30,123 +32,123 @@ const articles = await ArticleModel.mostBids();
 			</ul>
 		</div>
 	</main>
-</Layout>
 
-<style>
-	main {
-		margin: 2rem 0;
+	<style>
+		main {
+			margin: 2rem 0;
 
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
-	.others {
-		background-color: var(--theme-secondary);
-		width: 85%;
-		margin: 0;
-		padding: 20px;
-		border-radius: 20px;
-	}
-
-	h1 {
-		font-size: 3rem;
-		font-weight: 800;
-		margin: 50px;
-		text-align: center;
-	}
-
-	ul {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		padding: 0;
-	}
-
-	.container {
-		width: 10%;
-		margin: 20px auto;
-		height: 300px;
-	}
-
-	.carrousel {
-		width: 100%;
-		height: 100%;
-		border: 2px solid green;
-		border-radius: 3px;
-		display: flex;
-		justify-content: flex-start;
-		position: relative;
-	}
-
-	.slider {
-		border: 1px solid blue;
-		display: flex;
-		height: 100%;
-		width: 500%;
-		flex-shrink: 0;
-		transition: all 0.5s;
-	}
-	.slider article {
-		border: 1px solid red;
-		flex-basis: 20%;
-		width: 20%;
-		flex-shrink: 0;
-		flex: 1;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.arrow {
-		position: absolute;
-		top: 10px;
-		cursor: pointer;
-	}
-
-	.arrow.prev {
-		left: 10px;
-	}
-
-	.arrow.next {
-		right: 10px;
-	}
-</style>
-
-<script>
-	const slider: any = document.querySelector('.slider');
-	const carrousel: any = document.querySelector('.carrousel');
-	const prev: any = document.querySelector('.prev');
-	const next: any = document.querySelector('.next');
-
-	var direction: number = 0;
-
-	prev.addEventListener('click', function () {
-		if (direction === -1) {
-			slider.appendChild(slider.firstElementChild);
-			direction = 1;
-		}
-		carrousel.style.justifyContent = 'flex-end';
-		slider.style.transform = 'translate(20%)';
-	});
-
-	next.addEventListener('click', function () {
-		direction = -1;
-		carrousel.style.justifyContent = 'flex-start';
-		slider.style.transform = 'translate(-20%)';
-	});
-
-	slider.addEventListener('transitionend', function () {
-		if (direction === -1) {
-			slider.appendChild(slider.firstElementChild);
-		} else if (direction === 1) {
-			slider.prepend(slider.lastElementChild);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
 		}
 
-		slider.style.transition = 'none';
-		slider.style.transform = 'translate(0)';
-		setTimeout(function () {
-			slider.style.transition = 'all 0.5s';
+		.others {
+			background-color: var(--theme-secondary);
+			width: 85%;
+			margin: 0;
+			padding: 20px;
+			border-radius: 20px;
+		}
+
+		h1 {
+			font-size: 3rem;
+			font-weight: 800;
+			margin: 50px;
+			text-align: center;
+		}
+
+		ul {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			padding: 0;
+		}
+
+		.container {
+			width: 10%;
+			margin: 20px auto;
+			height: 300px;
+		}
+
+		.carrousel {
+			width: 100%;
+			height: 100%;
+			border: 2px solid green;
+			border-radius: 3px;
+			display: flex;
+			justify-content: flex-start;
+			position: relative;
+		}
+
+		.slider {
+			border: 1px solid blue;
+			display: flex;
+			height: 100%;
+			width: 500%;
+			flex-shrink: 0;
+			transition: all 0.5s;
+		}
+		.slider article {
+			border: 1px solid red;
+			flex-basis: 20%;
+			width: 20%;
+			flex-shrink: 0;
+			flex: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.arrow {
+			position: absolute;
+			top: 10px;
+			cursor: pointer;
+		}
+
+		.arrow.prev {
+			left: 10px;
+		}
+
+		.arrow.next {
+			right: 10px;
+		}
+	</style>
+
+	<script>
+		const slider: any = document.querySelector('.slider');
+		const carrousel: any = document.querySelector('.carrousel');
+		const prev: any = document.querySelector('.prev');
+		const next: any = document.querySelector('.next');
+
+		var direction: number = 0;
+
+		prev.addEventListener('click', function () {
+			if (direction === -1) {
+				slider.appendChild(slider.firstElementChild);
+				direction = 1;
+			}
+			carrousel.style.justifyContent = 'flex-end';
+			slider.style.transform = 'translate(20%)';
 		});
-	});
-</script>
+
+		next.addEventListener('click', function () {
+			direction = -1;
+			carrousel.style.justifyContent = 'flex-start';
+			slider.style.transform = 'translate(-20%)';
+		});
+
+		slider.addEventListener('transitionend', function () {
+			if (direction === -1) {
+				slider.appendChild(slider.firstElementChild);
+			} else if (direction === 1) {
+				slider.prepend(slider.lastElementChild);
+			}
+
+			slider.style.transition = 'none';
+			slider.style.transform = 'translate(0)';
+			setTimeout(function () {
+				slider.style.transition = 'all 0.5s';
+			});
+		});
+	</script>
+</Layout>

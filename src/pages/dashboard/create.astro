@@ -1,42 +1,100 @@
 ---
 import AutoCompleteTextField from '../../components/AutoCompleteTextField.astro';
 import Button from '../../components/Button.astro';
-import DragDrop from '../../components/Drag&Drop.astro';
+import UploadInput from '../../components/UploadInput.astro';
 import TextField from '../../components/TextField.astro';
 import Layout from '../../layouts/Layout.astro';
 import Article from '../../model/Article';
+import { getCompanyBySession, uploadImages } from '../../model/Utilitaire';
+import Company from '../../model/users/Company';
 
-// TODO : Gérer le download d'images, la création d'un nouvel article et la proposition lorsqu'on écrit un nom de film
+// TODO Plus de vérification sur les paramètres
 
-/*
+const company: Company = await getCompanyBySession(Astro.request.headers).catch(
+	(err) => null
+);
+
+if (!company) {
+	return Astro.redirect('/login');
+}
+
 if (Astro.request.method == 'POST') {
 	const formData = await Astro.request.formData();
-	const {
+
+	let {
 		name,
-		movie,
+		movie_id,
 		description,
 		startDate,
-		startHour,
 		endDate,
+		startHour,
 		endHour,
-		price,
-		bidding,
-	} = Object.fromEntries(formData) as {
-		name: string;
-		movie: string;
-		description: string;
-		startDate: string;
-		startHour: string;
-		endDate: string;
-		endHour: string;
-		price: string;
-		bidding: string;
-	};
-}*/
+		base_price,
+		min_bidding,
+	} = Object.fromEntries(formData) as { [key: string]: any };
+
+	const start = new Date(`${startDate} ${startHour}`);
+	const end = new Date(`${endDate} ${endHour}`);
+	name = name ? name.trim() : '';
+	description = description ? description.trim() : '';
+	movie_id = parseInt(movie_id);
+	base_price = parseInt(base_price);
+	min_bidding = parseInt(min_bidding);
+
+	if (
+		!(
+			name.length &&
+			!isNaN(movie_id) &&
+			description.length &&
+			!isNaN(start.getTime()) &&
+			!isNaN(end.getTime()) &&
+			!isNaN(base_price) &&
+			!isNaN(min_bidding)
+		)
+	)
+		return new Response('missing_fields', { status: 400 });
+
+	if (start.getTime() >= end.getTime() || start.getTime() <= Date.now())
+		return new Response('invalid_dates', { status: 400 });
+
+	if (base_price <= 0 || min_bidding < 0)
+		return new Response('invalid_prices', { status: 400 });
+
+	const images: File[] = formData.getAll('images') as File[];
+	const file_paths: string[] = await uploadImages(images).catch((e) => {
+		console.error(e);
+		return null;
+	});
+	if (!file_paths) return new Response('invalid_images', { status: 400 });
+
+	let article: Article;
+	try {
+		article = await Article.create(
+			name,
+			description,
+			base_price,
+			min_bidding,
+			start,
+			end,
+			file_paths,
+			movie_id,
+			company.getId()
+		);
+	} catch (e) {
+		return new Response('invalid_movie_id', { status: 400 });
+	}
+
+	return new Response('success', { status: 200 });
+}
 ---
 
 <Layout title="Création article" no_searchbar>
-	<form method="post" action="/dashboard/create" id="form" autocomplete="off">
+	<form
+		method="post"
+		id="form"
+		autocomplete="off"
+		enctype="multipart/form-data"
+	>
 		<div class="title">
 			<h1>Poster un nouvel article</h1>
 			<p>
@@ -44,11 +102,12 @@ if (Astro.request.method == 'POST') {
 				satisfaire la demande des clients
 			</p>
 		</div>
+		<p>Champs obligatoires notés : *</p>
 		<div class="info_produit">
 			<h2>Informations principales du produit</h2>
 			<div class="main_info">
 				<div class="grid_one">
-					<h3>Intitulé :</h3>
+					<h3>Intitulé : *</h3>
 					<TextField
 						type="text"
 						placeholder="Ex : Sabre Laser..."
@@ -57,17 +116,16 @@ if (Astro.request.method == 'POST') {
 						id="name"
 					/>
 
-					<h3>Œuvre(s) d'origine (film/série) :</h3>
+					<h3>Œuvre(s) d'origine (film/série) : *</h3>
 					<AutoCompleteTextField
-						type="text"
 						placeholder="Ex : Star Wars : Un Nouvel Espoir"
 						length="15rem"
-						name="movie"
-						id="myInput"
+						name="movie_id"
+						id="movie_id"
 					/>
 				</div>
 				<div class="grid_two">
-					<h3>Description du produit :</h3>
+					<h3>Description du produit : *</h3>
 
 					<textarea
 						id="description"
@@ -81,7 +139,7 @@ if (Astro.request.method == 'POST') {
 			<h2>Date de l'enchère</h2>
 
 			<div class="auctionDate">
-				<h3>Début de l’enchère :</h3>
+				<h3>Début de l’enchère : *</h3>
 				<div class="inputTime">
 					<p>Jour :</p>
 					<TextField type="date" name="startDate" id="startDate" />
@@ -91,7 +149,7 @@ if (Astro.request.method == 'POST') {
 			</div>
 
 			<div class="auctionDate">
-				<h3>Fin de l’enchère :</h3>
+				<h3>Fin de l’enchère : *</h3>
 				<div class="inputTime">
 					<p>Jour :</p>
 					<TextField type="date" name="endDate" id="endDate" />
@@ -105,29 +163,30 @@ if (Astro.request.method == 'POST') {
 			<h2>Choix du prix du produit</h2>
 			<div>
 				<div>
-					<h3>Prix de base du produit :</h3>
+					<h3>Prix de base du produit : *</h3>
 					<TextField
 						type="number"
 						placeholder="Ex : 120, 2300,..."
-						name="price"
+						name="base_price"
 						id="price"
+						minNumber={0}
 					/>
 				</div>
 				<div>
-					<h3>Surenchère minimum :</h3>
+					<h3>Surenchère minimum : *</h3>
 					<TextField
-						name=""
+						name="min_bidding"
 						type="number"
 						placeholder="Ex : 1, 13, 50,..."
-						name="bidding"
 						id="bidding"
+						minNumber={0}
 					/>
 				</div>
 			</div>
 		</div>
 		<div class="info_produit">
 			<h2>Ajout d’images à l’article</h2>
-			<DragDrop />
+			<UploadInput name="images" />
 		</div>
 		<div class="create_button">
 			<Button text="Créer l’article" id="create_article" />
@@ -238,13 +297,26 @@ if (Astro.request.method == 'POST') {
 </style>
 
 <script>
+	import Swal from 'sweetalert2';
+
+	const error_messages = {
+		missing_fields: 'Veuillez remplir tous les champs obligatoires',
+		invalid_dates: 'Veuillez entrer des dates et heures valides',
+		invalid_prices: 'Veuillez entrer des prix valides',
+		invalid_images:
+			'Erreur lors de la mise en ligne des images (préferer des images jpg ou png)',
+		invalid_movie_id: 'Veuillez sélectionner un film dans la liste proposée',
+	};
+
 	/* Script pour la vérification du contenu du formulaire */
 
-	let form = document.getElementById('form');
+	let form = document.getElementById('form') as HTMLFormElement;
 
-	form.onsubmit = (event: Event) => {
+	form.addEventListener('submit', async (event: Event) => {
+		event.preventDefault();
+
 		let name = document.getElementById('name') as HTMLInputElement;
-		let movie = document.getElementById('movie') as HTMLInputElement;
+		let movie = document.getElementById('movie_id') as HTMLInputElement;
 		let description = document.getElementById(
 			'description'
 		) as HTMLInputElement;
@@ -254,87 +326,129 @@ if (Astro.request.method == 'POST') {
 		let endHour = document.getElementById('endHour') as HTMLInputElement;
 		let price = document.getElementById('price') as HTMLInputElement;
 		let bidding = document.getElementById('bidding') as HTMLInputElement;
-		let no_error = true;
 
-		let dateDebut: Date, dateFin: Date;
+		let dateDebut, dateFin;
 		let currentDate = new Date();
 
-		if (!name.value) {
-			no_error = false;
-			errorMessage(name, 'Entrez un intitulé');
+		let err: {
+			element: HTMLInputElement | HTMLTextAreaElement;
+			msg: string;
+		}[] = [];
+
+		/*--------------Error verifications---------------*/
+
+		// Value
+		if (!bidding.value) {
+			errorColor(bidding);
+			err.push({
+				element: bidding,
+				msg: 'Entrez un prix de surenchérissement minimum',
+			});
 		} else {
-			noErrorMessage(name);
+			noErrorMessage(bidding);
 		}
-		if (!movie.value) {
-			no_error = false;
-			errorMessage(movie, 'Entrez un nom de film');
+		// Price
+		if (!price.value) {
+			errorColor(price);
+			err.push({ element: price, msg: 'Entrez un prix' });
 		} else {
-			noErrorMessage(name);
+			noErrorMessage(price);
 		}
-		if (!description.value) {
-			no_error = false;
-			errorMessage(description, 'Entrez une description');
-		} else {
-			noErrorMessage(name);
-		}
+		// Start date
 		if (!startDate.value) {
-			no_error = false;
-			errorMessage(startDate, 'Entrez une date de début');
+			errorColor(startDate);
+			err.push({ element: startDate, msg: 'Entrez une date de début' });
 		} else {
-			noErrorMessage(name);
+			noErrorMessage(startDate);
 			dateDebut = new Date(startDate.value + 'T' + startHour.value);
 		}
+		// End Date
 		if (!endDate.value) {
-			no_error = false;
-			errorMessage(endDate, 'Entrez une date de fin');
+			errorColor(endDate);
+			err.push({ element: endDate, msg: 'Entrez une date de fin' });
 		} else {
-			noErrorMessage(name);
+			noErrorMessage(endDate);
 			dateFin = new Date(endDate.value + 'T' + endHour.value);
 		}
+		// Start date must be smaller than end date
 		if (startDate && endDate && dateDebut > dateFin) {
-			no_error = false;
-			errorMessage(
-				startDate,
-				'La date de début doit commencer avant la date de fin'
-			);
+			errorColor(startDate);
+			errorColor(endDate);
+			err.push({
+				element: startDate,
+				msg: 'La date de début doit commencer avant la date de fin',
+			});
 		} else {
-			noErrorMessage(name);
+			noErrorMessage(startDate);
 		}
+		// Start date must be greater than current date
 		if (startDate && dateDebut < currentDate) {
-			no_error = false;
-			errorMessage(
-				startDate,
-				"La date de début doit commencer après aujourd'hui"
-			);
+			errorColor(startDate);
+			err.push({
+				element: startDate,
+				msg: "La date de début doit commencer après aujourd'hui",
+			});
 		} else {
-			noErrorMessage(name);
+			noErrorMessage(startDate);
 		}
-		if (!price.value) {
-			no_error = false;
-			errorMessage(price, 'Entrez un prix');
+		// Description
+		if (!description.value) {
+			errorColor(description);
+			err.push({ element: description, msg: 'Entrez une description' });
 		} else {
-			noErrorMessage(name);
+			noErrorMessage(description);
 		}
-		if (!bidding.value) {
-			no_error = false;
-			errorMessage(bidding, 'Entrez un prix de surenchérissement minimum');
+		// Movie
+		if (!movie.value || !movie.getAttribute('data-movieid')) {
+			errorColor(movie);
+			err.push({ element: movie, msg: 'Sélectionnez un film proposé' });
+		} else {
+			noErrorMessage(movie);
+		}
+		// Name
+		if (!name.value) {
+			errorColor(name);
+			err.push({ element: name, msg: 'Entrez un intitulé' });
 		} else {
 			noErrorMessage(name);
 		}
 
-		if (!no_error) {
-			event.preventDefault();
+		// Submit
+		if (err.length > 0) {
+			err[err.length - 1].element.setCustomValidity(err[err.length - 1].msg);
+			err[err.length - 1].element.reportValidity();
+			err[err.length - 1].element.setCustomValidity('');
+		} else {
+			const formData = new FormData(form);
+			formData.set('movie_id', movie.dataset.movieid);
+			const response = await fetch('./create', {
+				method: 'POST',
+				body: formData,
+			});
+			if (response.status !== 200) {
+				Swal.fire({
+					icon: 'error',
+					title: "Erreur lors de la création de l'article :",
+					text: error_messages[await response.text()] || 'Erreur inconnue',
+				});
+			} else {
+				Swal.fire('The article was created successfully', '', 'success').then(
+					() => {
+						window.location.href = '/dashboard';
+					}
+				);
+			}
 		}
 
-		function errorMessage(elem: HTMLInputElement, err: string) {
+		// Show border color of elem
+		function errorColor(elem) {
 			elem.style.border = 'solid';
 			elem.style.borderColor = 'red';
-			elem.setCustomValidity(err);
-			elem.reportValidity();
-			elem.setCustomValidity('');
 		}
-		function noErrorMessage(elem: HTMLInputElement) {
+
+		// Hide border of elem
+		function noErrorMessage(elem) {
 			elem.style.border = 'none';
 		}
-	};
+	});
 </script>

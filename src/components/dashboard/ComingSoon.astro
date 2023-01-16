@@ -1,36 +1,31 @@
 ---
-import Buyer from '../../model/users/Buyer';
+import Company from '../../model/users/Company';
 import Article from '../Article.astro';
 import SearchBar from '../SearchBar.astro';
 
 export interface Props {
-	buyer: Buyer;
+	company: Company;
 }
 
-const { buyer } = Astro.props;
+const { company } = Astro.props;
 
-const articles = await buyer.getAquiredArticles(false);
+const articles = await company.getComingSoonSales();
 ---
 
 <section class="content">
-	<form method="get" action="/basket">
+	<form method="get" action="/dashboard">
 		<h1>Vos articles</h1>
 		<div class="pages">
-			<input type="submit" value="Possédés" name="pageName" />
-			<input id="currentPage" type="submit" value="À payer" name="pageName" />
-			<input type="submit" value="Aimés" name="pageName" />
+			<input type="submit" value="En cours" name="pageName" />
+			<input id="currentPage" type="submit" value="À venir" name="pageName" />
 		</div>
 	</form>
 	<section class="sectionSearchBar">
 		<SearchBar />
 	</section>
-	<p>
-		Si 3 jours après avoir gagné une enchère, vous n'avez pas payé l'article
-		celui-ci ne vous appartiendra plus.
-	</p>
-	<ul class="articles">
+	<div class="articles">
 		{articles.map((article) => <Article article={article} />)}
-	</ul>
+	</div>
 </section>
 
 <style>

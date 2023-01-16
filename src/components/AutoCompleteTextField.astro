@@ -2,21 +2,18 @@
 import TextField from './TextField.astro';
 
 export interface Props {
-	text?: string;
 	placeholder?: string;
 	name?: string;
-	type?: any;
 	length?: string;
 	id?: string;
-	required?: boolean;
 }
 
-const { text, placeholder, name, type, length, id, required } = Astro.props;
+const { placeholder, name, length, id } = Astro.props;
 ---
 
 <div class="autocomplete">
 	<TextField
-		type={text}
+		type="text"
 		placeholder={placeholder}
 		length={length}
 		name={name}
@@ -64,10 +61,10 @@ const { text, placeholder, name, type, length, id, required } = Astro.props;
 	}
 </style>
 
-<script is:inline>
+<script is:inline define:vars={{ id }}>
 	/*----------------AutoComplete movie input------------------*/
 
-	autocomplete(document.getElementById('myInput'));
+	autocomplete(document.getElementById(id));
 
 	function autocomplete(inp) {
 		/*the autocomplete function takes two arguments,
@@ -92,7 +89,7 @@ const { text, placeholder, name, type, length, id, required } = Astro.props;
 
 			this.parentNode.appendChild(a);
 
-			/*Get the movie lisy*/
+			/*Get the movie list*/
 			let movies = await autocompleteMatch(val);
 
 			for (i = 0; i < movies.length; i++) {
@@ -107,6 +104,7 @@ const { text, placeholder, name, type, length, id, required } = Astro.props;
 					movies[i].id +
 					"'>";
 				suggestion.addEventListener('click', function (e) {
+					// FIXME : Problem when string contains single quote
 					inp.value = this.getElementsByTagName('input')[0].value;
 
 					inp.dataset.movieid =

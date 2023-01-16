@@ -30,8 +30,8 @@ export default class Article {
 		article.description = result.art_description;
 		article.price = result.art_price;
 		article.min_bidding = result.art_min_bidding;
-		article.auction_start = result.art_auction_start;
-		article.auction_end = result.art_auction_end;
+		article.auction_start = new Date(result.art_auction_start);
+		article.auction_end = new Date(result.art_auction_end);
 		article.tmdb_movie_id = result.m_id;
 		article.selling_company_id = result.c_id;
 
@@ -84,16 +84,32 @@ export default class Article {
 		tmdb_movie_id: number,
 		selling_company_id: number
 	): Promise<Article> {
+		console.info(
+			`Création de l'article avec les paramètres suivants : 
+				name : ${name}
+				description : ${description}
+				price : ${price}
+				min_bidding : ${min_bidding}
+				auction_start : ${auction_start}
+				auction_end : ${auction_end}
+				img_paths : ${img_paths}
+				tmdb_movie_id : ${tmdb_movie_id}
+				selling_company_id : ${selling_company_id}`
+		);
 		const movie = await TMDB.getMovie(tmdb_movie_id);
 		const database = Database.get();
 
+		console.info('Début de la transaction');
 		const [result] = await database.begin(async (sql) => {
+			console.info('Création du film');
 			await database`
 			INSERT INTO movie (m_id, m_title) VALUES (${tmdb_movie_id}, ${movie.title}) ON CONFLICT DO NOTHING`;
 
+			console.info("Création de l'article");
 			const result = await database`
             INSERT INTO article (art_name, art_description, art_price, art_min_bidding, art_auction_start, art_auction_end, m_id, c_id) VALUES (${name}, ${description}, ${price}, ${min_bidding}, ${auction_start}, ${auction_end}, ${tmdb_movie_id}, ${selling_company_id}) RETURNING *`;
 
+			console.info('Création des images');
 			for (const img_path of img_paths) {
 				await database`
 					INSERT INTO article_image (art_id, img_path) VALUES (${result[0].art_id}, ${img_path})`;
@@ -102,9 +118,9 @@ export default class Article {
 			return [result[0]];
 		});
 
+		console.info(`Article ${result.art_id} créé`);
 		return this.getFromResult(result);
 	}
-
 	/**
 	 * Retourne tous les articles de la base de données
 	 * @returns Tous les articles
@@ -167,6 +183,47 @@ export default class Article {
 		return articles;
 	}
 
+	public static async getBySearchFilter(
+		objectName: string,
+		movieName: string,
+		startDate: Date,
+		endDate: Date,
+		basePriceMin: number,
+		basePriceMax: number,
+		currentPriceMin: number,
+		currentPriceMax: number,
+		params = { limit: 20, offset: 0 }
+		): Promise<Article[]>{
+			
+			console.log(objectName, movieName, startDate, endDate, basePriceMax, basePriceMin, params);
+		const database = Database.get();
+		//const t0 = performance.now();
+		const result = await database`
+			SELECT 
+					a.* 
+			FROM
+					article a, movie c
+			WHERE
+					a.m_id = c.m_id AND
+					art_min_bidding>${basePriceMin} AND
+					art_min_bidding<${basePriceMax} AND
+					art_price>${currentPriceMin} AND
+					art_price<${currentPriceMax} AND
+					art_auction_start=${startDate} AND
+					art_auction_end=${endDate} AND
+					art_name LIKE ${'%"+objectName+"%'} AND
+					m_title LIKE ${'%"movieName"%'}
+			LIMIT ${params.limit} OFFSET ${params.offset || 0}`;
+		
+		const articles: Article[] = [];
+		for (const article of result) {
+			articles.push(await this.getFromResult(article));
+		}
+		//const t1 = performance.now();
+		//console.info(`Search took ${t1 - t0} milliseconds.`);
+		return articles;
+	}
+
 	/**
 	 * @param params Les paramètres de la recherche
 	 * @returns Les articles ayant le plus d'enchèrissements
@@ -185,6 +242,24 @@ export default class Article {
 					ORDER BY count(art_id) DESC
 					LIMIT ${params.limit || 8} OFFSET ${params.offset || 0}
 					)`;
+		const articles: Article[] = [];
+		for (const article of result) {
+			articles.push(await this.getFromResult(article));
+		}
+		return articles;
+	}
+
+	/**
+	 *
+	 * @param limit combien d'article il faut afficher
+	 * @returns Une liste des articles les plus liké de taille 'limit'
+	 */
+	public static async mostAwaited(limit = 8): Promise<Article[]> {
+		const database = Database.get();
+		const result = await database`
+			SELECT a.* FROM article a NATURAL JOIN interests 
+			WHERE art_auction_start > NOW() 
+			GROUP BY(art_id) ORDER BY count(art_id) DESC LIMIT 8;`;
 		const articles: Article[] = [];
 		for (const article of result) {
 			articles.push(await this.getFromResult(article));
@@ -266,16 +341,19 @@ export default class Article {
 		return this.tmdb_movie_id;
 	}
 
+	/**
+	 * @returns Les url relatifs des images de l'article (convertit en route api)
+	 */
 	public getImages(): string[] {
-		return this.img_paths;
+		return this.img_paths.map((path) => `/api/image/${path}`);
 	}
 
 	/**
-	 * @returns L'url de l'image principale de l'article, si il n'a pas d'images on va chercher le poster sur TMDB
+	 * @returns L'url de l'image principale de l'article (convertit en route api), si il n'a pas d'images on va chercher le poster sur TMDB
 	 */
 	public async getPoster(): Promise<string> {
 		if (this.img_paths.length > 0) {
-			return this.img_paths[0];
+			return `/api/image/${this.img_paths[0]}`;
 		} else {
 			return await TMDB.getMoviePosterURL(this.tmdb_movie_id, 'w342').catch(
 				() => {
