@@ -326,18 +326,23 @@ export default class Article {
 	static async clean(): Promise<void> {
 		const database = Database.get();
 		// Supprime les images uploadées si elles ne sont pas utilisées
-		const images_remote = await database`
-			SELECT img_path FROM article_image;`;
-		const images_local = new Set(
-			await fs.promises.readdir(Config.get().uploads_dir)
-		);
-		let missingValues = images_remote.filter(
-			(img) => !images_local.has(img.img_path)
-		); // Prend avantage du fait que le Set a des index hashés
+		const images_remote = new Set(
+			(await database`SELECT img_path FROM article_image`).map(
+				(img) => img.img_path
+			)
+		) as Set<string>;
+		const images_local: string[] = await fs.promises
+			.readdir(Config.get().uploads_dir)
+			.catch(() => []);
+		console.log(images_local);
+		console.log(images_remote);
+		let missingValues = images_local.filter((img) => !images_remote.has(img)); // Prend avantage du fait que le Set a des index hashés
 		for (const img of missingValues) {
-			await fs.promises.unlink(
-				path.join(Config.get().uploads_dir, img.img_path)
-			);
+			await fs.promises
+				.unlink(path.join(Config.get().uploads_dir, img))
+				.catch(() => {
+					console.warn("Couldn't delete image " + img);
+				});
 		}
 	}
 
