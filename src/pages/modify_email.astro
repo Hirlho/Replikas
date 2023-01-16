@@ -1,0 +1,115 @@
+---
+import Button from '../components/Button.astro';
+import TextField from '../components/TextField.astro';
+import Layout from '../layouts/Layout.astro';
+import Account from '../model/users/Account';
+import { EmailDejaUtiliseError } from '../model/users/Account';
+import { getAccountBySession } from '../model/Utilitaire';
+
+if (Astro.request.method == 'POST') {
+	const formData = await Astro.request.formData();
+	const redirect = Astro.url.searchParams.get('redirect') || '';
+	const email = formData.get('email').toString() || '';
+	const email_confirm = formData.get('email_confirm').toString() || '';
+	//Get Account
+	const account: Account = await getAccountBySession(
+		Astro.request.headers
+	).catch((err) => null);
+	// Vérification de la connexion
+	if (!account) {
+		return Astro.redirect('/login?redirect=' + redirect);
+	}
+	// Vérification du mail
+	if (
+		!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(
+			email
+		) &&
+		!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(
+			email
+		)
+	)
+		return Astro.redirect(
+			'/modify_email?error=invalid_email&redirect=' + redirect
+		);
+
+	if (email != email_confirm) {
+		return Astro.redirect(
+			'/modify_email?error=not_same_mail&redirect=' + redirect
+		);
+	} else {
+		try {
+			await account.setEmail(email);
+			Astro.props.success = 'Votre adresse mail a bien été modifiée';
+			Astro.props.redirect = redirect;
+		} catch (e) {
+			if (e instanceof EmailDejaUtiliseError) {
+				return Astro.redirect(
+					'/modify_email?error=same_mail&redirect=' + redirect
+				);
+			} else {
+				Astro.props.error = 'Une erreur est survenue';
+			}
+		}
+		return Astro.redirect(
+			'/modify_email?success=mail_changed&redirect=' + redirect
+		);
+	}
+}
+---
+
+<Layout title="Modifier votre adresse mail" no_searchbar>
+	<main>
+		<h1>Modifier votre adresse mail</h1>
+		<form method="post" class="formlist">
+			<table>
+				<th>Nouvelle adresse mail :</th>
+				<td>
+					<TextField
+						text=""
+						placeholder="Entrez votre nouvelle adresse mail"
+						type="email"
+						length="15rem"
+						name="email"
+					/>
+				</td>
+				<tr>
+					<th>Confirmer la nouvelle adresse mail :</th>
+					<td>
+						<TextField
+							text=""
+							placeholder="Confirmer votre nouvelle adresse mail"
+							type="email"
+							length="15rem"
+							name="email_confirm"
+						/>
+					</td>
+				</tr>
+			</table>
+			<div id="btn">
+				<Button text="Modifier l'adresse mail" />
+			</div>
+		</form>
+	</main>
+</Layout>
+
+<style>
+	#btn {
+		/* centre le bouton */
+		text-align: center;
+	}
+	main {
+		background-color: var(--theme-secondary);
+		margin: 3rem 5rem;
+		padding: 2rem;
+
+		border-radius: 2rem;
+
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+	h1 {
+		margin-top: 0rem;
+	}
+</style>

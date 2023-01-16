@@ -39,7 +39,7 @@ const notifications = await Notification.getUserNotifications(company.getId());
 		<article class="parameters">
 			<h2 id="monCompte">Mon compte</h2>
 			<UserSetting parametre="Nom" value={name} />
-			<UserSetting parametre="Adresse mail" value={mail} />
+			<UserSetting parametre="Adresse mail" value={mail} lien="modify_email" />
 			<UserSetting parametre="Mot de passe" lien="recover_password" />
 			<h2 id="accessibilite">Accessibilité</h2>
 			<UserSetting parametre="Taille de la police" value="x1" />
