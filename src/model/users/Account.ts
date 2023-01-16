@@ -195,6 +195,18 @@ export default class Account {
 		// TODO: Check if the token is still valid
 	}
 
+	public static async setEmail(
+		token: string,
+		ancient_email: string,
+		email: string
+	): Promise<void> {
+		const database = Database.get();
+		const response = await database`
+			UPDATE account SET a_login = ${email} WHERE a_id = (SELECT a_id FROM account WHERE a_login= ${ancient_email})`;
+		if (response.count === 0) {
+			throw new TokenInconnuError();
+		}
+	}
 	protected async delete(): Promise<void> {
 		const database = Database.get();
 		await database`DELETE FROM account WHERE a_id = ${this.getId()}`;
