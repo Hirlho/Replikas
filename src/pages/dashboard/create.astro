@@ -107,7 +107,7 @@ if (Astro.request.method == 'POST') {
 			<h2>Informations principales du produit</h2>
 			<div class="main_info">
 				<div class="grid_one">
-					<h3>Intitulé : *</h3>
+					<h3>Libellé : *</h3>
 					<TextField
 						type="text"
 						placeholder="Ex : Sabre Laser..."
@@ -409,7 +409,7 @@ if (Astro.request.method == 'POST') {
 		// Name
 		if (!name.value) {
 			errorColor(name);
-			err.push({ element: name, msg: 'Entrez un intitulé' });
+			err.push({ element: name, msg: 'Entrez un libellé' });
 		} else {
 			noErrorMessage(name);
 		}

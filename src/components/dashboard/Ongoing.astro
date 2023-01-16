@@ -16,7 +16,7 @@ const articles = await company.getOnGoingSales();
 	<form method="get" action="/dashboard">
 		<h1>Vos articles</h1>
 		<div class="pages">
-			<input id="currentPage" type="submit" value="En cours" name="pageName" />
+			<input id="current" type="submit" value="En cours" name="pageName" />
 			<input type="submit" value="À venir" name="pageName" />
 		</div>
 	</form>
@@ -80,16 +80,12 @@ const articles = await company.getOnGoingSales();
 	}
 
 	input:hover {
-		scale: 1.1;
+		color: var(--theme-button);
 		transition: 0.5s ease;
 	}
 
-	#currentPage {
-		border: solid;
-		border-top: transparent;
-		border-left: transparent;
-		border-right: transparent;
-		border-color: whitesmoke;
+	#current {
+		border-bottom: 3px solid;
 	}
 
 	/*------------Search bar--------------*/

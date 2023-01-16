@@ -65,6 +65,8 @@ const prix = await Bids.getEnchereMax(article);
 const encherissement_min = article.getEncherissementMin();
 const images = article.getImages() || [await article.getPoster()];
 const description = article.getDescription();
+
+console.log(images);
 ---
 
 <Layout title="Replikas" no_searchbar>
@@ -92,51 +94,105 @@ const description = article.getDescription();
 				</div>
 			</aside>
 			<article class="informations">
-				<h1 class="center">{nom}</h1>
-				<h3 class="left-margin">
-					{enCours ? 'Enchère actuelle :' : 'Prix de départ : '}
-				</h3>
-				<h2 id="current-price" class="center">{prix} €</h2>
-				<h3 class="left-margin">Placer une offre :</h3>
-				<form>
-					<div>
-						{
-							SUGGESTION_MULTIPLIERS.map((multiplier) => (
-								<button
-									class="button suggestion-value"
-									type="submit"
-									name="bid"
-									value={prix + encherissement_min * multiplier}
-								>
-									{prix + encherissement_min * multiplier + ' €'}
-								</button>
-							))
-						}
-					</div>
-					<div>
-						<TextField
-							id="manual-bid"
-							type="number"
-							name="bid"
-							minNumber={prix + encherissement_min}
-							placeholder={prix + encherissement_min + ' ou plus'}
-						/>
-					</div>
-					<div>
-						<input
-							id="placerOffre"
-							class="button"
-							type="submit"
-							value="Placer l'offre"
-						/>
-					</div>
-				</form>
-				<h3 class="left-margin">Vendu par :</h3>
-				<h2 class="center">{company.getNom()}</h2>
-				<h3 class="left-margin">Déscription :</h3>
-				<p class="center">
-					{description}
-				</p>
+				<div>
+					<h1 class="center">{nom}</h1>
+					<h3 class="left-margin">
+						{enCours ? 'Enchère actuelle :' : 'Prix de départ : '}
+					</h3>
+					<h2 id="current-price" class="center">{prix} €</h2>
+					<h3 class="left-margin">Placer une offre :</h3>
+					<form>
+						<div>
+							{
+								SUGGESTION_MULTIPLIERS.map((multiplier) => (
+									<button
+										class="button suggestion-value"
+										type="submit"
+										name="bid"
+										value={prix + encherissement_min * multiplier}
+									>
+										{prix + encherissement_min * multiplier + ' €'}
+									</button>
+								))
+							}
+						</div>
+						<div>
+							<TextField
+								id="manual-bid"
+								type="number"
+								name="bid"
+								minNumber={prix + encherissement_min}
+								placeholder={prix + encherissement_min + ' ou plus'}
+							/>
+						</div>
+						<div>
+							<input
+								id="placerOffre"
+								class="button"
+								type="submit"
+								value="Placer l'offre"
+							/>
+						</div>
+					</form>
+					<h3 class="left-margin">Vendu par :</h3>
+					<h2 class="center">{company.getNom()}</h2>
+					<h3 class="left-margin">Déscription :</h3>
+					<p class="center">
+						{description}
+						Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum nemo
+						tenetur animi tempore! Minus quisquam cumque assumenda! Repellendus modi
+						laboriosam earum laudantium, praesentium enim, nihil, ipsa commodi error
+						in similique. Inventore, magni qui! Minima temporibus inventore illum
+						quod delectus doloremque quos numquam, quia sed similique corporis? Vero
+						molestiae eaque, fuga incidunt laudantium nostrum nesciunt perspiciatis
+						sint saepe magnam quos sit mollitia ipsam ipsum modi beatae reprehenderit
+						praesentium voluptatibus, non veniam odio rerum adipisci eligendi reiciendis!
+						Beatae sapiente, veniam hic minus quaerat, commodi illum odit exercitationem
+						non incidunt delectus quibusdam in aperiam velit ipsa nulla consectetur
+						tempora. Magnam tempore illo quo optio eius, doloribus ducimus error
+						maxime odit soluta, libero est laboriosam, repudiandae vero minima beatae
+						accusamus! Sapiente impedit exercitationem autem cum fugit ipsam sit
+						modi molestias temporibus placeat! Enim quisquam praesentium magni eveniet
+						voluptas ipsum iste veniam. Dolorum amet, eaque quas nulla, repellat
+						mollitia doloribus quam minima eum architecto praesentium natus obcaecati
+						animi aliquam cum quisquam? Veritatis cumque deserunt sapiente, perspiciatis
+						magni odit iusto ab, dolorum quis a iure illo repellendus et neque aliquid
+						nihil praesentium molestias voluptatibus? Tenetur omnis temporibus minima
+						repudiandae id ipsam, repellat architecto nam deleniti, quibusdam quidem
+						non molestias mollitia libero quasi ipsum laborum laboriosam dicta aliquam
+						sapiente? Possimus dicta quisquam labore molestiae aspernatur voluptate,
+						tenetur dolores incidunt assumenda pariatur error autem blanditiis? Quisquam,
+						tempora fugiat eveniet aperiam eligendi illo, officiis incidunt quia
+						esse harum quod dolorem eum blanditiis. Magnam ipsam eum nobis voluptatem
+						nam necessitatibus ratione iste quam, illo cum beatae voluptatum, atque
+						at eaque molestias sapiente! Autem nemo modi nisi eaque voluptate at
+						soluta, esse corporis culpa, maiores nobis sunt, porro aliquid dolore!
+						Ad omnis natus illo eius, praesentium tempora totam ipsum voluptatem
+						minima nulla enim voluptatibus provident ducimus aut quasi, quis necessitatibus
+						ea placeat voluptate obcaecati a. Dolorum, doloribus voluptate. Veritatis
+						consequuntur soluta nihil sint adipisci neque perferendis blanditiis
+						repellat cumque hic rem dicta commodi facere possimus est doloremque
+						dolores impedit eum, amet consequatur a laboriosam sequi? Quidem dolore
+						ea exercitationem minus iure neque iusto ducimus numquam, blanditiis
+						aliquid. Aliquid sit rerum reprehenderit hic quod laborum, aliquam deleniti
+						tempora, iure iste ullam ut doloremque vitae amet molestiae aperiam impedit.
+						Odio possimus voluptatem odit vitae magnam sint eum facere minus consectetur.
+						Ullam corporis labore neque! Dolore ipsa eveniet, maxime, neque deleniti
+						ipsum assumenda illum provident cum itaque alias modi iste error laudantium
+						doloremque quas saepe eligendi exercitationem. Voluptates, dolor atque.
+						Culpa magni pariatur quidem cum quasi molestias aspernatur quas commodi
+						ipsum, ipsa eos sint iste earum, tempora sequi dicta illo aperiam rem
+						totam autem ullam quaerat nobis. Autem architecto, hic ea, recusandae
+						eos animi iure ab nisi sit nulla tenetur blanditiis tempore reiciendis
+						numquam dolorem debitis possimus doloribus delectus itaque asperiores.
+						Sunt adipisci cupiditate similique est maxime! Vel voluptates enim nam
+						minus veniam? Cumque est accusamus architecto cum voluptatum nisi totam
+						quasi qui id tempora, nihil quam explicabo odio provident ea, praesentium
+						alias blanditiis. Consectetur qui aspernatur voluptates dolorum autem
+						quia, saepe voluptas ullam, blanditiis perferendis consequuntur molestias
+						suscipit assumenda optio veritatis dolorem quidem!
+					</p>
+				</div>
 			</article>
 		</div>
 	</section>
@@ -153,7 +209,7 @@ const description = article.getDescription();
 
 	.main-wrapper {
 		display: grid;
-		grid-template-areas: 'sidebar main notifications';
+		grid-template-areas: 'sidebar main';
 		grid-template-columns: minmax(0, 35%) minmax(0, 60%);
 		gap: 20px;
 	}
@@ -169,7 +225,7 @@ const description = article.getDescription();
 		position: sticky;
 		top: 0;
 
-		grid-area: sidebar;
+		grid-area: 'sidebar';
 		overflow: auto;
 
 		max-height: 80vh;
@@ -178,7 +234,6 @@ const description = article.getDescription();
 	}
 
 	.img {
-		position: sticky;
 		width: 100%;
 		overflow-y: scroll;
 	}
@@ -189,6 +244,8 @@ const description = article.getDescription();
 
 	/*----------Informations------------*/
 	.informations {
+		grid-area: 'main';
+
 		border-radius: 2rem;
 		padding: 2rem;
 	}

@@ -2,69 +2,44 @@
 ---
 
 <footer>
-	<section id="replika-info">
+	<div id="replika-info">
 		<h1>Replikas</h1>
-		<a class="hoverScale" href="/aboutus"> À propos de Replikas</a>
-		<a class="hoverScale" href="/contact">Nous contacter</a>
-		<a class="hoverScale" href="/privacy_policy">
+		<a class="hoverColor" href="/aboutus"> À propos de Replikas</a>
+		<a class="hoverColor" href="/contact">Nous contacter</a>
+		<a class="hoverColor" href="/privacy_policy">
 			Notre politique de confidentialité</a
 		>
-	</section>
-	<section id="replika-socials">
+	</div>
+	<div id="replika-socials">
 		<h1>Nos réseaux</h1>
 		<div class="hbox">
 			<a
-				class="hoverScale"
+				class="socials"
 				href="https://fr-fr.facebook.com/DonaldTrump"
 				target="_blank"
-				><img
-					src="/img/icons/socials/facebook.svg"
-					width="48px"
-					height="48px"
-					alt="Facebook"
-				/>
+				><img src="/img/icons/socials/facebook.svg" alt="Facebook" />
 			</a>
-			<a class="hoverScale" href="https://twitter.com/elonmusk" target="_blank"
-				><img
-					src="/img/icons/socials/twitter.svg"
-					width="48px"
-					height="48px"
-					alt="Twitter"
-				/>
+			<a class="socials" href="https://twitter.com/elonmusk" target="_blank"
+				><img src="/img/icons/socials/twitter.svg" alt="Twitter" />
 			</a>
 			<a
-				class="hoverScale"
+				class="socials"
 				href="https://www.instagram.com/hugodecrypte"
 				target="_blank"
-				><img
-					src="/img/icons/socials/instagram.svg"
-					width="48px"
-					height="48px"
-					alt="Instagram"
-				/>
+				><img src="/img/icons/socials/instagram.svg" alt="Instagram" />
 			</a>
 			<a
-				class="hoverScale"
+				class="socials"
 				href="https://fr.linkedin.com/in/herv%C3%A9-blanchon-4851b02"
 				target="_blank"
-				><img
-					src="/img/icons/socials/linkedin.svg"
-					width="48px"
-					height="48px"
-					alt="Linkedin"
-				/>
+				><img src="/img/icons/socials/linkedin.svg" alt="Linkedin" />
 			</a>
-			<a class="hoverScale" href="https://r.mtdv.me/replikas" target="_blank"
-				><img
-					src="/img/icons/socials/youtube.svg"
-					width="48px"
-					height="48px"
-					alt="Youtube"
-				/>
+			<a class="socials" href="https://r.mtdv.me/replikas" target="_blank"
+				><img src="/img/icons/socials/youtube.svg" alt="Youtube" />
 			</a>
 		</div>
-	</section>
-	<section id="replikas-team">
+	</div>
+	<div id="replikas-team">
 		<img
 			src="/favicon.svg"
 			width="24px"
@@ -73,7 +48,7 @@
 			class="filter-whitesmoke"
 		/>
 		<h1>Replikas team</h1>
-	</section>
+	</div>
 </footer>
 
 <style>
@@ -86,6 +61,8 @@
 
 		flex-grow: 0;
 		flex-shrink: 0;
+
+		border-top: 1px solid #222;
 	}
 
 	footer h1 {
@@ -94,27 +71,8 @@
 		font-weight: bold;
 	}
 
-	footer #replika-info a {
-		font-size: 1rem;
-		margin: 0.4rem;
-		text-decoration: none;
-		color: inherit;
-	}
-
 	footer section {
 		margin: 0.5rem;
-	}
-
-	footer #replika-info {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
-	footer #replika-socials {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
 	}
 
 	footer #replikas-team {
@@ -128,12 +86,41 @@
 		margin-right: -0.5rem;
 	}
 
-	/*------------Scale up buttons on hover-------------*/
-	.hoverScale {
+	/*------------Pages links-------------*/
+	#replika-info {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	#replika-info a {
+		font-size: 1rem;
+		margin: 0.4rem;
+		text-decoration: none;
+		color: var(--theme-text);
 		transition: 0.5s ease;
 	}
 
-	.hoverScale:hover {
+	.hoverColor:hover {
+		transition: 0.5s ease;
+		color: var(--theme-button) !important;
+	}
+
+	/*---------------Socials-----------------*/
+	#replika-socials {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.socials {
+		transition: 0.5s ease;
+
+		width: 48px;
+		height: 48px;
+	}
+
+	.socials:hover {
 		scale: 1.2;
 		transition: 0.5s ease;
 	}

@@ -71,10 +71,13 @@ const enCours = dateDebut < new Date() && dateFin > new Date();
 
 			border-radius: 10px;
 			overflow: hidden;
+
+			transition: 0.5s;
 		}
 
 		li:hover {
-			box-shadow: 0 0 10px var(--theme-primary);
+			transition: 0.5s;
+			box-shadow: 0 0 5px var(--theme-text);
 		}
 
 		li a {

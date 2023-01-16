@@ -31,7 +31,13 @@ const pages = [...Array(Math.ceil(length / PAGE_SIZE)).values()];
 			</div>
 		</div>
 		<ul>
-			{articles.map((article) => <Article article={article} />)}
+			{
+				articles.length > 0 ? (
+					articles.map((article) => <Article article={article} />)
+				) : (
+					<p>Il n'y a aucun article correspondant à la recherche</p>
+				)
+			}
 		</ul>
 		<div class="pages">
 			<span>

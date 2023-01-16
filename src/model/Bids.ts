@@ -31,6 +31,7 @@ export default class Bids {
 	): Promise<void> {
 		const database = Database.get();
 		await database`INSERT INTO bid (art_id, b_id, amount) VALUES (${article.getId()}, ${buyer.getId()}, ${amount})`;
+		await database`UPDATE article SET art_price = ${amount} WHERE art_id = ${article.getId()}`;
 	}
 
 	/**
