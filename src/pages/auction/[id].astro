@@ -63,7 +63,7 @@ const ends = dateDiff(finVente, new Date());
 const nom = article.getName();
 const prix = await Bids.getEnchereMax(article);
 const encherissement_min = article.getEncherissementMin();
-const image = await article.getPoster();
+const images = article.getImages() || [await article.getPoster()];
 const description = article.getDescription();
 ---
 
@@ -88,7 +88,7 @@ const description = article.getDescription();
 		<div class="main-wrapper">
 			<aside class="sideBar">
 				<div class="img">
-					<img src={image} alt="" />
+					{images.map((image) => <img src={image} alt={nom} />)}
 				</div>
 			</aside>
 			<article class="informations">
@@ -180,6 +180,7 @@ const description = article.getDescription();
 	.img {
 		position: sticky;
 		width: 100%;
+		overflow-y: scroll;
 	}
 
 	.img > img {
