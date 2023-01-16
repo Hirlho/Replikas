@@ -27,9 +27,7 @@ const mostAwaited = await ArticleModel.mostAwaited();
 		</div>
 		<div class="others">
 			<h1>Les plus attendus</h1>
-			<ul>
-				{articles.map((article) => <Article article={article} />)}
-			</ul>
+			<ul></ul>
 		</div>
 	</main>
 
@@ -120,7 +118,7 @@ const mostAwaited = await ArticleModel.mostAwaited();
 		const prev: any = document.querySelector('.prev');
 		const next: any = document.querySelector('.next');
 
-		var direction: number = 0;
+		var direction: number = -1;
 
 		prev.addEventListener('click', function () {
 			if (direction === -1) {
@@ -132,9 +130,12 @@ const mostAwaited = await ArticleModel.mostAwaited();
 		});
 
 		next.addEventListener('click', function () {
-			direction = -1;
-			carrousel.style.justifyContent = 'flex-start';
-			slider.style.transform = 'translate(-20%)';
+			if (direction === 1) {
+				slider.prepend(slider.lastElementChild);
+				carrousel.style.justifyContent = 'flex-start';
+				direction = -1;
+			}
+			slider.style.transform = 'translateX(-20%)';
 		});
 
 		slider.addEventListener('transitionend', function () {
