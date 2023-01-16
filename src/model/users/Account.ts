@@ -32,7 +32,7 @@ export default class Account {
 			throw new UtilisateurOuMotDePasseInvalideError();
 		}
 		account.id = result[0].a_id;
-		account.email = result[0].a_mail;
+		account.email = result[0].a_login;
 		account.created_at = result[0].a_created_at;
 		account.is_company = result[0].a_is_company;
 
@@ -54,7 +54,7 @@ export default class Account {
 			throw new RangeError(`L'id ${id} ne correspond à aucun utilisateur`);
 		}
 		account.id = result[0].a_id;
-		account.email = result[0].a_mail;
+		account.email = result[0].a_login;
 		account.created_at = new Date(result[0].a_created_at);
 		account.is_company = result[0].a_is_company;
 
@@ -142,7 +142,7 @@ export default class Account {
 		}
 
 		account.id = result[0].a_id;
-		account.email = result[0].a_mail;
+		account.email = result[0].a_login;
 		account.created_at = new Date(result[0].a_created_at);
 		account.is_company = result[0].a_is_company;
 
