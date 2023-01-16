@@ -84,17 +84,20 @@ const description = article.getDescription();
 					: `Débute dans ${starts.day}j ${starts.hour}h ${starts.min}min ${starts.sec}s`
 			}
 		</h1>
-		<article>
-			<div class="img">
-				<img src={image} alt="" />
-			</div>
-			<div class="informations">
-				<h1>{nom}</h1>
-				<p>
+
+		<div class="main-wrapper">
+			<aside class="sideBar">
+				<div class="img">
+					<img src={image} alt="" />
+				</div>
+			</aside>
+			<article class="informations">
+				<h1 class="center">{nom}</h1>
+				<h3 class="left-margin">
 					{enCours ? 'Enchère actuelle :' : 'Prix de départ : '}
-				</p>
-				<h2 id="current-price">{prix} €</h2>
-				<p>Placer une offre :</p>
+				</h3>
+				<h2 id="current-price" class="center">{prix} €</h2>
+				<h3 class="left-margin">Placer une offre :</h3>
 				<form>
 					<div>
 						{
@@ -110,85 +113,102 @@ const description = article.getDescription();
 							))
 						}
 					</div>
-					<TextField
-						id="manual-bid"
-						type="number"
-						name="bid"
-						minNumber={prix + encherissement_min}
-						placeholder={prix + encherissement_min + ' ou plus'}
-					/>
-					<input
-						id="placerOffre"
-						class="button"
-						type="submit"
-						value="Placer l'offre"
-					/>
+					<div>
+						<TextField
+							id="manual-bid"
+							type="number"
+							name="bid"
+							minNumber={prix + encherissement_min}
+							placeholder={prix + encherissement_min + ' ou plus'}
+						/>
+					</div>
+					<div>
+						<input
+							id="placerOffre"
+							class="button"
+							type="submit"
+							value="Placer l'offre"
+						/>
+					</div>
 				</form>
-				<h3>Vendu par : {company.getNom()}</h3>
-				<p>
+				<h3 class="left-margin">Vendu par :</h3>
+				<h2 class="center">{company.getNom()}</h2>
+				<h3 class="left-margin">Déscription :</h3>
+				<p class="center">
 					{description}
 				</p>
-			</div>
-		</article>
+			</article>
+		</div>
 	</section>
 </Layout>
 
 <style>
-	h1 {
-		margin-top: 0;
-		font-size: 2.5rem;
-	}
-
-	h2 {
-		font-size: 2rem;
-	}
-
-	p {
-		font-size: 1.2rem;
-	}
-
 	section {
 		margin: 20px auto;
 		padding: 40px 4%;
 		width: 90%;
 
 		border-radius: 20px;
-
-		background-color: var(--theme-secondary);
 	}
 
-	article {
-		display: flex;
-		flex-wrap: wrap;
+	.main-wrapper {
+		display: grid;
+		grid-template-areas: 'sidebar main notifications';
+		grid-template-columns: minmax(0, 35%) minmax(0, 60%);
+		gap: 20px;
+	}
+
+	.main-wrapper > * {
+		background-color: var(--theme-secondary);
+
+		margin: 10px;
+	}
+
+	/*---------Side Bar------------*/
+	.sideBar {
+		position: sticky;
+		top: 0;
+
+		grid-area: sidebar;
+		overflow: auto;
+
+		max-height: 80vh;
+
+		border-radius: 2rem;
 	}
 
 	.img {
 		position: sticky;
-		width: 25%;
-		margin-left: 1%;
+		width: 100%;
 	}
 
 	.img > img {
 		width: 100%;
 	}
 
+	/*----------Informations------------*/
 	.informations {
-		margin-left: 10%;
+		border-radius: 2rem;
+		padding: 2rem;
 	}
 
+	/*------------Formulaire d'enchérissement---------------*/
 	form {
-		width: 50%;
-		margin-left: 20px;
+		margin: 2rem;
 
 		display: flex;
-		flex-direction: column;
-		align-items: center;
+		flex-wrap: wrap;
+		justify-content: center;
 	}
 
-	form > div {
+	form div {
 		display: flex;
+		justify-content: center;
 		width: 100%;
-		justify-content: space-around;
+	}
+
+	form div * {
+		margin: 0 1.5rem;
 	}
 
 	form > * {
@@ -210,6 +230,37 @@ const description = article.getDescription();
 		cursor: pointer;
 
 		font-size: 1rem;
+	}
+
+	.button:hover {
+		transition: 0.3s ease;
+		filter: brightness(1.2);
+	}
+
+	/*-----------Texts----------*/
+	.center {
+		text-align: center;
+	}
+
+	.left-margin {
+		margin-left: 5rem;
+	}
+
+	h1 {
+		margin: 0.5rem 0 1rem 0;
+		font-size: 2.5rem;
+	}
+
+	h2 {
+		font-size: 2rem;
+	}
+
+	h3 {
+		font-size: 1.3rem;
+	}
+
+	p {
+		font-size: 1.2rem;
 	}
 </style>
 

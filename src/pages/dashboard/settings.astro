@@ -36,14 +36,14 @@ const notifications = await Notification.getUserNotifications(company.getId());
 				<input id="deconnection" type="submit" value="Se déconnecter" />
 			</form>
 		</aside>
-		<main class="parameters">
+		<article class="parameters">
 			<h2 id="monCompte">Mon compte</h2>
 			<UserSetting parametre="Nom" value={name} />
 			<UserSetting parametre="Adresse mail" value={mail} />
 			<UserSetting parametre="Mot de passe" lien="recover_password" />
 			<h2 id="accessibilite">Accessibilité</h2>
 			<UserSetting parametre="Taille de la police" value="x1" />
-		</main>
+		</article>
 		<aside class="notifications">
 			<h2>Notifications</h2>
 			{notifications.map((notif) => <Notif notif={notif} />)}
