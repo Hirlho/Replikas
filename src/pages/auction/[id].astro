@@ -170,17 +170,24 @@ const description = article.getDescription();
 		top: 0;
 
 		grid-area: sidebar;
-		overflow: auto;
+		overflow-y: scroll;
 
 		max-height: 80vh;
 
 		border-radius: 2rem;
+
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
+	.sideBar::-webkit-scrollbar {
+		display: none;
 	}
 
 	.img {
 		position: sticky;
 		width: 100%;
-		overflow-y: scroll;
+		overflow-y: hidden;
 	}
 
 	.img > img {
