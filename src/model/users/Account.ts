@@ -152,6 +152,38 @@ export default class Account {
 		return result.count > 0;
 	}
 
+	public static async createPasswordRecoveryToken(
+		email: string
+	): Promise<string> {
+		const database = Database.get();
+		const token = shajs('sha256')
+			.update('' + email + Date.now())
+			.digest('hex');
+		const dateCreation = new Date();
+		const response = await database`
+			INSERT INTO password_recovery (pr_token, pr_created_at, a_id) VALUES (${token}, ${dateCreation}, (SELECT a_id FROM account WHERE a_login = ${email})) RETURNING pr_id`;
+		if (response.count === 0) {
+			throw new EmailInconnuError();
+		}
+		return token;
+	}
+
+	public static async setPassword(
+		token: string,
+		password: string
+	): Promise<void> {
+		const database = Database.get();
+		const hash = shajs('sha256').update(password).digest('hex');
+		const response = await database`
+			UPDATE account SET a_password = ${hash} WHERE a_id = (SELECT a_id FROM password_recovery WHERE pr_token = ${token})`;
+		if (response.count === 0) {
+			throw new TokenInconnuError();
+		}
+		// Consuming the token
+		await database`DELETE FROM password_recovery WHERE pr_token = ${token}`;
+		// TODO: Check if the token is still valid
+	}
+
 	protected async delete(): Promise<void> {
 		const database = Database.get();
 		await database`DELETE FROM account WHERE a_id = ${this.getId()}`;
@@ -210,5 +242,16 @@ export class AccountTypeMismatch extends Error {
 				{ buyer: 'company', company: 'buyer' }[required]
 			} sur une méthode qui demandait un ${required}`
 		);
+	}
+}
+
+export class EmailInconnuError extends Error {
+	constructor() {
+		super('Email inconnu');
+	}
+}
+export class TokenInconnuError extends Error {
+	constructor() {
+		super('Token inconnu');
 	}
 }
