@@ -11,11 +11,11 @@ const articles = await ArticleModel.mostBids();
 		<div class="container">
 			<div class="carrousel">
 				<div class="slider">
-					<article></article>
-					<article></article>
-					<article></article>
-					<article></article>
-					<article></article>
+					<article>1</article>
+					<article>2</article>
+					<article>3</article>
+					<article>4</article>
+					<article>5</article>
 				</div>
 				<div class="controls">
 					<span class="arrow prev">Prev</span>
@@ -23,7 +23,7 @@ const articles = await ArticleModel.mostBids();
 				</div>
 			</div>
 		</div>
-		<div>
+		<div class="others">
 			<h1>Les plus attendus</h1>
 			<ul>
 				{articles.map((article) => <Article article={article} />)}
@@ -41,7 +41,7 @@ const articles = await ArticleModel.mostBids();
 		align-items: center;
 	}
 
-	div {
+	.others {
 		background-color: var(--theme-secondary);
 		width: 85%;
 		margin: 0;
@@ -64,7 +64,7 @@ const articles = await ArticleModel.mostBids();
 	}
 
 	.container {
-		width: 90%;
+		width: 10%;
 		margin: 20px auto;
 		height: 300px;
 	}
@@ -85,6 +85,7 @@ const articles = await ArticleModel.mostBids();
 		height: 100%;
 		width: 500%;
 		flex-shrink: 0;
+		transition: all 0.5s;
 	}
 	.slider article {
 		border: 1px solid red;
@@ -100,6 +101,7 @@ const articles = await ArticleModel.mostBids();
 	.arrow {
 		position: absolute;
 		top: 10px;
+		cursor: pointer;
 	}
 
 	.arrow.prev {
@@ -117,10 +119,13 @@ const articles = await ArticleModel.mostBids();
 	const prev: any = document.querySelector('.prev');
 	const next: any = document.querySelector('.next');
 
-	var direction: number;
+	var direction: number = 0;
 
 	prev.addEventListener('click', function () {
-		direction = 1;
+		if (direction === -1) {
+			slider.appendChild(slider.firstElementChild);
+			direction = 1;
+		}
 		carrousel.style.justifyContent = 'flex-end';
 		slider.style.transform = 'translate(20%)';
 	});
@@ -132,10 +137,10 @@ const articles = await ArticleModel.mostBids();
 	});
 
 	slider.addEventListener('transitionend', function () {
-		if (direction === 1) {
-			slider.prepend(slider.lastElementChild);
-		} else if (direction === -1) {
+		if (direction === -1) {
 			slider.appendChild(slider.firstElementChild);
+		} else if (direction === 1) {
+			slider.prepend(slider.lastElementChild);
 		}
 
 		slider.style.transition = 'none';
