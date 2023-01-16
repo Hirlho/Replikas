@@ -15,6 +15,7 @@
   "dependencies": {
     "@astrojs/node": "^3.1.0",
     "@emailjs/browser": "^3.10.0",
+    "@sendgrid/mail": "^7.7.0",
     "@types/axios": "^0.14.0",
     "astro": "^1.6.10",
     "axios": "^1.2.2",
