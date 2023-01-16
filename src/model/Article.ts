@@ -334,12 +334,13 @@ export default class Article {
 		const images_local: string[] = await fs.promises
 			.readdir(Config.get().uploads_dir)
 			.catch(() => []);
-		console.log(images_local);
-		console.log(images_remote);
 		let missingValues = images_local.filter((img) => !images_remote.has(img)); // Prend avantage du fait que le Set a des index hashés
 		for (const img of missingValues) {
 			await fs.promises
 				.unlink(path.join(Config.get().uploads_dir, img))
+				.then(() => {
+					console.info('Deleted ' + img + ' not present in remote database');
+				})
 				.catch(() => {
 					console.warn("Couldn't delete image " + img);
 				});
