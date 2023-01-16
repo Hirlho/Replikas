@@ -4,6 +4,10 @@ import shajs from 'sha.js';
 export default class Account {
 	static SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days
 
+	static {
+		Database.getInstance().on('clean', Account.clean);
+	}
+
 	protected id: number;
 	protected email: string;
 	protected created_at: Date;
@@ -51,7 +55,7 @@ export default class Account {
 		}
 		account.id = result[0].a_id;
 		account.email = result[0].a_mail;
-		account.created_at = result[0].a_created_at;
+		account.created_at = new Date(result[0].a_created_at);
 		account.is_company = result[0].a_is_company;
 
 		return account;
@@ -139,7 +143,7 @@ export default class Account {
 
 		account.id = result[0].a_id;
 		account.email = result[0].a_mail;
-		account.created_at = result[0].a_created_at;
+		account.created_at = new Date(result[0].a_created_at);
 		account.is_company = result[0].a_is_company;
 
 		return account;
@@ -192,6 +196,25 @@ export default class Account {
 	protected static async deleteSession(token: string): Promise<void> {
 		const database = Database.get();
 		await database`DELETE FROM session WHERE s_token = ${token}`;
+	}
+
+	static async clean(): Promise<void> {
+		const database = Database.get();
+		// Clear session tokens
+		const tokens = await database`SELECT * FROM session;`;
+		for (const token of tokens) {
+			if (new Date(token.s_expires_at) < new Date()) {
+				await Account.deleteSession(token.s_token);
+			}
+		}
+		// Clear password recovery tokens
+		const passwordRecoveryTokens =
+			await database`SELECT * FROM password_recovery;`;
+		for (const token of passwordRecoveryTokens) {
+			if (new Date(token.pr_created_at) < new Date()) {
+				await database`DELETE FROM password_recovery WHERE pr_token = ${token.pr_token}`;
+			}
+		}
 	}
 
 	public getId(): number {

@@ -1,15 +1,18 @@
 import postgres from 'postgres';
 import Config from './Config';
-import fs from 'fs';
-import path from 'path';
-import { init } from '@emailjs/browser';
+import { EventEmitter } from 'events';
+import TypedEmitter from 'typed-emitter';
 
-export default class Database {
+type DatabaseEvents = {
+	clean: () => void;
+};
+
+export default class Database extends (EventEmitter as new () => TypedEmitter<DatabaseEvents>) {
 	private static _instance: Database;
 	private _client: postgres.Sql<{}>;
-	private _accessors: DatabaseAccessor[] = [];
 
 	private constructor() {
+		super();
 		const config = Config.get().db;
 		this._client = postgres({
 			host: config.host,
@@ -20,20 +23,28 @@ export default class Database {
 			idle_timeout: 20,
 		});
 
-		setTimeout(() => {
-			Database.clean();
-		}, 10000);
+		setInterval(() => {
+			Database.getInstance().emit('clean');
+		}, 60 * 1000);
 	}
 
 	/**
-	 * Recupere le singleton de la classe Database
-	 * @returns L'instance de la classe Database
+	 * Recupere le client SQL du singleton de la classe Database
+	 * @returns Le client SQL
 	 */
 	public static get(): postgres.Sql<{}> {
+		return Database.getInstance()._client;
+	}
+
+	/**
+	 * Recupere l'instance de la classe Database
+	 * @returns L'instance de la classe Database
+	 */
+	public static getInstance(): Database {
 		if (!Database._instance) {
 			Database._instance = new Database();
 		}
-		return Database._instance._client;
+		return Database._instance;
 	}
 
 	/**
@@ -44,31 +55,4 @@ export default class Database {
 			await Database._instance._client.end();
 		}
 	}
-
-	/**
-	 * Nettoie la base de donnees, ajouter les méthodes
-	 */
-	private static async clean(): Promise<void> {
-		if (Database._instance) {
-			for (const accessor of Database._instance._accessors) {
-				await accessor.clean();
-			}
-		}
-	}
-
-	public static registerAccessor(accessor: DatabaseAccessor) {
-		Database._instance._accessors.push(accessor);
-	}
-}
-
-export abstract class DatabaseAccessor {
-	constructor() {
-		this.register();
-	}
-
-	private register(): void {
-		Database.registerAccessor(this);
-	}
-
-	abstract clean(): Promise<void>;
 }

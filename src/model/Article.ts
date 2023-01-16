@@ -1,8 +1,15 @@
 import Database from './Database';
 import TMDB from './TMDB';
 import Buyer from './users/Buyer';
+import fs from 'fs';
+import path from 'path';
+import Config from './Config';
 
 export default class Article {
+	static {
+		Database.getInstance().on('clean', Article.clean);
+	}
+
 	private id: number;
 	private name: string;
 	private description: string;
@@ -314,6 +321,24 @@ export default class Article {
 		const database = Database.get();
 		await database`DELETE FROM article WHERE art_id = ${this.id}`;
 		await database`DELETE FROM article_image WHERE art_id = ${this.id}`;
+	}
+
+	static async clean(): Promise<void> {
+		const database = Database.get();
+		// Supprime les images uploadées si elles ne sont pas utilisées
+		const images_remote = await database`
+			SELECT img_path FROM article_image;`;
+		const images_local = new Set(
+			await fs.promises.readdir(Config.get().uploads_dir)
+		);
+		let missingValues = images_remote.filter(
+			(img) => !images_local.has(img.img_path)
+		); // Prend avantage du fait que le Set a des index hashés
+		for (const img of missingValues) {
+			await fs.promises.unlink(
+				path.join(Config.get().uploads_dir, img.img_path)
+			);
+		}
 	}
 
 	public getId(): number {
