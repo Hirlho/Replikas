@@ -2,10 +2,12 @@ import postgres from 'postgres';
 import Config from './Config';
 import fs from 'fs';
 import path from 'path';
+import { init } from '@emailjs/browser';
 
 export default class Database {
 	private static _instance: Database;
 	private _client: postgres.Sql<{}>;
+	private _accessors: DatabaseAccessor[] = [];
 
 	private constructor() {
 		const config = Config.get().db;
@@ -17,6 +19,10 @@ export default class Database {
 			database: config.name,
 			idle_timeout: 20,
 		});
+
+		setTimeout(() => {
+			Database.clean();
+		}, 10000);
 	}
 
 	/**
@@ -38,4 +44,31 @@ export default class Database {
 			await Database._instance._client.end();
 		}
 	}
+
+	/**
+	 * Nettoie la base de donnees, ajouter les méthodes
+	 */
+	private static async clean(): Promise<void> {
+		if (Database._instance) {
+			for (const accessor of Database._instance._accessors) {
+				await accessor.clean();
+			}
+		}
+	}
+
+	public static registerAccessor(accessor: DatabaseAccessor) {
+		Database._instance._accessors.push(accessor);
+	}
+}
+
+export abstract class DatabaseAccessor {
+	constructor() {
+		this.register();
+	}
+
+	private register(): void {
+		Database.registerAccessor(this);
+	}
+
+	abstract clean(): Promise<void>;
 }
