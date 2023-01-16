@@ -177,9 +177,7 @@ const { placeholder, name, length, id } = Astro.props;
 			return [];
 		}
 		const response = await fetch(`/api/search?search=${input}`);
-		console.log(response);
 		const data = await response.json();
-		console.log(data);
 		return data;
 	}
 </script>

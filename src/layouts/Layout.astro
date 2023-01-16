@@ -3,13 +3,12 @@ import Footer from '../components/Footer.astro';
 import Navbar from '../components/Navbar.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 
-
 export interface Props {
 	title: string;
 	no_searchbar?: boolean;
 }
 
-const { title, no_searchbar} = Astro.props;
+const { title, no_searchbar } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -29,8 +28,7 @@ const { title, no_searchbar} = Astro.props;
 		<main>
 			{no_searchbar ? <Navbar /> : <Navbar search_bar />}
 
-			<Breadcrumb {}
-			/>
+			<Breadcrumb />
 			<section>
 				<slot />
 			</section>
@@ -43,6 +41,7 @@ const { title, no_searchbar} = Astro.props;
 			--theme-secondary: #222222;
 			--theme-button: #353a4d;
 			--theme-text: whitesmoke;
+			--theme-input: whitesmoke;
 			--theme-link: blue;
 		}
 		/* THEMES
