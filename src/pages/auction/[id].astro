@@ -63,7 +63,9 @@ const ends = dateDiff(finVente, new Date());
 const nom = article.getName();
 const prix = await Bids.getEnchereMax(article);
 const encherissement_min = article.getEncherissementMin();
-const images = article.getImages() || [await article.getPoster()];
+const images = article.getImages().length
+	? article.getImages()
+	: [await article.getPoster()];
 const description = article.getDescription();
 ---
 
