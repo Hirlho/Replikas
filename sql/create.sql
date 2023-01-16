@@ -18,8 +18,14 @@ CREATE TABLE session (
     a_id INTEGER REFERENCES account (a_id) ON DELETE CASCADE,
     s_token varchar(64) NOT NULL,
     s_created_at TIMESTAMP NOT NULL,
-    s_expires_at TIMESTAMP NOT NULL,
-    PRIMARY KEY(a_id, s_token)
+    s_expires_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE password_recovery (
+    a_id INTEGER REFERENCES account (a_id) ON DELETE CASCADE,
+    pr_token varchar(64) NOT NULL,
+    pr_created_at TIMESTAMP NOT NULL,
+    PRIMARY KEY(a_id, pr_token)
 );
 
 CREATE TABLE company (
@@ -112,6 +118,7 @@ ALTER TABLE test OWNER TO replikas_usr;
 ALTER TABLE account OWNER TO replikas_usr;
 ALTER TABLE buyer OWNER TO replikas_usr;
 ALTER TABLE session OWNER TO replikas_usr;
+ALTER TABLE password_recovery OWNER TO replikas_usr;
 ALTER TABLE company OWNER TO replikas_usr;
 ALTER TABLE article OWNER TO replikas_usr;
 ALTER TABLE movie OWNER TO replikas_usr;
