@@ -29,7 +29,12 @@ if (Astro.request.method == 'POST') {
 		);
 	// Vérification du mail
 	if (
-		!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(email)
+		!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(
+			email
+		) &&
+		!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(
+			email
+		)
 	)
 		return Astro.redirect('/register?error=invalid_email&redirect=' + redirect);
 	// Mot de passe fort https://www.section.io/engineering-education/password-strength-checker-javascript/
