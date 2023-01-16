@@ -47,25 +47,31 @@ const { title, no_searchbar } = Astro.props;
 			src: url('/fonts/Larsseit-Bold.otf') format('opentype');
 		}
 
+		/*
 		:root {
 			--theme-primary: white;
 			--theme-secondary: #f5f5f5;
 			--theme-button: #7d53de;
+			--theme-button-text: whitesmoke;
 			--theme-text: black;
 			--theme-link: #7d53de;
-			--theme-input: #e0e0e0;
+			--theme-input: whitesmoke;
+			--theme-search-bar: white;
 		}
-		/* THEMES
+		*/
 
-		// Default
 		:root {
-			--theme-primary: #4b4e6d;
-			--theme-secondary: #222222;
-			--theme-button: #353a4d;
+			--theme-primary: #222;
+			--theme-secondary: #000;
+			--theme-button: #d60808;
+			--theme-button-text: whitesmoke;
 			--theme-text: whitesmoke;
-			--theme-link: blue;
+			--theme-link: #7d53de;
+			--theme-input: whitesmoke;
+			--theme-search-bar: whitesmoke;
 		}
-		
+
+		/* THEMES
 		// "Rustic Charm" 
 		:root {
 			--theme-primary: #7b5e57;
@@ -119,6 +125,7 @@ const { title, no_searchbar } = Astro.props;
 			min-height: 100%;
 			display: flex;
 			flex-direction: column;
+			overflow: hidden;
 		}
 		section {
 			flex-grow: 1;

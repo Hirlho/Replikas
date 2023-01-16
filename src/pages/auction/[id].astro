@@ -1,4 +1,5 @@
 ---
+import TextField from '../../components/TextField.astro';
 import Layout from '../../layouts/Layout.astro';
 import Article, { ArticleInexistantError } from '../../model/Article';
 import Bids from '../../model/Bids';
@@ -76,24 +77,27 @@ const description = article.getDescription();
 			data-multipliers={SUGGESTION_MULTIPLIERS}
 		>
 		</div>
-		<h2 id="timeDiff">
+		<h1 id="timeDiff">
 			{
 				enCours
 					? `Se termine dans ${ends.day}j ${ends.hour}h ${ends.min}min ${ends.sec}s`
 					: `Débute dans ${starts.day}j ${starts.hour}h ${starts.min}min ${starts.sec}s`
 			}
-		</h2>
-		<article>
-			<div class="img">
-				<img src={image} alt="" />
-			</div>
-			<div class="informations">
-				<h2>{nom}</h2>
-				<p>
+		</h1>
+
+		<div class="main-wrapper">
+			<aside class="sideBar">
+				<div class="img">
+					<img src={image} alt="" />
+				</div>
+			</aside>
+			<article class="informations">
+				<h1 class="center">{nom}</h1>
+				<h3 class="left-margin">
 					{enCours ? 'Enchère actuelle :' : 'Prix de départ : '}
-				</p>
-				<h2 id="current-price">{prix} €</h2>
-				<p>Placer une offre :</p>
+				</h3>
+				<h2 id="current-price" class="center">{prix} €</h2>
+				<h3 class="left-margin">Placer une offre :</h3>
 				<form>
 					<div>
 						{
@@ -109,28 +113,156 @@ const description = article.getDescription();
 							))
 						}
 					</div>
-					<input
-						id="manual-bid"
-						type="number"
-						name="bid"
-						min={prix + encherissement_min}
-						placeholder={prix + encherissement_min + ' ou plus'}
-					/>
-					<input
-						id="placerOffre"
-						class="button"
-						type="submit"
-						value="Placer l'offre"
-					/>
+					<div>
+						<TextField
+							id="manual-bid"
+							type="number"
+							name="bid"
+							minNumber={prix + encherissement_min}
+							placeholder={prix + encherissement_min + ' ou plus'}
+						/>
+					</div>
+					<div>
+						<input
+							id="placerOffre"
+							class="button"
+							type="submit"
+							value="Placer l'offre"
+						/>
+					</div>
 				</form>
-				<h3>Vendu par : {company.getNom()}</h3>
-				<p>
+				<h3 class="left-margin">Vendu par :</h3>
+				<h2 class="center">{company.getNom()}</h2>
+				<h3 class="left-margin">Déscription :</h3>
+				<p class="center">
 					{description}
 				</p>
-			</div>
-		</article>
+			</article>
+		</div>
 	</section>
 </Layout>
+
+<style>
+	section {
+		margin: 20px auto;
+		padding: 40px 4%;
+		width: 90%;
+
+		border-radius: 20px;
+	}
+
+	.main-wrapper {
+		display: grid;
+		grid-template-areas: 'sidebar main notifications';
+		grid-template-columns: minmax(0, 35%) minmax(0, 60%);
+		gap: 20px;
+	}
+
+	.main-wrapper > * {
+		background-color: var(--theme-secondary);
+
+		margin: 10px;
+	}
+
+	/*---------Side Bar------------*/
+	.sideBar {
+		position: sticky;
+		top: 0;
+
+		grid-area: sidebar;
+		overflow: auto;
+
+		max-height: 80vh;
+
+		border-radius: 2rem;
+	}
+
+	.img {
+		position: sticky;
+		width: 100%;
+	}
+
+	.img > img {
+		width: 100%;
+	}
+
+	/*----------Informations------------*/
+	.informations {
+		border-radius: 2rem;
+		padding: 2rem;
+	}
+
+	/*------------Formulaire d'enchérissement---------------*/
+	form {
+		margin: 2rem;
+
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+
+	form div {
+		display: flex;
+		justify-content: center;
+		width: 100%;
+	}
+
+	form div * {
+		margin: 0 1.5rem;
+	}
+
+	form > * {
+		margin: 10px 0;
+	}
+
+	#placerOffre {
+		font-size: 1.5rem;
+	}
+
+	.button {
+		color: var(--theme-button-text);
+		background-color: var(--theme-button);
+
+		border: none;
+		border-radius: 5px;
+
+		padding: 0.5rem 1rem;
+		cursor: pointer;
+
+		font-size: 1rem;
+	}
+
+	.button:hover {
+		transition: 0.3s ease;
+		filter: brightness(1.2);
+	}
+
+	/*-----------Texts----------*/
+	.center {
+		text-align: center;
+	}
+
+	.left-margin {
+		margin-left: 5rem;
+	}
+
+	h1 {
+		margin: 0.5rem 0 1rem 0;
+		font-size: 2.5rem;
+	}
+
+	h2 {
+		font-size: 2rem;
+	}
+
+	h3 {
+		font-size: 1.3rem;
+	}
+
+	p {
+		font-size: 1.2rem;
+	}
+</style>
 
 <script>
 	import Swal from 'sweetalert2';
@@ -255,72 +387,3 @@ const description = article.getDescription();
 		}
 	});
 </script>
-
-<style>
-	h2 {
-		margin-top: 0;
-	}
-
-	section {
-		margin: 20px auto;
-		padding: 40px 4%;
-		width: 90%;
-
-		border-radius: 20px;
-
-		background-color: var(--theme-secondary);
-	}
-
-	article {
-		display: flex;
-		flex-wrap: wrap;
-	}
-
-	.img {
-		position: sticky;
-		width: 25%;
-		margin-left: 1%;
-	}
-
-	.img > img {
-		width: 100%;
-	}
-
-	.informations {
-		margin-left: 10%;
-	}
-
-	form {
-		width: 200px;
-		margin-left: 20px;
-
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
-	form > div {
-		display: flex;
-		width: 100%;
-		justify-content: space-around;
-	}
-
-	form > * {
-		margin: 10px 0;
-	}
-
-	#placerOffre {
-		width: 120px;
-	}
-
-	.button {
-		color: inherit;
-		background-color: var(--theme-button);
-
-		border: none;
-		border-radius: 5px;
-
-		padding: 5px;
-		cursor: pointer;
-	}
-</style>

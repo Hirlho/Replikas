@@ -8,10 +8,20 @@ export interface Props {
 	length?: string;
 	id?: string;
 	required?: boolean;
+	readonly?: boolean;
 }
 
-const { text, placeholder, name, type, length, id, required, minNumber } =
-	Astro.props;
+const {
+	text,
+	placeholder,
+	name,
+	type,
+	length,
+	id,
+	readonly,
+	required,
+	minNumber,
+} = Astro.props;
 ---
 
 <input
@@ -22,6 +32,7 @@ const { text, placeholder, name, type, length, id, required, minNumber } =
 	id={id}
 	required={required}
 	min={minNumber}
+	readonly={readonly}
 />
 
 <br />
@@ -29,7 +40,10 @@ const { text, placeholder, name, type, length, id, required, minNumber } =
 	input {
 		border: none;
 		background-color: var(--theme-input);
+
+		border: 1px solid;
 		border-radius: 5px;
+
 		margin: 1rem;
 		padding: 0.7rem;
 		width: var(--length);

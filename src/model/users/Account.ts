@@ -3,6 +3,11 @@ import shajs from 'sha.js';
 
 export default class Account {
 	static SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days
+	static SALT_BAE = "g4cO#'=%sn{*Y?3v";
+
+	static {
+		Database.getInstance().on('clean', Account.clean);
+	}
 
 	protected id: number;
 	protected email: string;
@@ -21,14 +26,16 @@ export default class Account {
 	public static async get(email: string, password: string): Promise<Account> {
 		const database = Database.get();
 		const account = new Account();
-		const hash = shajs('sha256').update(password).digest('hex');
+		const hash = shajs('sha256')
+			.update(password + Account.SALT_BAE)
+			.digest('hex');
 		const result = await database`
 			SELECT * FROM account WHERE a_login = ${email} AND a_password = ${hash}`;
 		if (result.count === 0) {
 			throw new UtilisateurOuMotDePasseInvalideError();
 		}
 		account.id = result[0].a_id;
-		account.email = result[0].a_mail;
+		account.email = result[0].a_login;
 		account.created_at = result[0].a_created_at;
 		account.is_company = result[0].a_is_company;
 
@@ -50,8 +57,8 @@ export default class Account {
 			throw new RangeError(`L'id ${id} ne correspond à aucun utilisateur`);
 		}
 		account.id = result[0].a_id;
-		account.email = result[0].a_mail;
-		account.created_at = result[0].a_created_at;
+		account.email = result[0].a_login;
+		account.created_at = new Date(result[0].a_created_at);
 		account.is_company = result[0].a_is_company;
 
 		return account;
@@ -73,7 +80,9 @@ export default class Account {
 	): Promise<Account> {
 		const database = Database.get();
 		const account = new Account();
-		const hash = shajs('sha256').update(password).digest('hex');
+		const hash = shajs('sha256')
+			.update(password + Account.SALT_BAE)
+			.digest('hex');
 		// Mail de test pour les tests playwright qui ne respecte pas la contrainte unique
 		if (email === 'dooverwrite@testmail.com')
 			await database`DELETE FROM account WHERE a_login = ${email}`;
@@ -138,8 +147,8 @@ export default class Account {
 		}
 
 		account.id = result[0].a_id;
-		account.email = result[0].a_mail;
-		account.created_at = result[0].a_created_at;
+		account.email = result[0].a_login;
+		account.created_at = new Date(result[0].a_created_at);
 		account.is_company = result[0].a_is_company;
 
 		return account;
@@ -173,7 +182,9 @@ export default class Account {
 		password: string
 	): Promise<void> {
 		const database = Database.get();
-		const hash = shajs('sha256').update(password).digest('hex');
+		const hash = shajs('sha256')
+			.update(password + Account.SALT_BAE)
+			.digest('hex');
 		const response = await database`
 			UPDATE account SET a_password = ${hash} WHERE a_id = (SELECT a_id FROM password_recovery WHERE pr_token = ${token})`;
 		if (response.count === 0) {
@@ -192,6 +203,25 @@ export default class Account {
 	protected static async deleteSession(token: string): Promise<void> {
 		const database = Database.get();
 		await database`DELETE FROM session WHERE s_token = ${token}`;
+	}
+
+	static async clean(): Promise<void> {
+		const database = Database.get();
+		// Clear session tokens
+		const tokens = await database`SELECT * FROM session;`;
+		for (const token of tokens) {
+			if (new Date(token.s_expires_at) < new Date()) {
+				await Account.deleteSession(token.s_token);
+			}
+		}
+		// Clear password recovery tokens
+		const passwordRecoveryTokens =
+			await database`SELECT * FROM password_recovery;`;
+		for (const token of passwordRecoveryTokens) {
+			if (new Date(token.pr_created_at) < new Date()) {
+				await database`DELETE FROM password_recovery WHERE pr_token = ${token.pr_token}`;
+			}
+		}
 	}
 
 	public getId(): number {

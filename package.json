@@ -15,6 +15,7 @@
   "dependencies": {
     "@astrojs/node": "^3.1.0",
     "@emailjs/browser": "^3.10.0",
+    "@sendgrid/mail": "^7.7.0",
     "@types/axios": "^0.14.0",
     "astro": "^1.6.10",
     "dotenv": "^16.0.3",
@@ -30,6 +31,7 @@
     "@types/sha.js": "^2.4.0",
     "jest": "^29.3.1",
     "ts-jest": "^29.0.3",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "typed-emitter": "^2.1.0"
   }
 }
