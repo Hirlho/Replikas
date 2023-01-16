@@ -145,6 +145,13 @@ export default class Account {
 		return account;
 	}
 
+	public static async existByEmail(email: string): Promise<boolean> {
+		const database = Database.get();
+		const result =
+			await database`SELECT * FROM account WHERE a_login = ${email}`;
+		return result.count > 0;
+	}
+
 	protected async delete(): Promise<void> {
 		const database = Database.get();
 		await database`DELETE FROM account WHERE a_id = ${this.getId()}`;
