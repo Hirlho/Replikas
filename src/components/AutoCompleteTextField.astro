@@ -94,15 +94,12 @@ const { placeholder, name, length, id } = Astro.props;
 
 			for (i = 0; i < movies.length; i++) {
 				suggestion = document.createElement('DIV');
-				suggestion.innerHTML =
-					'<strong>' + movies[i].title.substr(0, val.length) + '</strong>';
-				suggestion.innerHTML += movies[i].title.substr(val.length);
-				suggestion.innerHTML +=
-					"<input type='hidden' value='" +
-					movies[i].title +
-					"' data-movieid='" +
-					movies[i].id +
-					"'>";
+				suggestion.innerHTML += movies[i].title;
+				const hiddenInput = document.createElement('input');
+				hiddenInput.setAttribute('type', 'hidden');
+				hiddenInput.setAttribute('value', movies[i].title);
+				hiddenInput.setAttribute('data-movieid', movies[i].id);
+				suggestion.appendChild(hiddenInput);
 				suggestion.addEventListener('click', function (e) {
 					// FIXME : Problem when string contains single quote
 					inp.value = this.getElementsByTagName('input')[0].value;
