@@ -15,9 +15,7 @@ let articles = await ArticleModel.getBySearch(search, {
 
 const length = articles.length;
 const hasMore = articles.length > page * PAGE_SIZE;
-if (hasMore) {
-	articles = articles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-}
+articles = articles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 const pages = [...Array(Math.ceil(length / PAGE_SIZE)).values()];
 ---
 
