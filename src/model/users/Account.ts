@@ -161,7 +161,7 @@ export default class Account {
 			.digest('hex');
 		const dateCreation = new Date();
 		const response = await database`
-			INSERT INTO password_recovery (pr_token, pr_created_at, a_id) VALUES (${token}, ${dateCreation}, (SELECT a_id FROM account WHERE a_login = ${email})) RETURNING pr_id`;
+			INSERT INTO password_recovery (pr_token, pr_created_at, a_id) VALUES (${token}, ${dateCreation}, (SELECT a_id FROM account WHERE a_login = ${email})) RETURNING pr_token`;
 		if (response.count === 0) {
 			throw new EmailInconnuError();
 		}
