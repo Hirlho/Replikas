@@ -352,8 +352,12 @@ const description = article.getDescription();
 		}
 	}
 
-	setInterval(updatePrice, 1000);
-	setInterval(updateDates, 1000);
+	// Wait for client to be idle, then update every second
+	setTimeout(() => {
+		setInterval(updatePrice, 1000);
+		setInterval(updateDates, 1000);
+	}, 5000);
+
 	suggestionValues.forEach((suggestion) => {
 		suggestion.addEventListener('click', (e) => {
 			e.preventDefault();
