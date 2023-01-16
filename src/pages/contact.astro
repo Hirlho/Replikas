@@ -200,7 +200,7 @@ import Button from '../components/Button.astro';
 		width: 80%;
 		margin: auto;
 
-		color: whitesmoke;
+		color: var(--theme-text);
 	}
 
 	th {
@@ -216,7 +216,7 @@ import Button from '../components/Button.astro';
 	textarea {
 		resize: none;
 		border: none;
-		background-color: whitesmoke;
+		background-color: var(--theme-input);
 		border-radius: 5px;
 		margin: 1rem;
 		padding: 0.7rem;
@@ -236,17 +236,15 @@ import Button from '../components/Button.astro';
 
 	h1 {
 		font-size: 2rem;
-		color: whitesmoke;
+		color: inherit;
 	}
 	.info {
 		text-align: center;
+		color: inherit;
 	}
 </style>
-<script
-	type="text/javascript"
-	src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"
-></script>
 <script>
+	import emailjs from '@emailjs/browser';
 	(function () {
 		emailjs.init('v-bcD3jdGPmGLELPA');
 		console.log('emailjs init');

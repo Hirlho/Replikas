@@ -27,9 +27,10 @@ const { articles } = Astro.props;
 
 <style>
 	.container {
-		width: 10%;
+		width: 70%;
 		margin: 20px auto;
-		height: 300px;
+		/* 60% de la hauteur de l'ecran */
+		height: 50vh;
 	}
 
 	.carrousel {
@@ -43,7 +44,6 @@ const { articles } = Astro.props;
 	}
 
 	.slider {
-		border: 1px solid blue;
 		display: flex;
 		height: 100%;
 		width: 500%;
@@ -57,13 +57,14 @@ const { articles } = Astro.props;
 		flex-shrink: 0;
 		flex: 1;
 		display: flex;
+		margin: 0 30px;
 		align-items: center;
 		justify-content: center;
 	}
 
 	.arrow {
 		position: absolute;
-		top: 10px;
+		top: 50%;
 		cursor: pointer;
 	}
 

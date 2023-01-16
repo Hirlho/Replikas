@@ -31,7 +31,7 @@ const { placeholder, name, length, id } = Astro.props;
 
 	.autocomplete-items {
 		position: absolute;
-		border: 1px solid #d4d4d4;
+		border: 1px solid var(--theme-input);
 		border-bottom: none;
 		border-top: none;
 		z-index: 99;
@@ -44,20 +44,20 @@ const { placeholder, name, length, id } = Astro.props;
 	.autocomplete-items div {
 		padding: 10px;
 		cursor: pointer;
-		background-color: #fff;
-		border-bottom: 1px solid #d4d4d4;
+		background-color: var(--theme-input);
+		border-bottom: 1px solid calc(var(--theme-input) - 0.1);
 		color: #222;
 	}
 
 	/*when hovering an item:*/
 	.autocomplete-items div:hover {
-		background-color: #e9e9e9;
+		background-color: var(--theme-input);
 	}
 
 	/*when navigating through the items using the arrow keys:*/
 	.autocomplete-active {
 		background-color: DodgerBlue !important;
-		color: #ffffff;
+		color: inherit;
 	}
 </style>
 
@@ -101,7 +101,6 @@ const { placeholder, name, length, id } = Astro.props;
 				hiddenInput.setAttribute('data-movieid', movies[i].id);
 				suggestion.appendChild(hiddenInput);
 				suggestion.addEventListener('click', function (e) {
-					// FIXME : Problem when string contains single quote
 					inp.value = this.getElementsByTagName('input')[0].value;
 
 					inp.dataset.movieid =

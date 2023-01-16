@@ -2,14 +2,16 @@
 export interface Props {
 	parametre: string;
 	value?: string;
+	lien?: string;
 }
 
-const { parametre, value } = Astro.props;
+const { parametre, value, lien } = Astro.props;
+console.log(parametre, value, lien);
 ---
 
 <div>
 	<p>{parametre}{value ? ' : ' + value : ''}</p>
-	<a href="">modifier</a>
+	<a href={lien}>modifier</a>
 </div>
 
 <style>

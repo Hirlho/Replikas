@@ -36,18 +36,30 @@ const { title, no_searchbar } = Astro.props;
 		</main>
 	</body>
 	<style is:global>
+		@font-face {
+			font-family: 'Larsseit';
+			src: url('/fonts/Larsseit.otf') format('opentype');
+		}
+
+		@font-face {
+			font-family: 'Larsseit';
+			font-weight: bold;
+			src: url('/fonts/Larsseit-Bold.otf') format('opentype');
+		}
+
+		/*
 		:root {
 			--theme-primary: white;
 			--theme-secondary: #f5f5f5;
 			--theme-button: #7d53de;
 			--theme-button-text: whitesmoke;
 			--theme-text: black;
-			--theme-link: aliceblue;
+			--theme-link: #7d53de;
 			--theme-input: whitesmoke;
 			--theme-search-bar: white;
 		}
+		*/
 
-		/* THEMES
 		:root {
 			--theme-primary: #222;
 			--theme-secondary: #000;
@@ -58,7 +70,7 @@ const { title, no_searchbar } = Astro.props;
 			--theme-input: whitesmoke;
 			--theme-search-bar: whitesmoke;
 		}
-		
+		/* THEMES
 		// "Rustic Charm" 
 		:root {
 			--theme-primary: #7b5e57;
@@ -105,7 +117,7 @@ const { title, no_searchbar } = Astro.props;
 		body {
 			background-color: var(--theme-primary);
 			color: var(--theme-text);
-			font-family: system-ui, sans-serif;
+			font-family: Larsseit, system-ui, sans-serif;
 		}
 		main {
 			box-sizing: border-box;

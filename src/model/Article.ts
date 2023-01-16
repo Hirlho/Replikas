@@ -172,7 +172,7 @@ export default class Article {
                     document @@ query OR similarity > 0.08
             ORDER BY
                     rank_name DESC, rank_description DESC, rank_movie_title DESC, similarity DESC
-			LIMIT ${params.limit} OFFSET ${params.offset || 0}`;
+			LIMIT ${params.limit || null} OFFSET ${params.offset || 0}`;
 
 		const articles: Article[] = [];
 		for (const article of result) {
@@ -193,9 +193,16 @@ export default class Article {
 		currentPriceMin: number,
 		currentPriceMax: number,
 		params = { limit: 20, offset: 0 }
-		): Promise<Article[]>{
-			
-			console.log(objectName, movieName, startDate, endDate, basePriceMax, basePriceMin, params);
+	): Promise<Article[]> {
+		console.log(
+			objectName,
+			movieName,
+			startDate,
+			endDate,
+			basePriceMax,
+			basePriceMin,
+			params
+		);
 		const database = Database.get();
 		//const t0 = performance.now();
 		const result = await database`
@@ -214,7 +221,7 @@ export default class Article {
 					art_name LIKE ${'%"+objectName+"%'} AND
 					m_title LIKE ${'%"movieName"%'}
 			LIMIT ${params.limit} OFFSET ${params.offset || 0}`;
-		
+
 		const articles: Article[] = [];
 		for (const article of result) {
 			articles.push(await this.getFromResult(article));
