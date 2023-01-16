@@ -12,10 +12,10 @@ DELETE FROM account;
 DELETE FROM test;
 
 /* Insert test data */
-INSERT INTO account (a_id, a_login, a_password) VALUES (14, 'gaspard@replikas.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8');
+INSERT INTO account (a_id, a_login, a_password) VALUES (14, 'gaspard@replikas.com', '5b9dcf16024536cb5b16e5f5205c32f0a76b331a87fd46dd3cdb877cf7112d09');
 INSERT INTO buyer (a_id, b_last_name, b_first_name) VALUES (14, 'Culis', 'Gaspard');
 
-INSERT INTO account (a_id, a_login, a_password, a_is_company) VALUES (1, 'gaspard@jaajcorp.org', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', TRUE);
+INSERT INTO account (a_id, a_login, a_password, a_is_company) VALUES (1, 'gaspard@jaajcorp.org', '5b9dcf16024536cb5b16e5f5205c32f0a76b331a87fd46dd3cdb877cf7112d09', TRUE);
 INSERT INTO company VALUES (1, 'jaajCorp');
 
 INSERT INTO movie VALUES (1893, 'Star Wars épisode I');
