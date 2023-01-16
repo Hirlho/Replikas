@@ -1,8 +1,15 @@
 import Database from './Database';
 import TMDB from './TMDB';
 import Buyer from './users/Buyer';
+import fs from 'fs';
+import path from 'path';
+import Config from './Config';
 
 export default class Article {
+	static {
+		Database.getInstance().on('clean', Article.clean);
+	}
+
 	private id: number;
 	private name: string;
 	private description: string;
@@ -314,6 +321,30 @@ export default class Article {
 		const database = Database.get();
 		await database`DELETE FROM article WHERE art_id = ${this.id}`;
 		await database`DELETE FROM article_image WHERE art_id = ${this.id}`;
+	}
+
+	static async clean(): Promise<void> {
+		const database = Database.get();
+		// Supprime les images uploadées si elles ne sont pas utilisées
+		const images_remote = new Set(
+			(await database`SELECT img_path FROM article_image`).map(
+				(img) => img.img_path
+			)
+		) as Set<string>;
+		const images_local: string[] = await fs.promises
+			.readdir(Config.get().uploads_dir)
+			.catch(() => []);
+		let missingValues = images_local.filter((img) => !images_remote.has(img)); // Prend avantage du fait que le Set a des index hashés
+		for (const img of missingValues) {
+			await fs.promises
+				.unlink(path.join(Config.get().uploads_dir, img))
+				.then(() => {
+					console.info('Deleted ' + img + ' not present in remote database');
+				})
+				.catch(() => {
+					console.warn("Couldn't delete image " + img);
+				});
+		}
 	}
 
 	public getId(): number {
