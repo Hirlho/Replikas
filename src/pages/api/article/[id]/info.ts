@@ -18,8 +18,12 @@ export const get: APIRoute = async ({ params, request }) => {
 	}
 	const current_bid = await Bids.getEnchereMax(article);
 	const min_bid = article.getEncherissementMin();
+	const bids_history = (await Bids.getEncheres(article)).map((bid) => ({
+		amount: bid.amount,
+		buyer: bid.buyer.toString(),
+	}));
 
-	return new Response(JSON.stringify({ current_bid, min_bid }), {
+	return new Response(JSON.stringify({ current_bid, min_bid, bids_history }), {
 		headers: {
 			'content-type': 'application/json',
 		},

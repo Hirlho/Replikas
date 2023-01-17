@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Database from '../../model/Database';
+import Account from '../../model/users/Account';
 import { addCookie } from '../../model/Utilitaire';
 
 const cookies = Astro.request.headers.get('cookie');
@@ -10,7 +11,7 @@ if (cookies) {
 	); // Recuperer le token de session
 	if (token) {
 		try {
-			await Database.get()`DELETE FROM session WHERE s_token = ${token[1]}`; // Supprimer la session
+			await Account.deleteSession(token[0]); // Supprimer la session
 		} catch (e) {
 			console.error(e);
 		}

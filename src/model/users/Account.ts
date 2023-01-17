@@ -203,12 +203,28 @@ export default class Account {
 			throw new EmailInconnuError();
 		}
 	}
+	public async Set_Last_Name(last_name: string): Promise<void> {
+		const database = Database.get();
+		const response = await database`
+			UPDATE account SET a_last_name = ${last_name} WHERE a_id = ${this.getId()} RETURNING a_id`;
+		if (response.count === 0) {
+			throw new AccountNotFoundError();
+		}
+	}
+	public async Set_First_Name(first_name: string): Promise<void> {
+		const database = Database.get();
+		const response = await database`
+			UPDATE account SET a_first_name = ${first_name} WHERE a_id = ${this.getId()} RETURNING a_id`;
+		if (response.count === 0) {
+			throw new AccountNotFoundError();
+		}
+	}
 	protected async delete(): Promise<void> {
 		const database = Database.get();
 		await database`DELETE FROM account WHERE a_id = ${this.getId()}`;
 	}
 
-	protected static async deleteSession(token: string): Promise<void> {
+	public static async deleteSession(token: string): Promise<void> {
 		const database = Database.get();
 		await database`DELETE FROM session WHERE s_token = ${token}`;
 	}
@@ -291,5 +307,11 @@ export class EmailInconnuError extends Error {
 export class TokenInconnuError extends Error {
 	constructor() {
 		super('Token inconnu');
+	}
+}
+
+export class AccountNotFoundError extends Error {
+	constructor() {
+		super('Compte inexistant');
 	}
 }
