@@ -219,7 +219,7 @@ export default class Account {
 			throw new AccountNotFoundError();
 		}
 	}
-	protected async delete(): Promise<void> {
+	public async delete(): Promise<void> {
 		const database = Database.get();
 		await database`DELETE FROM account WHERE a_id = ${this.getId()}`;
 	}
