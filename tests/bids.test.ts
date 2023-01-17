@@ -4,7 +4,7 @@ import Database from '../src/model/Database';
 import TMDB from '../src/model/TMDB';
 import Buyer from '../src/model/users/Buyer';
 
-test('Test echere', async () => {
+test('Test enchere', async () => {
 	const article = await Article.create(
 		'Sabre laser',
 		"Un sabre laser de la marque Jedi, utilisé par Darth Vader dans l'épisode 4. @test-product",
