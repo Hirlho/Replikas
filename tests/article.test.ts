@@ -1,6 +1,9 @@
 import Article from '../src/model/Article';
 import Database from '../src/model/Database';
 import TMDB from '../src/model/TMDB';
+import fs from 'fs';
+import path from 'path';
+import Config from '../src/model/Config';
 
 test('Crée un article et lui assigne un id automatiquement', async () => {
 	const article = await Article.create(
@@ -54,6 +57,59 @@ test('Cherche des article avec bon ordre de pertinence', async () => {
 
 	const resultats2 = await Article.getBySearch('sabre star wars Vader');
 	expect(resultats2[0].getDescription()).toContain('Vader');
+});
+
+test('Autoclean works', async () => {
+	// Creer fichier test
+	const file_path = path.join(Config.get().uploads_dir, 'test-image.png');
+	await fs.promises.writeFile(file_path, 'test');
+	await Article.clean();
+	// Verifier que le fichier a été supprimé
+	expect(
+		await fs.promises
+			.access(file_path)
+			.then(() => true)
+			.catch(() => false)
+	).toBe(false);
+	// Creer un article avec un fichier
+	const article = await Article.create(
+		'Sabre laser',
+		"Un sabre laser de la marque Jedi, utilisé par maître Yoda dans l'épisode 4. @test-product",
+		1000,
+		1,
+		new Date('2020-01-01'),
+		new Date('2020-01-02'),
+		['test-image.png'],
+		(
+			await TMDB.searchMovie('star wars')
+		)[0].id,
+		1
+	);
+	// Creer le fichier
+	await fs.promises.writeFile(
+		path.join(Config.get().uploads_dir, 'test-image.png'),
+		'test'
+	);
+	// Clean
+	await Article.clean();
+	// Verifier que le fichier existe toujours
+	expect(
+		await fs.promises
+			.access(file_path)
+			.then(() => true)
+			.catch(() => false)
+	).toBe(true);
+	// Supprimer l'article
+	await article.delete();
+	// Clean
+	await Article.clean();
+	// Verifier que le fichier a été supprimé
+	expect(
+		await fs.promises
+			.access(file_path)
+			.then(() => true)
+			.catch(() => false)
+	).toBe(false);
 });
 
 afterAll(async () => {
