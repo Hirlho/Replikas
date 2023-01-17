@@ -69,7 +69,7 @@ export default class Company extends Account {
 		password: string,
 		name: string
 	): Promise<Company> {
-		const account = await super.create(email, password);
+		const account = await super.create(email, password, true);
 		const database = Database.get();
 		await database`INSERT INTO company (a_id, c_name) VALUES (${account.getId()}, ${name})`;
 		const company = new Company();
