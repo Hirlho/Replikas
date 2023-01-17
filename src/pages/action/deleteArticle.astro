@@ -1,0 +1,18 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Article from '../../model/Article';
+
+const formData = await Astro.request.formData();
+if (formData.has('art_id')) {
+	const art_id = parseInt(formData.get('art_id').toString());
+
+	const article = await Article.get(art_id);
+	article.delete();
+
+	return Astro.redirect('/dashboard?pageName=A+venir');
+} else {
+	return Astro.redirect('/');
+}
+---
+
+<Layout title="Supression article" />
