@@ -1,5 +1,6 @@
 import Database from '../Database';
 import shajs from 'sha.js';
+import { EtatInnatenduError } from '../Utilitaire';
 
 export default class Account {
 	static SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days
@@ -154,6 +155,11 @@ export default class Account {
 		return account;
 	}
 
+	/**
+	 * Vérifie si un utilisateur existe à partir de son email
+	 * @param email L'email de l'utilisateur
+	 * @returns Vrai si le mail est déjà utilisé, faux sinon
+	 */
 	public static async existByEmail(email: string): Promise<boolean> {
 		const database = Database.get();
 		const result =
@@ -161,6 +167,12 @@ export default class Account {
 		return result.count > 0;
 	}
 
+	/**
+	 * Créé un token de récupération de mot de passe pour l'utilisateur correspondant à l'email
+	 * @param email L'email de l'utilisateur
+	 * @returns Le token de récupération de mot de passe
+	 * @throws {@link EmailInconnuError} Si l'email n'est pas associé à un compte
+	 */
 	public static async createPasswordRecoveryToken(
 		email: string
 	): Promise<string> {
@@ -177,6 +189,12 @@ export default class Account {
 		return token;
 	}
 
+	/**
+	 * Modifie le mot de passe de l'utilisateur correspondant au token de récupération de mot de passe
+	 * @param token Le token de récupération de mot de passe
+	 * @param password Le nouveau mot de passe
+	 * @throws {@link TokenInconnuError} Si le token est invalide
+	 */
 	public static async setPassword(
 		token: string,
 		password: string
@@ -195,40 +213,76 @@ export default class Account {
 		// TODO: Check if the token is still valid
 	}
 
+	/**
+	 * Change le mail de l'utilisateur, en vérifiant qu'il n'est pas déjà utilisé et le met à jour dans la base de données
+	 * @param email Le nouveau mail
+	 * @throws {@link EmailDejaUtiliseError} Si le mail est déjà utilisé
+	 */
 	public async setEmail(email: string): Promise<void> {
 		const database = Database.get();
-		const response = await database`
-			UPDATE account SET a_login = ${email} WHERE a_id = ${this.getId()} RETURNING a_id`;
-		if (response.count === 0) {
-			throw new EmailInconnuError();
+		const result = await database`
+			UPDATE account SET a_login = ${email} WHERE a_id = ${this.getId()} RETURNING a_id`.catch(
+			() => {
+				throw new EmailDejaUtiliseError();
+			}
+		);
+		if (result.count === 0) {
+			throw new EtatInnatenduError(
+				"L'utilisateur n'existe pas alors qu'il devrait"
+			);
 		}
 	}
+
+	/**
+	 * Change le nom de l'utilisateur et le met à jour dans la base de données
+	 * @param last_name Le nouveau nom
+	 */
 	public async setLastName(last_name: string): Promise<void> {
 		const database = Database.get();
 		const response = await database`
 			UPDATE account SET a_last_name = ${last_name} WHERE a_id = ${this.getId()} RETURNING a_id`;
 		if (response.count === 0) {
-			throw new AccountNotFoundError();
+			throw new EtatInnatenduError(
+				"L'utilisateur n'existe pas alors qu'il devrait"
+			);
 		}
 	}
+
+	/**
+	 * Change le prénom de l'utilisateur et le met à jour dans la base de données
+	 * @param first_name Le nouveau prénom
+	 */
 	public async setFirstName(first_name: string): Promise<void> {
 		const database = Database.get();
 		const response = await database`
 			UPDATE account SET a_first_name = ${first_name} WHERE a_id = ${this.getId()} RETURNING a_id`;
 		if (response.count === 0) {
-			throw new AccountNotFoundError();
+			throw new EtatInnatenduError(
+				"L'utilisateur n'existe pas alors qu'il devrait"
+			);
 		}
 	}
+
+	/**
+	 * Supprime l'utilisateur de la base de données
+	 */
 	public async delete(): Promise<void> {
 		const database = Database.get();
 		await database`DELETE FROM account WHERE a_id = ${this.getId()}`;
 	}
 
+	/**
+	 * Supprime le token de session de l'utilisateur
+	 * @param token Le token de session
+	 */
 	public static async deleteSession(token: string): Promise<void> {
 		const database = Database.get();
 		await database`DELETE FROM session WHERE s_token = ${token}`;
 	}
 
+	/**
+	 * Supprime les tokens de session et de récupération de mot de passe expirés
+	 */
 	static async clean(): Promise<void> {
 		const database = Database.get();
 		// Clear session tokens
@@ -307,11 +361,5 @@ export class EmailInconnuError extends Error {
 export class TokenInconnuError extends Error {
 	constructor() {
 		super('Token inconnu');
-	}
-}
-
-export class AccountNotFoundError extends Error {
-	constructor() {
-		super('Compte inexistant');
 	}
 }
