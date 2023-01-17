@@ -400,11 +400,12 @@ const description = article.getDescription();
 				}) => {
 					currentPrice.innerText = data.current_bid + ' €';
 					suggestionValues.forEach((suggestion, i) => {
-						suggestion.value =
-							'' + data.current_bid + data.min_bid * multipliers[i];
+						suggestion.value = `${
+							data.current_bid + data.min_bid * multipliers[i]
+						}`;
 						suggestion.innerText = suggestion.value + ' €';
 					});
-					manualBidInput.min = '' + data.current_bid + data.min_bid;
+					manualBidInput.min = `${data.current_bid + data.min_bid}`;
 					manualBidInput.placeholder = manualBidInput.min + ' ou plus';
 					// Update bids history
 					bids_history.innerHTML = '';
