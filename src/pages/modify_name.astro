@@ -152,10 +152,18 @@ if (Astro.request.method == 'POST') {
 		const prenomCheckbox = document.getElementById(
 			'prenom_cb'
 		) as HTMLInputElement;
-		const nomTextArea = document.getElementById('nom_textarea');
-		const nomTextArea2 = document.getElementById('nom_textarea2');
-		const prenomTextArea = document.getElementById('prenom_textarea');
-		const prenomTextArea2 = document.getElementById('prenom_textarea2');
+		const nomTextArea = document.getElementById(
+			'nom_textarea'
+		) as HTMLInputElement;
+		const nomTextArea2 = document.getElementById(
+			'nom_textarea2'
+		) as HTMLInputElement;
+		const prenomTextArea = document.getElementById(
+			'prenom_textarea'
+		) as HTMLInputElement;
+		const prenomTextArea2 = document.getElementById(
+			'prenom_textarea2'
+		) as HTMLInputElement;
 
 		nomCheckbox.addEventListener('change', function () {
 			if (nomCheckbox.checked) {
@@ -170,10 +178,13 @@ if (Astro.request.method == 'POST') {
 					'placeholder',
 					'Votre nom ne peut pas être modifié'
 				);
+
 				nomTextArea2.setAttribute(
 					'placeholder',
 					'Votre nom ne peut pas être modifié'
 				);
+				nomTextArea.value = '';
+				nomTextArea2.value = '';
 			}
 		});
 
@@ -200,6 +211,8 @@ if (Astro.request.method == 'POST') {
 					'placeholder',
 					'Votre prénom ne peut pas être modifié'
 				);
+				prenomTextArea.value = '';
+				prenomTextArea2.value = '';
 			}
 		});
 	</script>
