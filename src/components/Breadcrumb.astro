@@ -81,6 +81,17 @@
 
 	const url = new URL(window.location.href);
 	const history = JSON.parse(sessionStorage.getItem('history') || '[]');
+
+	//If user navigate to a visited page, remove all pages after it in the history array
+	const index = history.indexOf(url.pathname.replace('/', ''));
+	if (index > -1) {
+		history.splice(index + 1, history.length);
+	}
+	//if same name, remove the last one
+	if (history[history.length - 1] === url.pathname.replace('/', '')) {
+		history.pop();
+	}
+	//
 	console.log(history);
 	history.push(url.pathname.replace('/', ''));
 	sessionStorage.setItem('history', JSON.stringify(history));

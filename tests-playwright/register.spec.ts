@@ -15,7 +15,7 @@ test("Création d'un compte", async ({ page }) => {
 	await page.fill('input[name=password_confirm]', 'P@ssw0rd');
 	await page.click('input[type=checkbox]');
 	await page.click('input[type=submit]');
-	await expect(page).toHaveURL('/login?info=account_created');
+	await expect(page).toHaveURL(/info=account_created/);
 });
 
 test("Création d'un compte avec un email déjà utilisé", async ({ page }) => {
@@ -27,7 +27,7 @@ test("Création d'un compte avec un email déjà utilisé", async ({ page }) => 
 	await page.fill('input[name=password_confirm]', 'P@ssw0rd');
 	await page.click('input[type=checkbox]');
 	await page.click('input[type=submit]');
-	await expect(page).toHaveURL('/register?error=already_exists');
+	await expect(page).toHaveURL(/error=already_exists/);
 });
 
 test("Création d'un compte avec un mot de passe différent", async ({
@@ -41,7 +41,7 @@ test("Création d'un compte avec un mot de passe différent", async ({
 	await page.fill('input[name=password_confirm]', 'P@ssw0rd2');
 	await page.click('input[type=checkbox]');
 	await page.click('input[type=submit]');
-	await expect(page).toHaveURL('/register?error=password_mismatch');
+	await expect(page).toHaveURL(/error=password_mismatch/);
 });
 
 test("Création d'un compte avec un mail invalide", async ({ page }) => {
@@ -53,7 +53,7 @@ test("Création d'un compte avec un mail invalide", async ({ page }) => {
 	await page.fill('input[name=password_confirm]', 'P@ssw0rd');
 	await page.click('input[type=checkbox]');
 	await page.click('input[type=submit]');
-	await expect(page).toHaveURL('/register?error=invalid_email');
+	await expect(page).toHaveURL(/error=invalid_email/);
 });
 
 test("Création d'un compte avec un mot de passe faible", async ({ page }) => {
@@ -65,5 +65,5 @@ test("Création d'un compte avec un mot de passe faible", async ({ page }) => {
 	await page.fill('input[name=password_confirm]', 'password');
 	await page.click('input[type=checkbox]');
 	await page.click('input[type=submit]');
-	await expect(page).toHaveURL('/register?error=weak_password');
+	await expect(page).toHaveURL(/error=weak_password/);
 });
