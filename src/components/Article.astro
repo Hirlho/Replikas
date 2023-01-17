@@ -1,5 +1,6 @@
 ---
 import Article from '../model/Article';
+import Bids from '../model/Bids';
 import Buyer from '../model/users/Buyer';
 import { getBuyerBySession } from '../model/Utilitaire';
 
@@ -12,7 +13,7 @@ const article = Astro.props.article || Article.getFallback(null);
 const id = article.getId();
 const titre = article.getName();
 const image = await article.getPoster();
-const prix = article.getPrixBase();
+let prix = article.getPrixBase();
 const dateDebut = article.getDebutVente();
 const dateFin = article.getFinVente();
 
@@ -23,6 +24,10 @@ const liked = buyer && (await article.isLikedBy(buyer));
 
 const date = dateDebut > new Date() ? dateDebut : dateFin;
 const enCours = dateDebut < new Date() && dateFin > new Date();
+
+if (enCours) {
+	prix = await Bids.getEnchereMax(article);
+}
 ---
 
 <li>
