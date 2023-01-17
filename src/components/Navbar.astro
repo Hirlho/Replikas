@@ -62,27 +62,16 @@ if (cookies) {
 		{search_bar && <SearchBar />}
 		{
 			account ? ( // Si l'utilisateur est connecte
-				account.isCompany() ? (
-					// Settings acheteurs
-					<a class="button hbox" href="/settings" style="align-items: center;">
-						<div class="user_icon_container">
-							<img src="/img/icons/user.svg" alt="User" />
-						</div>
-						{account.toString()}
-					</a>
-				) : (
-					// Settings entreprise
-					<a
-						class="button hbox"
-						href="/dashboard/settings"
-						style="align-items: center;"
-					>
-						<div class="user_icon_container">
-							<img src="/img/icons/user.svg" alt="User" />
-						</div>
-						{account.toString()}
-					</a>
-				)
+				<a
+					class="button hbox"
+					href={account.isCompany() ? '/dashboard/settings' : '/settings'}
+					style="align-items: center;"
+				>
+					<div class="user_icon_container">
+						<img src="/img/icons/user.svg" alt="User" />
+					</div>
+					{account.toString()}
+				</a>
 			) : (
 				// Si l'utilisateur n'est pas connecte
 				<div>
