@@ -1,6 +1,5 @@
 import Database from '../Database';
 import shajs from 'sha.js';
-import { EtatInnatenduError } from '../Utilitaire';
 
 export default class Account {
 	static SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days
@@ -227,9 +226,7 @@ export default class Account {
 			}
 		);
 		if (result.count === 0) {
-			throw new EtatInnatenduError(
-				"L'utilisateur n'existe pas alors qu'il devrait"
-			);
+			throw new Error("L'utilisateur n'existe pas alors qu'il devrait");
 		}
 	}
 
@@ -242,9 +239,7 @@ export default class Account {
 		const response = await database`
 			UPDATE account SET a_last_name = ${last_name} WHERE a_id = ${this.getId()} RETURNING a_id`;
 		if (response.count === 0) {
-			throw new EtatInnatenduError(
-				"L'utilisateur n'existe pas alors qu'il devrait"
-			);
+			throw new Error("L'utilisateur n'existe pas alors qu'il devrait");
 		}
 	}
 
@@ -257,9 +252,7 @@ export default class Account {
 		const response = await database`
 			UPDATE account SET a_first_name = ${first_name} WHERE a_id = ${this.getId()} RETURNING a_id`;
 		if (response.count === 0) {
-			throw new EtatInnatenduError(
-				"L'utilisateur n'existe pas alors qu'il devrait"
-			);
+			throw new Error("L'utilisateur n'existe pas alors qu'il devrait");
 		}
 	}
 
