@@ -1,0 +1,244 @@
+---
+import Button from '../components/Button.astro';
+import TextField from '../components/TextField.astro';
+import Layout from '../layouts/Layout.astro';
+import Account from '../model/users/Account';
+import { EmailDejaUtiliseError } from '../model/users/Account';
+import { getAccountBySession } from '../model/Utilitaire';
+
+if (Astro.request.method == 'POST') {
+	const formData = await Astro.request.formData();
+	const redirect = Astro.url.searchParams.get('redirect') || '';
+	const email = formData.get('email').toString() || '';
+	const email_confirm = formData.get('email_confirm').toString() || '';
+	//Get Account
+	const account: Account = await getAccountBySession(
+		Astro.request.headers
+	).catch((err) => null);
+	// Vérification de la connexion
+	if (!account) {
+		return Astro.redirect('/login?redirect=' + redirect);
+	}
+	// Vérification du mail
+	if (
+		!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(
+			email
+		) &&
+		!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(
+			email
+		)
+	)
+		return Astro.redirect(
+			'/modify_email?error=invalid_email&redirect=' + redirect
+		);
+
+	if (email != email_confirm) {
+		return Astro.redirect(
+			'/modify_email?error=not_same_mail&redirect=' + redirect
+		);
+	} else {
+		try {
+			await account.setEmail(email);
+			Astro.props.success = 'Votre adresse mail a bien été modifiée';
+			Astro.props.redirect = redirect;
+		} catch (e) {
+			if (e instanceof EmailDejaUtiliseError) {
+				return Astro.redirect(
+					'/modify_email?error=same_mail&redirect=' + redirect
+				);
+			} else {
+				Astro.props.error = 'Une erreur est survenue';
+			}
+		}
+		return Astro.redirect(
+			'/modify_email?success=mail_changed&redirect=' + redirect
+		);
+	}
+}
+---
+
+<Layout title="Modifier vos informations générales" no_searchbar>
+	<main>
+		<h1>Modifier votre nom et/ou prénom</h1>
+		<form method="post" class="formlist">
+			<table>
+				<div class="options">
+					<th id="options-th">Options :</th>
+					<td class="options1-2">
+						<div class="options1">
+							<input
+								type="checkbox"
+								id="nom_cb"
+								name="nom"
+								value="nom"
+								checked
+							/>
+							<label for="nom">Modifier mon nom</label><br />
+						</div>
+
+						<div class="options2">
+							<input
+								type="checkbox"
+								id="prenom_cb"
+								name="prenom"
+								value="prenom"
+								checked
+							/>
+							<label for="prenom">Modifier mon prénom</label><br />
+						</div>
+					</td>
+				</div>
+			</table>
+			<table>
+				<tr>
+					<th id="nom_th">Nouveau nom :</th>
+					<td>
+						<TextField
+							text=""
+							placeholder="Entrez votre nouveau nom"
+							type="text"
+							length="15rem"
+							name="nom"
+							readonly={false}
+							id="nom_textarea"
+						/>
+					</td>
+					<td>
+						<TextField
+							text=""
+							placeholder="Confirmez votre nouveau nom"
+							type="text"
+							length="15rem"
+							name="nom"
+							readonly={false}
+							id="nom_textarea2"
+						/>
+					</td>
+					<tr>
+						<th id="prenom_th">Nouveau prénom :</th>
+						<td>
+							<TextField
+								text=""
+								placeholder="Entrez votre nouveau prénom"
+								type="text"
+								length="15rem"
+								name="prenom"
+								readonly={false}
+								id="prenom_textarea"
+							/>
+						</td>
+						<td>
+							<TextField
+								text=""
+								placeholder="Confirmez votre nouveau prénom"
+								type="text"
+								length="15rem"
+								name="prenom"
+								readonly={false}
+								id="prenom_textarea2"
+							/>
+						</td>
+					</tr>
+				</tr>
+			</table>
+		</form>
+	</main>
+	<div id="btn">
+		<Button text="Modifier le nom et/ou le prénom" />
+	</div>
+
+	<script>
+		const nomCheckbox = document.getElementById('nom_cb') as HTMLInputElement;
+		const prenomCheckbox = document.getElementById(
+			'prenom_cb'
+		) as HTMLInputElement;
+		const nomTextArea = document.getElementById('nom_textarea');
+		const nomTextArea2 = document.getElementById('nom_textarea2');
+		const prenomTextArea = document.getElementById('prenom_textarea');
+		const prenomTextArea2 = document.getElementById('prenom_textarea2');
+
+		nomCheckbox.addEventListener('change', function () {
+			if (nomCheckbox.checked) {
+				nomTextArea.removeAttribute('readonly');
+				nomTextArea2.removeAttribute('readonly');
+				nomTextArea.setAttribute('placeholder', 'Entrez votre nouveau nom');
+				nomTextArea2.setAttribute('placeholder', 'Confirmez votre nouveau nom');
+			} else {
+				nomTextArea.setAttribute('readonly', true as any);
+				nomTextArea2.setAttribute('readonly', true as any);
+				nomTextArea.setAttribute(
+					'placeholder',
+					'Votre nom ne peut pas être modifié'
+				);
+				nomTextArea2.setAttribute(
+					'placeholder',
+					'Votre nom ne peut pas être modifié'
+				);
+			}
+		});
+
+		prenomCheckbox.addEventListener('change', function () {
+			if (prenomCheckbox.checked) {
+				prenomTextArea.removeAttribute('readonly');
+				prenomTextArea2.removeAttribute('readonly');
+				prenomTextArea.setAttribute(
+					'placeholder',
+					'Entrez votre nouveau prénom'
+				);
+				prenomTextArea2.setAttribute(
+					'placeholder',
+					'Confirmez votre nouveau prénom'
+				);
+			} else {
+				prenomTextArea.setAttribute('readonly', true as any);
+				prenomTextArea2.setAttribute('readonly', true as any);
+				prenomTextArea.setAttribute(
+					'placeholder',
+					'Votre prénom ne peut pas être modifié'
+				);
+				prenomTextArea2.setAttribute(
+					'placeholder',
+					'Votre prénom ne peut pas être modifié'
+				);
+			}
+		});
+	</script>
+
+	<style>
+		#options-th {
+			padding-left: 4rem;
+		}
+		.options1 {
+			margin-right: 4rem;
+			margin-left: 2rem;
+		}
+		.options2 {
+			margin-left: 5rem;
+		}
+		.options1-2 {
+			display: flex;
+			flex-direction: row;
+			margin-left: 2rem;
+			text-align: center;
+		}
+		#btn {
+			/* centre le bouton */
+			text-align: center;
+		}
+		main {
+			background-color: var(--theme-secondary);
+			margin: 3rem 5rem;
+			padding: 2rem;
+
+			border-radius: 2rem;
+
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+		h1 {
+			margin-top: 0rem;
+		}
+	</style>
+</Layout>
