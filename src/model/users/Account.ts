@@ -203,7 +203,7 @@ export default class Account {
 			throw new EmailInconnuError();
 		}
 	}
-	public async SetLastName(last_name: string): Promise<void> {
+	public async setLastName(last_name: string): Promise<void> {
 		const database = Database.get();
 		const response = await database`
 			UPDATE account SET a_last_name = ${last_name} WHERE a_id = ${this.getId()} RETURNING a_id`;
@@ -211,7 +211,7 @@ export default class Account {
 			throw new AccountNotFoundError();
 		}
 	}
-	public async SetFirstName(first_name: string): Promise<void> {
+	public async setFirstName(first_name: string): Promise<void> {
 		const database = Database.get();
 		const response = await database`
 			UPDATE account SET a_first_name = ${first_name} WHERE a_id = ${this.getId()} RETURNING a_id`;
