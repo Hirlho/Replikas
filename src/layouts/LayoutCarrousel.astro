@@ -12,6 +12,7 @@ const { articles } = Astro.props;
 <div class="container">
 	<div class="carrousel">
 		<div class="slider">
+			<!--{articles.map((article) => <CarrouselComponent article={article} />)}-->
 			<article>1</article>
 			<article>2</article>
 			<article>3</article>
@@ -39,7 +40,7 @@ const { articles } = Astro.props;
 	}
 
 	.carrousel {
-		width: 80%;
+		width: 85%;
 		margin: 0 auto;
 		height: 100%;
 
@@ -58,17 +59,6 @@ const { articles } = Astro.props;
 		width: 500%;
 		flex-shrink: 0;
 		transition: all 0.5s;
-	}
-
-	.slider article {
-		border: 1px solid red;
-		flex: 1;
-
-		margin: 0 30px;
-
-		display: flex;
-		align-items: center;
-		justify-content: center;
 	}
 
 	/*--------------Arrows---------------*/
@@ -104,6 +94,7 @@ const { articles } = Astro.props;
 		position: absolute;
 		top: 50%;
 		width: 100%;
+		cursor: auto;
 	}
 
 	.arrow-top:after,
@@ -116,12 +107,14 @@ const { articles } = Astro.props;
 		position: absolute;
 		top: 0;
 		transition: all 0.1s;
+		cursor: auto;
 	}
 
 	.arrow-top,
 	.arrowprev-top {
 		transform: rotate(45deg);
 		transform-origin: bottom right;
+		cursor: auto;
 	}
 
 	.arrow-top:after,
@@ -129,12 +122,14 @@ const { articles } = Astro.props;
 		left: 100%;
 		right: 0;
 		transition-delay: 0s;
+		cursor: auto;
 	}
 
 	.arrow-bottom,
 	.arrowprev-bottom {
 		transform: rotate(-45deg);
 		transform-origin: top right;
+		cursor: auto;
 	}
 
 	.arrow-bottom:after,
@@ -142,22 +137,26 @@ const { articles } = Astro.props;
 		left: 0;
 		right: 100%;
 		transition-delay: 0.15s;
+		cursor: auto;
 	}
 
 	.arrow:hover .arrow-top:after,
 	.arrowprev:hover .arrowprev-top:after {
 		left: 0;
 		transition-delay: 0.15s;
+		cursor: auto;
 	}
 
 	.arrow:hover .arrow-bottom:after,
 	.arrowprev:hover .arrowprev-bottom:after {
 		right: 0;
 		transition-delay: 0s;
+		cursor: auto;
 	}
 
 	.arrow:active {
 		transform: translateX(-50%) translateY(-50%) scale(0.9) scaleX(-1);
+		cursor: auto;
 	}
 
 	.arrowprev:active {

@@ -1,13 +1,38 @@
---- 
-export interface Props{
-    name: string;
-    price: number;
-    description: string;
-    image: string;
+---
+import Article from '../model/Article';
+import Bids from '../model/Bids';
+
+export interface Props {
+	article: Article;
 }
 
-const {name, price, description, image} = Astro.props;
+const { article } = Astro.props;
+
+const id = article.getId();
+const titre = article.getName();
+const image = await article.getPoster();
+const finVente = article.getFinVente();
+const prix = await Bids.getEnchereMax(article);
 ---
 
-
-
+<div class="article">
+	<img src={image} alt={titre} />
+	<aside>
+		<h1>{titre}</h1>
+		<p>Fin de la vente : {finVente}</p>
+		<p>Valeur actuelle : {prix} €</p>
+	</aside>
+	<div>
+		<p>Description : dnejjdhjzqhnfjbhizbhfuibqhbfzbzqhbhjzqfbgqzgufvzqhb</p>
+	</div>
+</div>
+<style>
+	.article {
+		border: 5px solid red;
+		flex: 1;
+		margin: 0 30px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+</style>
