@@ -2,7 +2,33 @@ import Article from './Article';
 import Database from './Database';
 import Buyer from './users/Buyer';
 
+export type Bid = {
+	article: Article;
+	buyer: Buyer;
+	amount: number;
+};
+
 export default class Bids {
+	/**
+	 * Retourne toutes les enchères d'un article avec les informations de l'acheteur triées par montant décroissant
+	 * @param article L'{@link Article} sur lequel on veut récupérer les enchères
+	 * @returns Un tableau d'enchères ({@link Bid})
+	 */
+	public static async getEncheres(article: Article): Promise<Bid[]> {
+		const database = Database.get();
+		const enchere =
+			await database`SELECT * FROM bid WHERE art_id = ${article.getId()} ORDER BY amount DESC`;
+		const encheres: Bid[] = [];
+		for (const e of enchere) {
+			encheres.push({
+				article,
+				buyer: await Buyer.getById(e.b_id),
+				amount: e.amount,
+			});
+		}
+		return encheres;
+	}
+
 	/**
 	 * Récupère l'enchère max d'un article
 	 * @param article L'{@link Article} sur lequel on veut récupérer l'enchère max

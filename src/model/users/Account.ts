@@ -224,7 +224,7 @@ export default class Account {
 		await database`DELETE FROM account WHERE a_id = ${this.getId()}`;
 	}
 
-	protected static async deleteSession(token: string): Promise<void> {
+	public static async deleteSession(token: string): Promise<void> {
 		const database = Database.get();
 		await database`DELETE FROM session WHERE s_token = ${token}`;
 	}
