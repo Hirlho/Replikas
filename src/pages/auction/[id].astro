@@ -2,7 +2,7 @@
 import TextField from '../../components/TextField.astro';
 import Layout from '../../layouts/Layout.astro';
 import Article, { ArticleInexistantError } from '../../model/Article';
-import Bids from '../../model/Bids';
+import Bids, { Bid } from '../../model/Bids';
 import Company from '../../model/users/Company';
 import { dateDiff, getBuyerBySession } from '../../model/Utilitaire';
 
@@ -56,6 +56,8 @@ const debutVente = article.getDebutVente();
 const finVente = article.getFinVente();
 
 const enCours = debutVente < new Date() && finVente > new Date();
+let encheres: Bid[] = [];
+if (enCours) encheres = await Bids.getEncheres(article);
 
 const starts = dateDiff(debutVente, new Date());
 const ends = dateDiff(finVente, new Date());
@@ -67,8 +69,6 @@ const images = article.getImages().length
 	? article.getImages()
 	: [await article.getPoster()];
 const description = article.getDescription();
-
-console.log(images);
 ---
 
 <Layout title="Replikas" no_searchbar>
@@ -91,109 +91,97 @@ console.log(images);
 
 		<div class="main-wrapper">
 			<aside class="sideBar">
-				<div class="img">
+				<div class="images">
 					{images.map((image) => <img src={image} alt={nom} />)}
 				</div>
 			</aside>
-			<article class="informations">
-				<div>
+			<article>
+				<div class="informations">
 					<h1 class="center">{nom}</h1>
-					<h3 class="left-margin">
-						{enCours ? 'Enchère actuelle :' : 'Prix de départ : '}
-					</h3>
-					<h2 id="current-price" class="center">{prix} €</h2>
-					<h3 class="left-margin">Placer une offre :</h3>
-					<form>
-						<div>
+					{
+						enCours && (
+							<div class="hbox" style="align-items: center;">
+								<h3 class="left-margin">
+									{enCours ? 'Enchère actuelle :' : 'Prix de départ : '}
+								</h3>
+								<h2 id="current-price" class="left-margin">
+									{prix} €
+								</h2>
+							</div>
+						)
+					}
+					<h3 class="left-margin">Description :</h3>
+					<p>
+						{description}
+						Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet laudantium
+						dolorem illum recusandae, suscipit, voluptate a ipsa molestias possimus
+						omnis aspernatur, totam molestiae quam iste! Deserunt mollitia ipsum
+						rerum dolore consectetur sunt quod doloribus culpa et? Labore itaque
+						eius, molestiae voluptatibus architecto veniam consequuntur iure aliquid
+						quos ipsum eligendi, assumenda amet quis consequatur culpa quae reiciendis
+						adipisci eos nesciunt, provident voluptas est? Adipisci nihil sit sunt
+						doloribus, sapiente mollitia! Ea ad magni assumenda quas numquam voluptatum
+						animi, quo ipsa molestias modi. Eaque asperiores maxime, quia tempora
+						dolorum neque sunt numquam illum laborum minus dolore, perspiciatis optio!
+						Dolorem nesciunt at minus ipsum iste ratione nam nemo earum quibusdam
+						placeat eum explicabo rem sapiente veniam aspernatur laborum error corrupti
+						cumque illo repellat, ea quasi! Quod a necessitatibus accusamus! Neque,
+						nisi.
+					</p>
+					<div class="company-info hbox" style="align-items: center;">
+						<h3 class="left-margin">Vendu par :</h3>
+						<p class="center left-margin">{company.getNom()}</p>
+					</div>
+				</div>
+				<div class="bid">
+					<div>
+						<h3 class="left-margin">Placer une offre :</h3>
+						<form>
+							<div>
+								{
+									SUGGESTION_MULTIPLIERS.map((multiplier) => (
+										<button
+											class="button suggestion-value"
+											type="submit"
+											name="bid"
+											value={prix + encherissement_min * multiplier}
+										>
+											{prix + encherissement_min * multiplier + ' €'}
+										</button>
+									))
+								}
+							</div>
+							<div>
+								<TextField
+									id="manual-bid"
+									type="number"
+									name="bid"
+									minNumber={prix + encherissement_min}
+									placeholder={prix + encherissement_min + ' ou plus'}
+								/>
+							</div>
+							<div>
+								<input
+									id="placerOffre"
+									class="button"
+									type="submit"
+									value="Placer l'offre"
+								/>
+							</div>
+						</form>
+						<h3 class="margin-left">Encheres actuelles :</h3>
+						<div id="bids-history">
 							{
-								SUGGESTION_MULTIPLIERS.map((multiplier) => (
-									<button
-										class="button suggestion-value"
-										type="submit"
-										name="bid"
-										value={prix + encherissement_min * multiplier}
-									>
-										{prix + encherissement_min * multiplier + ' €'}
-									</button>
+								encheres.map((bid) => (
+									<div class="bid_entry">
+										{' '}
+										{`${bid.buyer.toString()} : ${bid.amount} €`}{' '}
+									</div>
 								))
 							}
 						</div>
-						<div>
-							<TextField
-								id="manual-bid"
-								type="number"
-								name="bid"
-								minNumber={prix + encherissement_min}
-								placeholder={prix + encherissement_min + ' ou plus'}
-							/>
-						</div>
-						<div>
-							<input
-								id="placerOffre"
-								class="button"
-								type="submit"
-								value="Placer l'offre"
-							/>
-						</div>
-					</form>
-					<h3 class="left-margin">Vendu par :</h3>
-					<h2 class="center">{company.getNom()}</h2>
-					<h3 class="left-margin">Déscription :</h3>
-					<p class="center">
-						{description}
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum nemo
-						tenetur animi tempore! Minus quisquam cumque assumenda! Repellendus modi
-						laboriosam earum laudantium, praesentium enim, nihil, ipsa commodi error
-						in similique. Inventore, magni qui! Minima temporibus inventore illum
-						quod delectus doloremque quos numquam, quia sed similique corporis? Vero
-						molestiae eaque, fuga incidunt laudantium nostrum nesciunt perspiciatis
-						sint saepe magnam quos sit mollitia ipsam ipsum modi beatae reprehenderit
-						praesentium voluptatibus, non veniam odio rerum adipisci eligendi reiciendis!
-						Beatae sapiente, veniam hic minus quaerat, commodi illum odit exercitationem
-						non incidunt delectus quibusdam in aperiam velit ipsa nulla consectetur
-						tempora. Magnam tempore illo quo optio eius, doloribus ducimus error
-						maxime odit soluta, libero est laboriosam, repudiandae vero minima beatae
-						accusamus! Sapiente impedit exercitationem autem cum fugit ipsam sit
-						modi molestias temporibus placeat! Enim quisquam praesentium magni eveniet
-						voluptas ipsum iste veniam. Dolorum amet, eaque quas nulla, repellat
-						mollitia doloribus quam minima eum architecto praesentium natus obcaecati
-						animi aliquam cum quisquam? Veritatis cumque deserunt sapiente, perspiciatis
-						magni odit iusto ab, dolorum quis a iure illo repellendus et neque aliquid
-						nihil praesentium molestias voluptatibus? Tenetur omnis temporibus minima
-						repudiandae id ipsam, repellat architecto nam deleniti, quibusdam quidem
-						non molestias mollitia libero quasi ipsum laborum laboriosam dicta aliquam
-						sapiente? Possimus dicta quisquam labore molestiae aspernatur voluptate,
-						tenetur dolores incidunt assumenda pariatur error autem blanditiis? Quisquam,
-						tempora fugiat eveniet aperiam eligendi illo, officiis incidunt quia
-						esse harum quod dolorem eum blanditiis. Magnam ipsam eum nobis voluptatem
-						nam necessitatibus ratione iste quam, illo cum beatae voluptatum, atque
-						at eaque molestias sapiente! Autem nemo modi nisi eaque voluptate at
-						soluta, esse corporis culpa, maiores nobis sunt, porro aliquid dolore!
-						Ad omnis natus illo eius, praesentium tempora totam ipsum voluptatem
-						minima nulla enim voluptatibus provident ducimus aut quasi, quis necessitatibus
-						ea placeat voluptate obcaecati a. Dolorum, doloribus voluptate. Veritatis
-						consequuntur soluta nihil sint adipisci neque perferendis blanditiis
-						repellat cumque hic rem dicta commodi facere possimus est doloremque
-						dolores impedit eum, amet consequatur a laboriosam sequi? Quidem dolore
-						ea exercitationem minus iure neque iusto ducimus numquam, blanditiis
-						aliquid. Aliquid sit rerum reprehenderit hic quod laborum, aliquam deleniti
-						tempora, iure iste ullam ut doloremque vitae amet molestiae aperiam impedit.
-						Odio possimus voluptatem odit vitae magnam sint eum facere minus consectetur.
-						Ullam corporis labore neque! Dolore ipsa eveniet, maxime, neque deleniti
-						ipsum assumenda illum provident cum itaque alias modi iste error laudantium
-						doloremque quas saepe eligendi exercitationem. Voluptates, dolor atque.
-						Culpa magni pariatur quidem cum quasi molestias aspernatur quas commodi
-						ipsum, ipsa eos sint iste earum, tempora sequi dicta illo aperiam rem
-						totam autem ullam quaerat nobis. Autem architecto, hic ea, recusandae
-						eos animi iure ab nisi sit nulla tenetur blanditiis tempore reiciendis
-						numquam dolorem debitis possimus doloribus delectus itaque asperiores.
-						Sunt adipisci cupiditate similique est maxime! Vel voluptates enim nam
-						minus veniam? Cumque est accusamus architecto cum voluptatum nisi totam
-						quasi qui id tempora, nihil quam explicabo odio provident ea, praesentium
-						alias blanditiis. Consectetur qui aspernatur voluptates dolorum autem
-						quia, saepe voluptas ullam, blanditiis perferendis consequuntur molestias
-						suscipit assumenda optio veritatis dolorem quidem!
-					</p>
+						<style is:inline></style>
+					</div>
 				</div>
 			</article>
 		</div>
@@ -202,9 +190,8 @@ console.log(images);
 
 <style>
 	section {
-		margin: 20px auto;
-		padding: 40px 4%;
-		width: 90%;
+		margin: auto;
+		width: 95%;
 
 		border-radius: 20px;
 	}
@@ -212,56 +199,84 @@ console.log(images);
 	.main-wrapper {
 		display: grid;
 		grid-template-areas: 'sidebar main';
-		grid-template-columns: minmax(0, 35%) minmax(0, 60%);
+		grid-template-columns: minmax(0, 35%) minmax(0, 65%);
 		gap: 20px;
 	}
 
 	.main-wrapper > * {
-		background-color: var(--theme-secondary);
-
 		margin: 10px;
 	}
 
 	/*---------Side Bar------------*/
 	.sideBar {
 		position: sticky;
-		top: 0;
+		top: 3rem;
 
 		grid-area: 'sidebar';
-		overflow-y: auto;
+		background-color: transparent;
+	}
 
+	.sideBar > * {
+		background-color: var(--theme-secondary);
+		border-radius: 2rem;
+	}
+
+	.images {
 		max-height: 80vh;
 
-		border-radius: 2rem;
+		overflow-y: auto;
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+		width: 100%;
+	}
 
+	.images::-webkit-scrollbar {
+		display: none;
+	}
+
+	.images > img {
+		width: 100%;
+	}
+
+	.company-info {
+		padding: 1rem;
+		max-width: 100%;
+		margin-top: 3rem;
+	}
+
+	/*----------Informations------------*/
+	article {
+		grid-area: 'main';
+		display: flex;
+		background-color: var(--theme-secondary);
+		border-radius: 2rem;
+	}
+
+	.informations {
+		padding: 2rem;
+		flex-grow: 0.6;
+		flex-basis: 0;
+	}
+
+	/*------------Formulaire d'enchérissement---------------*/
+	.bid {
+		padding: 2rem;
+		flex-grow: 0.4;
+		flex-basis: 0;
+		border-left: 2px solid var(--theme-text);
+	}
+
+	#bids-history {
+		height: 50vh;
+		border-radius: 0px 0px 15px 15px;
+		overflow-y: auto;
 		-ms-overflow-style: none;
 		scrollbar-width: none;
 	}
 
-	.sideBar::-webkit-scrollbar {
-		display: none;
-	}
-
-	.img {
-		width: 100%;
-		overflow-y: hidden;
-	}
-
-	.img > img {
-		width: 100%;
-	}
-
-	/*----------Informations------------*/
-	.informations {
-		grid-area: 'main';
-
-		border-radius: 2rem;
-		padding: 2rem;
-	}
-
-	/*------------Formulaire d'enchérissement---------------*/
 	form {
 		margin: 2rem;
+		width: fit-content;
 
 		display: flex;
 		flex-wrap: wrap;
@@ -310,7 +325,7 @@ console.log(images);
 	}
 
 	.left-margin {
-		margin-left: 5rem;
+		margin-left: 1rem;
 	}
 
 	h1 {
@@ -328,6 +343,7 @@ console.log(images);
 
 	p {
 		font-size: 1.2rem;
+		margin-left: 1.5rem;
 	}
 </style>
 
@@ -349,6 +365,7 @@ console.log(images);
 		'manual-bid'
 	) as HTMLInputElement;
 	const form = document.querySelector('form');
+	const bids_history = document.getElementById('bids-history');
 
 	/**
 	 * Duplicate of the one in the server
@@ -372,18 +389,38 @@ console.log(images);
 		return diff;
 	}
 
-	async function updatePrice() {
+	async function updatePriceAndBids() {
 		await fetch(`/api/article/${id}/info`)
 			.then((res) => res.json())
-			.then((data) => {
-				currentPrice.innerText = data.current_bid + ' €';
-				suggestionValues.forEach((suggestion, i) => {
-					suggestion.value = data.current_bid + data.min_bid * multipliers[i];
-					suggestion.innerText = suggestion.value + ' €';
-				});
-				manualBidInput.min = data.current_bid + data.min_bid;
-				manualBidInput.placeholder = manualBidInput.min + ' ou plus';
-			});
+			.then(
+				(data: {
+					current_bid: number;
+					min_bid: number;
+					bids_history: { amount: number; buyer: string }[];
+				}) => {
+					currentPrice.innerText = data.current_bid + ' €';
+					suggestionValues.forEach((suggestion, i) => {
+						suggestion.value =
+							'' + data.current_bid + data.min_bid * multipliers[i];
+						suggestion.innerText = suggestion.value + ' €';
+					});
+					manualBidInput.min = '' + data.current_bid + data.min_bid;
+					manualBidInput.placeholder = manualBidInput.min + ' ou plus';
+					// Update bids history
+					bids_history.innerHTML = '';
+					data.bids_history.forEach((bid) => {
+						const bidDiv = document.createElement('div');
+						bidDiv.innerText = `${bid.buyer} : ${bid.amount} €`;
+						bidDiv.classList.add('bid_entry');
+						bidDiv.style.color = 'var(--theme-text)';
+						bidDiv.style.borderLeft = '2px solid var(--theme-text)';
+						bidDiv.style.paddingLeft = '1rem';
+						bidDiv.style.margin = '0.5rem 0';
+						bidDiv.style.fontSize = '1.5rem';
+						bids_history.appendChild(bidDiv);
+					});
+				}
+			);
 	}
 
 	function updateDates() {
@@ -411,7 +448,7 @@ console.log(images);
 
 	// Wait for client to be idle, then update every second
 	setTimeout(() => {
-		setInterval(updatePrice, 1000);
+		setInterval(updatePriceAndBids, 1000);
 		setInterval(updateDates, 1000);
 	}, 5000);
 
