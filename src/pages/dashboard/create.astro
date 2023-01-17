@@ -114,6 +114,7 @@ if (Astro.request.method == 'POST') {
 						length="15rem"
 						name="name"
 						id="name"
+						maxLength="50"
 					/>
 
 					<h3>Œuvre(s) d'origine (film/série) : *</h3>
@@ -131,7 +132,8 @@ if (Astro.request.method == 'POST') {
 						id="description"
 						placeholder="Ex : Réplique du sabre de Dark Vador utilisé lors du tournage du film “Star Wars : Un Nouvel Espoir” Note : Les effets lumineux sont indisponibles (rajoutés via effets spéciaux)"
 						name="description"
-						id="description"></textarea>
+						id="description"
+						maxlength="2000"></textarea>
 				</div>
 			</div>
 		</div>

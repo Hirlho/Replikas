@@ -119,7 +119,11 @@ export default class Article {
 			console.info('Création des images');
 			for (const img_path of img_paths) {
 				await database`
-					INSERT INTO article_image (art_id, img_path) VALUES (${result[0].art_id}, ${img_path})`;
+					INSERT INTO article_image (art_id, img_path) VALUES (${result[0].art_id}, ${img_path})`.catch(
+					(err) => {
+						throw new err();
+					}
+				);
 			}
 
 			return [result[0]];
