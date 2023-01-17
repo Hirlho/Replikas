@@ -11,7 +11,7 @@ export default class Company extends Account {
 
 	/**
 	 * @inheritdoc Account.get
-	 * @throws {A@link ccountTypeMismatch} Si l'account n'est pas une entreprise mais un acheteur
+	 * @throws {@link AccountTypeMismatch} Si l'account n'est pas une entreprise mais un acheteur
 	 */
 	public static async get(email: string, password: string): Promise<Company> {
 		const account = await super.get(email, password);
