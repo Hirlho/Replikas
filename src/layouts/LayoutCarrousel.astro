@@ -12,19 +12,15 @@ const { articles } = Astro.props;
 <div class="container">
 	<div class="carrousel">
 		<div class="slider">
-			<article>1</article>
-			<article>2</article>
-			<article>3</article>
-			<article>4</article>
-			<article>5</article>
+			{articles.map((article) => <CarrouselComponent article={article} />)}
 		</div>
 		<div class="arrow">
 			<div class="arrow-top"></div>
 			<div class="arrow-bottom"></div>
 		</div>
 		<div class="arrowprev">
-			<div class="arrowprev-top"></div>
-			<div class="arrowprev-bottom"></div>
+			<div class="arrow-top"></div>
+			<div class="arrow-bottom"></div>
 		</div>
 	</div>
 </div>
@@ -39,7 +35,7 @@ const { articles } = Astro.props;
 	}
 
 	.carrousel {
-		width: 80%;
+		width: 85%;
 		margin: 0 auto;
 		height: 100%;
 
@@ -60,17 +56,6 @@ const { articles } = Astro.props;
 		transition: all 0.5s;
 	}
 
-	.slider article {
-		border: 1px solid red;
-		flex: 1;
-
-		margin: 0 30px;
-
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
 	/*--------------Arrows---------------*/
 	.arrow {
 		cursor: pointer;
@@ -79,7 +64,7 @@ const { articles } = Astro.props;
 		position: absolute;
 		top: 50%;
 		transform: translateX(-50%) translateY(-50%);
-		transition: transform 0.1s;
+		transition: transform 0.2s;
 		width: 80px;
 	}
 
@@ -90,14 +75,12 @@ const { articles } = Astro.props;
 		position: absolute;
 		top: 50%;
 		transform: translateX(-50%) translateY(-50%) scaleX(-1);
-		transition: transform 0.1s;
+		transition: transform 0.2s;
 		width: 80px;
 	}
 
 	.arrow-top,
-	.arrow-bottom,
-	.arrowprev-top,
-	.arrowprev-bottom {
+	.arrow-bottom {
 		background-color: #666;
 		height: 4px;
 		left: -5px;
@@ -107,51 +90,45 @@ const { articles } = Astro.props;
 	}
 
 	.arrow-top:after,
-	.arrow-bottom:after,
-	.arrowprev-top::after,
-	.arrowprev-bottom::after {
+	.arrow-bottom:after {
 		background-color: #000;
 		content: '';
 		height: 100%;
 		position: absolute;
 		top: 0;
-		transition: all 0.1s;
+		transition: all 0.15s;
 	}
 
-	.arrow-top,
-	.arrowprev-top {
+	.arrow-top {
 		transform: rotate(45deg);
 		transform-origin: bottom right;
 	}
 
-	.arrow-top:after,
-	.arrowprev-top:after {
+	.arrow-top:after {
 		left: 100%;
 		right: 0;
 		transition-delay: 0s;
 	}
 
-	.arrow-bottom,
-	.arrowprev-bottom {
+	.arrow-bottom {
 		transform: rotate(-45deg);
 		transform-origin: top right;
 	}
 
-	.arrow-bottom:after,
-	.arrowprev-bottom:after {
+	.arrow-bottom:after {
 		left: 0;
 		right: 100%;
-		transition-delay: 0.15s;
+		transition-delay: 0.2s;
 	}
 
 	.arrow:hover .arrow-top:after,
-	.arrowprev:hover .arrowprev-top:after {
+	.arrowprev:hover .arrow-top:after {
 		left: 0;
-		transition-delay: 0.15s;
+		transition-delay: 0.2s;
 	}
 
 	.arrow:hover .arrow-bottom:after,
-	.arrowprev:hover .arrowprev-bottom:after {
+	.arrowprev:hover .arrow-bottom:after {
 		right: 0;
 		transition-delay: 0s;
 	}
@@ -173,7 +150,7 @@ const { articles } = Astro.props;
 
 	var direction: number = -1;
 
-	prev.addEventListener('click', function () {
+	prev.addEventListener('mousedown', function () {
 		if (direction === -1) {
 			slider.appendChild(slider.firstElementChild);
 			direction = 1;
@@ -182,7 +159,7 @@ const { articles } = Astro.props;
 		slider.style.transform = 'translate(20%)';
 	});
 
-	next.addEventListener('click', function () {
+	next.addEventListener('mousedown', function () {
 		if (direction === 1) {
 			slider.prepend(slider.lastElementChild);
 			carrousel.style.justifyContent = 'flex-start';
@@ -201,7 +178,7 @@ const { articles } = Astro.props;
 		slider.style.transition = 'none';
 		slider.style.transform = 'translate(0)';
 		setTimeout(function () {
-			slider.style.transition = 'all 0.5s';
+			slider.style.transition = 'all 0.3s';
 		});
 	});
 </script>
