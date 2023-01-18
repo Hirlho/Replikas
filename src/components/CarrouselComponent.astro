@@ -25,9 +25,11 @@ const description = article.getDescription();
 		</div>
 		<aside>
 			<h1>{titre}</h1>
+			<p id="time">
+				Se termine dans {ends.day}j, {ends.hour}h et {ends.min}min
+			</p>
 			<p>Valeur actuelle : {prix} €</p>
 			<p>Description : {description}</p>
-			<p>Se termine dans {ends.day}j, {ends.hour}h et {ends.min}min</p>
 			<a id="button" id="enchere" href={'/auction/' + id}> Enchérir</a>
 		</aside>
 	</div>
@@ -97,20 +99,20 @@ const description = article.getDescription();
 		flex-direction: column;
 		/*border: 2px solid green;*/
 		align-items: center;
-		justify-content: space-between;
 		padding: 0 15px;
 	}
 
 	h1 {
 		font-size: 2em;
+		margin: 1rem auto;
 	}
 
 	p {
 		font-size: 1.25em;
 	}
 
-	p:nth-child(4) {
-		color: red;
+	#time {
+		color: var(--theme-button);
 	}
 
 	#button {

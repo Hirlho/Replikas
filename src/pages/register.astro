@@ -146,6 +146,11 @@ if (Astro.url.searchParams.has('error')) {
 				</tr>
 			</table>
 
+			<p>
+				Le mot de passe doit contenir au moins 12 caractères, une majuscule, une
+				minuscule, un chiffre et un caractère spécial
+			</p>
+
 			<div id="button">
 				<div>
 					<input type="checkbox" required />
@@ -215,5 +220,11 @@ if (Astro.url.searchParams.has('error')) {
 	}
 	a:hover {
 		filter: hue-rotate(20deg);
+	}
+
+	p {
+		width: 80%;
+		text-align: center;
+		margin: 1rem auto;
 	}
 </style>
