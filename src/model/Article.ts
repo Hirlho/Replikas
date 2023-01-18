@@ -6,6 +6,7 @@ import path from 'path';
 import Config from './Config';
 import Notification from './Notification';
 import { scheduleMethod } from './Utilitaire';
+import Bids from './Bids';
 
 export default class Article {
 	static {
@@ -373,6 +374,17 @@ export default class Article {
 
 	private static async endAuction(article: Article): Promise<void> {
 		await Notification.notifyArticleEnd(article);
+		const database = Database.get();
+		const winner = await Bids.getEncherisseurGagnant(article);
+		if (winner) {
+			await database`
+				INSERT into aquired (b_id, art_id, is_paid) 
+				VALUES (${winner.getId()}, ${article.getId()}, FALSE)`.catch(() => {
+				throw new Error(
+					`Erreur lors de l'insertion de l'article ${article.getId()} dans la table aquired`
+				);
+			});
+		}
 	}
 
 	public getId(): number {
