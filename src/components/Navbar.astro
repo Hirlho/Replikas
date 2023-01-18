@@ -40,20 +40,26 @@ if (cookies) {
 	<div id="right">
 		{
 			account && account.isCompany() ? (
-				<div class="pages">
-					<a class="pageLink" href="/dashboard">
-						Mes articles
-					</a>
-					<a class="pageLink" href="/dashboard/create">
-						Ajout d'article
-					</a>
-				</div>
+				<ul class="pages">
+					<li>
+						<a class="pageLink" href="/dashboard">
+							Mes articles
+						</a>
+					</li>
+					<li>
+						<a class="pageLink" href="/dashboard/create">
+							Ajout d'article
+						</a>
+					</li>
+				</ul>
 			) : account ? (
-				<div class="pages">
-					<a class="pageLink" href="/basket">
-						Mes Articles
-					</a>
-				</div>
+				<ul class="pages">
+					<li>
+						<a class="pageLink" href="/basket">
+							Mes Articles
+						</a>
+					</li>
+				</ul>
 			) : (
 				<div />
 			)
@@ -127,12 +133,8 @@ if (cookies) {
 
 	/*------------Pages--------------*/
 	.pages {
-		margin-right: 2rem;	
+		margin-right: 2rem;
 		transition: 0.5s ease;
-
-	}
-	.pages:hover{
-		scale: 1.1;
 	}
 
 	.pageLink {
@@ -151,6 +153,16 @@ if (cookies) {
 	.pageLink:hover {
 		transition: 0.5s ease;
 		color: var(--theme-button);
+	}
+	ul {
+		list-style-type: none;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+	}
+	ul li:hover {
+		transition: 0.5s ease;
+		scale: 1.2;
 	}
 
 	/*-----------User account buton && disconnected buttons-------------*/
