@@ -1,0 +1,139 @@
+---
+import Button from '../../components/Button.astro';
+import TextField from '../../components/TextField.astro';
+import Layout from '../../layouts/Layout.astro';
+import Account from '../../model/users/Account';
+import Company from '../../model/users/Company';
+import { EmailDejaUtiliseError } from '../../model/users/Account';
+import {
+	getAccountBySession,
+	getCompanyBySession,
+} from '../../model/Utilitaire';
+
+const redirect = Astro.url.searchParams.get('redirect') || '';
+
+//Get Account
+const company: Company = await getCompanyBySession(Astro.request.headers);
+console.log(company);
+
+// Vérification de la connexion
+if (!company) {
+	return Astro.redirect('/login?redirect=' + redirect);
+}
+
+if (Astro.request.method == 'POST') {
+	const formData = await Astro.request.formData();
+	const nom = formData.get('nom_textarea').toString() || '';
+	const nom_confirm = formData.get('nom_textarea2').toString() || '';
+
+	if (nom != nom_confirm) {
+		Astro.props.error = 'Les deux noms ne correspondent pas';
+	}
+	if (nom == nom_confirm) {
+		// Vérification si nom == ""
+		if (nom == '') {
+			//rien n'est modifié
+			Astro.props.error = "Aucune modification n'a été effectuée";
+			Astro.redirect('/settings?redirect=' + redirect);
+		} else if (nom != '') {
+			//un seul est modifié
+			if (nom != '' && nom == nom_confirm) {
+				if (nom != (await company.getNom())) {
+					//nom modifié
+					try {
+						await company.setNom(nom);
+						Astro.props.error = 'Votre nom a été modifié';
+						Astro.redirect('/settings?redirect=' + redirect);
+					} catch (err) {
+						if (err instanceof EmailDejaUtiliseError) {
+							Astro.props.error = 'Email déjà utilisé';
+							Astro.redirect('/settings?redirect=' + redirect);
+						} else {
+							throw err;
+						}
+					}
+					Astro.props.error = 'Votre nom a été modifié';
+					Astro.redirect('/settings?redirect=' + redirect);
+				}
+			}
+		}
+	}
+}
+---
+
+<Layout title="Modifier vos informations générales" no_searchbar>
+	<main>
+		<h1>Modifier votre nom d'entreprise</h1>
+		<form method="post" class="formlist">
+			<table>
+				<tr>
+					<th id="nom_th">Nouveau nom :</th>
+					<td>
+						<TextField
+							text=""
+							placeholder="Entrez votre nouveau nom"
+							type="text"
+							length="15rem"
+							name="nom_textarea"
+							readonly={false}
+							id="nom_textarea"
+						/>
+					</td>
+					<td>
+						<TextField
+							text=""
+							placeholder="Confirmez votre nouveau nom"
+							type="text"
+							length="15rem"
+							name="nom_textarea2"
+							readonly={false}
+							id="nom_textarea2"
+						/>
+					</td>
+				</tr>
+			</table>
+
+			<div id="btn">
+				<Button text="Modifier le nom de votre entreprise" />
+			</div>
+		</form>
+	</main>
+
+	<style>
+		#options-th {
+			padding-left: 4rem;
+		}
+		.options1 {
+			margin-right: 4rem;
+			margin-left: 2rem;
+		}
+		.options2 {
+			margin-left: 5rem;
+		}
+		.options1-2 {
+			display: flex;
+			flex-direction: row;
+			margin-left: 2rem;
+			text-align: center;
+		}
+		#btn {
+			/* centre le bouton */
+			text-align: center;
+		}
+		main {
+			background-color: var(--theme-secondary);
+			margin: 3rem 5rem;
+			padding: 2rem;
+
+			border-radius: 2rem;
+
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+		h1 {
+			margin-top: 0rem;
+		}
+	</style>
+</Layout>
