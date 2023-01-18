@@ -75,72 +75,33 @@
 </style>
 
 <script>
-	import Id from '../pages/auction/[id].astro';
-
 	const breadcrumb = document.getElementById('breadcrumb');
+	const currentPathname = window.location.pathname;
 
-	const url = new URL(window.location.href);
-	const history = JSON.parse(sessionStorage.getItem('history') || '[]');
+	let history = JSON.parse(sessionStorage.getItem('history') || '[]');
+	const index = history.indexOf(currentPathname);
 
-	//If user navigate to a visited page, remove all pages after it in the history array
-	const index = history.indexOf(url.pathname.replace('/', ''));
 	if (index > -1) {
 		history.splice(index + 1, history.length);
 	}
-	//if same name, remove the last one
-	if (history[history.length - 1] === url.pathname.replace('/', '')) {
+
+	if (history[history.length - 1] === currentPathname) {
 		history.pop();
 	}
-	//
-	console.log(history);
-	history.push(url.pathname.replace('/', ''));
+
+	history.push(currentPathname);
 	sessionStorage.setItem('history', JSON.stringify(history));
+
 	if (history.length > 0) {
-		console.log(history);
-		const historyLength = history.length;
-		console.log(historyLength);
-		updateBreadCrumb();
-	}
-
-	const home = document.getElementById('home');
-	home.addEventListener('click', () => {
-		sessionStorage.clear();
-	});
-	//si je clique sur un élément du breadcrumb, je supprime tout ce qui est après dans le tableau
-	//je supprime tout ce qui est après dans le tableau
-	const breadcrumbLinks = document.querySelectorAll('#breadcrumb a');
-	breadcrumbLinks.forEach((link) => {
-		link.addEventListener('click', () => {
-			const history = JSON.parse(sessionStorage.getItem('history') || '[]');
-			const index = history.indexOf(url.pathname.replace('/', ''));
-			history.splice(index - 1, history.length);
-			sessionStorage.setItem('history', JSON.stringify(history));
-			updateBreadCrumb();
-		});
-	});
-
-	function updateBreadCrumb() {
-		const history = JSON.parse(sessionStorage.getItem('history') || '[]');
-
-		const link = document.createElement('a');
-		link.href = '/';
-		link.innerText = 'home';
-		link.setAttribute('id', 'home');
-		breadcrumb.appendChild(link);
-		//quand j'appuies sur le logo je supprime tout le tableau
-		for (let i = 1; i < history.length; i++) {
-			createLink(history[i], history[i]);
+		let links = '';
+		// check if the first element is "/" and replace it with "Home" and link it to "/"
+		if (history[0] === '/') {
+			history[0] = 'Home';
+			links += `<a href="/">${history[0]}</a>`;
 		}
+		for (let i = 1; i < history.length; i++) {
+			links += `<a href=${history[i]}>${history[i]}</a>`;
+		}
+		breadcrumb.innerHTML = links;
 	}
-
-	function createLink(text: string, href: string) {
-		const link = document.createElement('a');
-		link.href = href;
-		link.innerText = text;
-		breadcrumb.appendChild(link);
-	}
-	const logo = document.querySelector('.css-1j8o68f');
-	logo.addEventListener('click', () => {
-		sessionStorage.clear();
-	});
 </script>
