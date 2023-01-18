@@ -3,32 +3,17 @@ import Button from '../components/Button.astro';
 import TextField from '../components/TextField.astro';
 import { default as ArticleModel } from '../model/Article';
 
+export interface Props {
+	button_id?: string;
+}
+
+const button_id = Astro.props.button_id;
+
 const search = Astro.url.searchParams.get('article') || '';
 const minPrice = parseInt(Astro.url.searchParams.get('minPrice')) || 0;
-const maxPrice =
-	parseInt(Astro.url.searchParams.get('maxPrice')) || Number.MAX_SAFE_INTEGER;
-const onGoing = Astro.url.searchParams.get('onGoing') || 'true';
-
-const PAGE_SIZE = 20;
-const page = Math.max(parseInt(Astro.url.searchParams.get('page')) || 1, 1);
-
-let articles = await ArticleModel.getBySearchFilter(
-	search,
-	minPrice,
-	maxPrice,
-	/true/i.test(onGoing),
-	{
-		limit: 20,
-		offset: 0,
-	}
-);
-
-const length = articles.length;
-const hasMore = articles.length > page * PAGE_SIZE;
-if (hasMore) {
-	articles = articles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-}
-const pages = [...Array(Math.ceil(length / PAGE_SIZE)).values()];
+const maxPrice = parseInt(Astro.url.searchParams.get('maxPrice')) || 2147483647;
+let onGoingText = Astro.url.searchParams.get('enCours') || 'true';
+let onGoing = /true/i.test(onGoingText);
 ---
 
 <form>
@@ -39,6 +24,7 @@ const pages = [...Array(Math.ceil(length / PAGE_SIZE)).values()];
 			type="number"
 			placeholder="Ex : 70"
 			minNumber={0}
+			text={minPrice.toString()}
 		/>
 	</div>
 	<div class="prixMax centered">
@@ -48,19 +34,31 @@ const pages = [...Array(Math.ceil(length / PAGE_SIZE)).values()];
 			type="number"
 			placeholder="Ex : 250"
 			minNumber={0}
+			text={maxPrice.toString()}
 		/>
 	</div>
 	<div class="enCour centered">
-		<label for="pending">Afficher les enchères en cours</label>
+		<label for="pending">Afficher inquement les enchères en cours</label>
 		<label class="switch">
-			<input type="checkbox" checked />
+			{
+				onGoing ? (
+					<input id="enCours" type="checkbox" checked />
+				) : (
+					<input id="enCours" type="checkbox" />
+				)
+			}
 			<span class="slider round"></span>
 		</label>
 	</div>
 	<p id="errorMsg"></p>
+	<button id={button_id} type="submit">Rechercher</button>
 </form>
 
 <style>
+	form {
+		text-align: center;
+	}
+
 	.centered {
 		display: flex;
 		justify-content: center;
@@ -69,6 +67,26 @@ const pages = [...Array(Math.ceil(length / PAGE_SIZE)).values()];
 
 	.enCour > * {
 		margin: 1rem;
+	}
+
+	button {
+		color: var(--theme-button-text);
+		background-color: var(--theme-button);
+
+		font-size: 1.5rem;
+		font-weight: bold;
+
+		border: none;
+		border-radius: 0.5rem;
+
+		padding: 0.5rem 1rem;
+
+		cursor: pointer;
+	}
+
+	button:hover {
+		transition: 0.5s ease;
+		filter: brightness(1.2);
 	}
 
 	/*----------------Toggle button------------------*/
