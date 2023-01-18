@@ -38,10 +38,9 @@ const notifications = await Notification.getUserNotifications(company.getId());
 		</aside>
 		<article class="parameters">
 			<h2 id="monCompte">Mon compte</h2>
-			<UserSetting parametre="Nom" value={name} lien="/modify_name" />
-			<!--modify name ne marche pas avec les company qu'avec account à corriger -->
-			<UserSetting parametre="Adresse mail" value={mail} lien="/modify_email" />
-			<UserSetting parametre="Mot de passe" lien="/recover_password" />
+			<UserSetting parametre="Nom" value={name} lien="/modify-name" />
+			<UserSetting parametre="Adresse mail" value={mail} lien="/modify-email" />
+			<UserSetting parametre="Mot de passe" lien="/recover-password" />
 			<h2 id="accessibilite">Accessibilité</h2>
 			<UserSetting parametre="Taille de la police" value="x1" />
 		</article>
@@ -116,7 +115,6 @@ const notifications = await Notification.getUserNotifications(company.getId());
 		color: red;
 		transition: 0.5s ease;
 		scale: 1.2;
-
 	}
 
 	/*-------------------Notifications---------------------*/
