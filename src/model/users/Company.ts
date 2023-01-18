@@ -11,7 +11,7 @@ export default class Company extends Account {
 
 	/**
 	 * @inheritdoc Account.get
-	 * @throws {A@link ccountTypeMismatch} Si l'account n'est pas une entreprise mais un acheteur
+	 * @throws {@link AccountTypeMismatch} Si l'account n'est pas une entreprise mais un acheteur
 	 */
 	public static async get(email: string, password: string): Promise<Company> {
 		const account = await super.get(email, password);
@@ -69,7 +69,7 @@ export default class Company extends Account {
 		password: string,
 		name: string
 	): Promise<Company> {
-		const account = await super.create(email, password);
+		const account = await super.create(email, password, true);
 		const database = Database.get();
 		await database`INSERT INTO company (a_id, c_name) VALUES (${account.getId()}, ${name})`;
 		const company = new Company();
@@ -121,5 +121,10 @@ export default class Company extends Account {
 
 	public toString(): string {
 		return this.name;
+	}
+	public async setNom(first_name: string): Promise<void> {
+		const database = Database.get();
+		await database`UPDATE company SET c_name = ${first_name} WHERE a_id = ${this.id}`;
+		this.name = first_name;
 	}
 }

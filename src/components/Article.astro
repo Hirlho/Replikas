@@ -247,10 +247,6 @@ if (enCours) {
 	}
 </style>
 <script>
-	import { formatList } from 'astro/dist/runtime/server/render/util';
-
-	import { EmailInconnuError } from '../model/users/Account';
-
 	const icons = document.getElementsByClassName('icons');
 	for (let icon of icons) {
 		icon.addEventListener('click', (event) => {
@@ -265,10 +261,10 @@ if (enCours) {
 	// Close the dropdown if the user clicks outside of it
 	window.onclick = function (event) {
 		if (!event.target.matches('.icons')) {
-			var dropdowns = document.getElementsByClassName('dropdown-content');
-			var i;
-			for (i = 0; i < dropdowns.length; i++) {
-				var openDropdown = dropdowns[i];
+			let dropdowns = document.getElementsByClassName('dropdown-content');
+			let i;
+			for (let i = 0; i < dropdowns.length; i++) {
+				let openDropdown = dropdowns[i];
 				if (openDropdown.classList.contains('show')) {
 					openDropdown.classList.remove('show');
 				}

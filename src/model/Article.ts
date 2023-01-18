@@ -4,10 +4,17 @@ import Buyer from './users/Buyer';
 import fs from 'fs';
 import path from 'path';
 import Config from './Config';
+import Notification from './Notification';
+import { scheduleMethod } from './Utilitaire';
 
 export default class Article {
 	static {
 		Database.getInstance().on('clean', Article.clean);
+		Article.getAll().then((articles) => {
+			for (const article of articles) {
+				article.scheduleAuctionEvents();
+			}
+		});
 	}
 
 	private id: number;
@@ -119,14 +126,23 @@ export default class Article {
 			console.info('Création des images');
 			for (const img_path of img_paths) {
 				await database`
-					INSERT INTO article_image (art_id, img_path) VALUES (${result[0].art_id}, ${img_path})`;
+					INSERT INTO article_image (art_id, img_path) VALUES (${result[0].art_id}, ${img_path})`.catch(
+					(err) => {
+						throw new err();
+					}
+				);
 			}
 
 			return [result[0]];
 		});
 
 		console.info(`Article ${result.art_id} créé`);
-		return this.getFromResult(result);
+		const article: Article = await this.getFromResult(result).catch(() => null);
+		if (article === null) {
+			throw new Error("Erreur lors de la création de l'article");
+		}
+		article.scheduleAuctionEvents();
+		return article;
 	}
 	/**
 	 * Retourne tous les articles de la base de données
@@ -191,43 +207,45 @@ export default class Article {
 	}
 
 	public static async getBySearchFilter(
-		objectName: string,
-		movieName: string,
-		startDate: Date,
-		endDate: Date,
-		basePriceMin: number,
-		basePriceMax: number,
-		currentPriceMin: number,
-		currentPriceMax: number,
+		search: string,
+		minPrice: number,
+		maxPrice: number,
+		onGoing: boolean,
 		params = { limit: 20, offset: 0 }
 	): Promise<Article[]> {
-		console.log(
-			objectName,
-			movieName,
-			startDate,
-			endDate,
-			basePriceMax,
-			basePriceMin,
-			params
-		);
 		const database = Database.get();
 		//const t0 = performance.now();
 		const result = await database`
-			SELECT 
-					a.* 
-			FROM
-					article a, movie c
-			WHERE
-					a.m_id = c.m_id AND
-					art_min_bidding>${basePriceMin} AND
-					art_min_bidding<${basePriceMax} AND
-					art_price>${currentPriceMin} AND
-					art_price<${currentPriceMax} AND
-					art_auction_start=${startDate} AND
-					art_auction_end=${endDate} AND
-					art_name LIKE ${'%"+objectName+"%'} AND
-					m_title LIKE ${'%"movieName"%'}
-			LIMIT ${params.limit} OFFSET ${params.offset || 0}`;
+            SELECT 
+                    a.*, 
+                    rank_name,
+                    rank_description,
+                    rank_movie_title,
+                    similarity
+            FROM 
+                    article a INNER JOIN movie c ON a.m_id = c.m_id,
+                    to_tsvector(a.art_name || ' ' || a.art_description || ' ' || c.m_title) document,
+                    websearch_to_tsquery(${search}) query,
+                    NULLIF(ts_rank(to_tsvector(a.art_name), query), 0) rank_name,
+                    NULLIF(ts_rank(to_tsvector(a.art_description), query), 0) rank_description,
+                    NULLIF(ts_rank(to_tsvector(c.m_title), query), 0) rank_movie_title,
+                    SIMILARITY(${search}, a.art_name || a.art_description) similarity
+            WHERE
+                    document @@ query OR similarity > 0.08
+					AND ${
+						onGoing
+							? 'a.art_auction_start < now() AND a.art_auction_end > now() AND (SELECT max(bid) FROM bid b WHERE a.art_id = b.art_id) > ' +
+							  minPrice +
+							  ' AND (SELECT max(bid) FROM bid b WHERE a.art_id = b.art_id) < ' +
+							  maxPrice
+							: 'a.art_auction_start > now() AND a.art_price > ' +
+							  minPrice +
+							  ' AND a.art_price < ' +
+							  maxPrice
+					}
+            ORDER BY
+                    rank_name DESC, rank_description DESC, rank_movie_title DESC, similarity DESC
+			LIMIT ${params.limit || null} OFFSET ${params.offset || 0}`;
 
 		const articles: Article[] = [];
 		for (const article of result) {
@@ -342,6 +360,19 @@ export default class Article {
 					console.warn("Couldn't delete image " + img);
 				});
 		}
+	}
+
+	private async scheduleAuctionEvents(): Promise<void> {
+		scheduleMethod(Article.startAuction, this.getDebutVente(), this);
+		scheduleMethod(Article.endAuction, this.getFinVente(), this);
+	}
+
+	private static async startAuction(article: Article): Promise<void> {
+		await Notification.notifyArticleStart(article);
+	}
+
+	private static async endAuction(article: Article): Promise<void> {
+		await Notification.notifyArticleEnd(article);
 	}
 
 	public getId(): number {

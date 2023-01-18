@@ -447,11 +447,8 @@ const description = article.getDescription();
 		}
 	}
 
-	// Wait for client to be idle, then update every second
-	setTimeout(() => {
-		setInterval(updatePriceAndBids, 1000);
-		setInterval(updateDates, 1000);
-	}, 5000);
+	setInterval(updatePriceAndBids, 1000);
+	setInterval(updateDates, 1000);
 
 	suggestionValues.forEach((suggestion) => {
 		suggestion.addEventListener('click', (e) => {

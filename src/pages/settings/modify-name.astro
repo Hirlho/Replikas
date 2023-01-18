@@ -1,58 +1,81 @@
 ---
-import Button from '../components/Button.astro';
-import TextField from '../components/TextField.astro';
-import Layout from '../layouts/Layout.astro';
-import Account from '../model/users/Account';
-import { EmailDejaUtiliseError } from '../model/users/Account';
-import { getAccountBySession } from '../model/Utilitaire';
+import Button from '../../components/Button.astro';
+import TextField from '../../components/TextField.astro';
+import Layout from '../../layouts/Layout.astro';
+import Account from '../../model/users/Account';
+import { EmailDejaUtiliseError } from '../../model/users/Account';
+import { getAccountBySession } from '../../model/Utilitaire';
+
+const redirect = Astro.url.searchParams.get('redirect') || '';
+
+//Get Account
+const account: Account = await getAccountBySession(Astro.request.headers).catch(
+	(err) => null
+);
+
+// Vérification de la connexion
+if (!account) {
+	return Astro.redirect('/login?redirect=' + redirect);
+}
 
 if (Astro.request.method == 'POST') {
 	const formData = await Astro.request.formData();
-	const redirect = Astro.url.searchParams.get('redirect') || '';
-	const email = formData.get('email').toString() || '';
-	const email_confirm = formData.get('email_confirm').toString() || '';
-	//Get Account
-	const account: Account = await getAccountBySession(
-		Astro.request.headers
-	).catch((err) => null);
-	// Vérification de la connexion
-	if (!account) {
-		return Astro.redirect('/login?redirect=' + redirect);
-	}
-	// Vérification du mail
-	if (
-		!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(
-			email
-		) &&
-		!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(
-			email
-		)
-	)
-		return Astro.redirect(
-			'/modify_email?error=invalid_email&redirect=' + redirect
-		);
-
-	if (email != email_confirm) {
-		return Astro.redirect(
-			'/modify_email?error=not_same_mail&redirect=' + redirect
-		);
-	} else {
-		try {
-			await account.setEmail(email);
-			Astro.props.success = 'Votre adresse mail a bien été modifiée';
-			Astro.props.redirect = redirect;
-		} catch (e) {
-			if (e instanceof EmailDejaUtiliseError) {
-				return Astro.redirect(
-					'/modify_email?error=same_mail&redirect=' + redirect
-				);
+	const nom = formData.get('nom_textarea').toString() || '';
+	const prenom = formData.get('prenom_textarea').toString() || '';
+	const nom_confirm = formData.get('nom_textarea2').toString() || '';
+	const prenom_confirm = formData.get('prenom_textarea2').toString() || '';
+	// Vérification si meme nom
+	if (nom == nom_confirm || prenom == prenom_confirm) {
+		// Vérification si nom == ""
+		if (nom == '' && prenom == '') {
+			//rien n'est modifié
+			Astro.props.error = "Aucune modification n'a été effectuée";
+			Astro.redirect('/settings?redirect=' + redirect);
+		} else if (nom == '' || prenom == '' || (nom != '' && prenom != '')) {
+			//un seul est modifié
+			if (nom != '' && nom == nom_confirm) {
+				if (nom != (await account.getLastName())) {
+					//nom modifié
+					try {
+						await account.setLastName(nom);
+						Astro.props.error = 'Votre nom a été modifié';
+						Astro.redirect('/settings?redirect=' + redirect);
+					} catch (err) {
+						if (err instanceof EmailDejaUtiliseError) {
+							Astro.props.error = 'Email déjà utilisé';
+							Astro.redirect('/settings?redirect=' + redirect);
+						} else {
+							throw err;
+						}
+					}
+					Astro.props.error = 'Votre nom a été modifié';
+					Astro.redirect('/settings?redirect=' + redirect);
+				}
+			}
+			if (prenom != '' && prenom == prenom_confirm) {
+				if (prenom != (await account.getFirstName())) {
+					//nom modifié
+					try {
+						await account.setFirstName(prenom);
+						Astro.props.error = 'Votre prenom a été modifié';
+						Astro.redirect('/settings?redirect=' + redirect);
+					} catch (err) {
+						if (err instanceof EmailDejaUtiliseError) {
+							Astro.props.error = 'Email déjà utilisé';
+							Astro.redirect('/settings?redirect=' + redirect);
+						} else {
+							throw err;
+						}
+					}
+					Astro.props.error = 'Votre prenom a été modifié';
+					Astro.redirect('/settings?redirect=' + redirect);
+				}
 			} else {
-				Astro.props.error = 'Une erreur est survenue';
+				//erreur
+				Astro.props.error = 'Erreur lors de la modification';
+				Astro.redirect('/settings?redirect=' + redirect);
 			}
 		}
-		return Astro.redirect(
-			'/modify_email?success=mail_changed&redirect=' + redirect
-		);
 	}
 }
 ---
@@ -98,7 +121,7 @@ if (Astro.request.method == 'POST') {
 							placeholder="Entrez votre nouveau nom"
 							type="text"
 							length="15rem"
-							name="nom"
+							name="nom_textarea"
 							readonly={false}
 							id="nom_textarea"
 						/>
@@ -109,7 +132,7 @@ if (Astro.request.method == 'POST') {
 							placeholder="Confirmez votre nouveau nom"
 							type="text"
 							length="15rem"
-							name="nom"
+							name="nom_textarea2"
 							readonly={false}
 							id="nom_textarea2"
 						/>
@@ -122,7 +145,7 @@ if (Astro.request.method == 'POST') {
 								placeholder="Entrez votre nouveau prénom"
 								type="text"
 								length="15rem"
-								name="prenom"
+								name="prenom_textarea"
 								readonly={false}
 								id="prenom_textarea"
 							/>
@@ -133,7 +156,7 @@ if (Astro.request.method == 'POST') {
 								placeholder="Confirmez votre nouveau prénom"
 								type="text"
 								length="15rem"
-								name="prenom"
+								name="prenom_textarea2"
 								readonly={false}
 								id="prenom_textarea2"
 							/>
@@ -141,12 +164,12 @@ if (Astro.request.method == 'POST') {
 					</tr>
 				</tr>
 			</table>
+
+			<div id="btn">
+				<Button text="Modifier le nom et/ou le prénom" />
+			</div>
 		</form>
 	</main>
-	<div id="btn">
-		<Button text="Modifier le nom et/ou le prénom" />
-	</div>
-
 	<script>
 		const nomCheckbox = document.getElementById('nom_cb') as HTMLInputElement;
 		const prenomCheckbox = document.getElementById(

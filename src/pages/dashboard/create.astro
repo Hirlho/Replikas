@@ -34,7 +34,11 @@ if (Astro.request.method == 'POST') {
 	} = Object.fromEntries(formData) as { [key: string]: any };
 
 	const start = new Date(`${startDate} ${startHour}`);
+	// Fix pour le fuseau horaire
+	start.setHours(start.getHours() + 1);
 	const end = new Date(`${endDate} ${endHour}`);
+	// Fix pour le fuseau horaire
+	end.setHours(end.getHours() + 1);
 	name = name ? name.trim() : '';
 	description = description ? description.trim() : '';
 	movie_id = parseInt(movie_id);
@@ -114,6 +118,7 @@ if (Astro.request.method == 'POST') {
 						length="15rem"
 						name="name"
 						id="name"
+						maxLength="50"
 					/>
 
 					<h3>Œuvre(s) d'origine (film/série) : *</h3>
@@ -131,7 +136,8 @@ if (Astro.request.method == 'POST') {
 						id="description"
 						placeholder="Ex : Réplique du sabre de Dark Vador utilisé lors du tournage du film “Star Wars : Un Nouvel Espoir” Note : Les effets lumineux sont indisponibles (rajoutés via effets spéciaux)"
 						name="description"
-						id="description"></textarea>
+						id="description"
+						maxlength="2000"></textarea>
 				</div>
 			</div>
 		</div>
@@ -433,7 +439,7 @@ if (Astro.request.method == 'POST') {
 					text: error_messages[await response.text()] || 'Erreur inconnue',
 				});
 			} else {
-				Swal.fire('The article was created successfully', '', 'success').then(
+				Swal.fire("L'article a été créé avec succes", '', 'success').then(
 					() => {
 						window.location.href = '/dashboard';
 					}
