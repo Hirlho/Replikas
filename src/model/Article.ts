@@ -4,10 +4,17 @@ import Buyer from './users/Buyer';
 import fs from 'fs';
 import path from 'path';
 import Config from './Config';
+import Notification from './Notification';
+import { scheduleMethod } from './Utilitaire';
 
 export default class Article {
 	static {
 		Database.getInstance().on('clean', Article.clean);
+		Article.getAll().then((articles) => {
+			for (const article of articles) {
+				article.scheduleAuctionEvents();
+			}
+		});
 	}
 
 	private id: number;
@@ -130,7 +137,12 @@ export default class Article {
 		});
 
 		console.info(`Article ${result.art_id} créé`);
-		return this.getFromResult(result);
+		const article: Article = await this.getFromResult(result).catch(() => null);
+		if (article === null) {
+			throw new Error("Erreur lors de la création de l'article");
+		}
+		article.scheduleAuctionEvents();
+		return article;
 	}
 	/**
 	 * Retourne tous les articles de la base de données
@@ -348,6 +360,19 @@ export default class Article {
 					console.warn("Couldn't delete image " + img);
 				});
 		}
+	}
+
+	private async scheduleAuctionEvents(): Promise<void> {
+		scheduleMethod(this.startAuction, this.getDebutVente());
+		scheduleMethod(this.endAuction, this.getFinVente());
+	}
+
+	private async startAuction(): Promise<void> {
+		await Notification.notifyArticleStart(this);
+	}
+
+	private async endAuction(): Promise<void> {
+		await Notification.notifyArticleEnd(this);
 	}
 
 	public getId(): number {

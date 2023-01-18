@@ -193,6 +193,24 @@ async function uploadImage(file: File, file_path: string) {
 	});
 }
 
+/**
+ * Programme l'appel d'une méthode à une date donnée.
+ * Si la date est passée, ne fait rien.
+ * @param method La méthode à appeler une fois le délai écoulé
+ * @param date La date à laquelle appeler la méthode
+ */
+export function scheduleMethod(method: () => void, date: Date) {
+	const now = new Date();
+	if (date > now) {
+		const diff = date.getTime() - now.getTime();
+		if (diff > 2147483647) {
+			setTimeout(() => scheduleMethod(method, date), 2147483647);
+		} else {
+			setTimeout(method, diff);
+		}
+	} // Else do nothing
+}
+
 export class EtatInnatenduError extends Error {
 	constructor(description: string) {
 		super(`[Etat innatendu] ${description}`);
