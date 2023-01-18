@@ -115,6 +115,18 @@ export default class Company extends Account {
 		return articles;
 	}
 
+	public async getPastSales(): Promise<Article[]> {
+		const database = Database.get();
+		const result = await database`
+			SELECT art_id FROM article
+			WHERE c_id = ${this.id} AND art_auction_end < NOW()`;
+		const articles = [];
+		for (const row of result) {
+			articles.push(await Article.get(row.art_id));
+		}
+		return articles;
+	}
+
 	public getNom(): string {
 		return this.name;
 	}

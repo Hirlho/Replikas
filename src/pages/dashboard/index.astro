@@ -1,5 +1,6 @@
 ---
 import ComingSoon from '../../components/dashboard/ComingSoon.astro';
+import Finished from '../../components/dashboard/Finished.astro';
 import Ongoing from '../../components/dashboard/Ongoing.astro';
 import Layout from '../../layouts/Layout.astro';
 import Company from '../../model/users/Company';
@@ -26,6 +27,7 @@ if (!Astro.url.searchParams.get('pageName')) {
 		{
 			'En cours': <Ongoing company={company} />,
 			'A venir': <ComingSoon company={company} />,
+			Terminées: <Finished company={company} />,
 		}[page]
 	}
 </Layout>
