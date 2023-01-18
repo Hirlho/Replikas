@@ -29,7 +29,11 @@ const articles = await buyer.getAquiredArticles(false);
 		celui-ci ne vous appartiendra plus.
 	</p>
 	<ul class="articles">
-		{articles.map((article) => <Article article={article} />)}
+		{
+			articles.map((article) => (
+				<Article article={article} link={`/pay?article=${article.getId()}`} />
+			))
+		}
 	</ul>
 </section>
 

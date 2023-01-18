@@ -7,8 +7,10 @@ import { getBuyerBySession } from '../model/Utilitaire';
 export interface Props {
 	article: Article;
 	comingSoonPage?: boolean;
+	link?: string;
 }
 
+const link = Astro.props.link;
 const article = Astro.props.article || Article.getFallback(null);
 const comingSoonPage = Astro.props.comingSoonPage;
 
@@ -33,7 +35,7 @@ if (enCours) {
 ---
 
 <li>
-	<a href={'/auction/' + id}>
+	<a href={link || '/auction/' + id}>
 		{
 			buyer ? (
 				<>
@@ -79,7 +81,9 @@ if (enCours) {
 			{
 				enCours
 					? 'Finit le ' + date.toLocaleDateString()
-					: 'Débute le ' + date.toLocaleDateString()
+					: dateFin > new Date()
+					? 'Débute le ' + date.toLocaleDateString()
+					: 'Terminée'
 			}
 		</p>
 		<p>{prix} €</p>

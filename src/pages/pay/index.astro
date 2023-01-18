@@ -1,5 +1,79 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from '../../layouts/Layout.astro';
+import Article from '../../model/Article';
+import Bids from '../../model/Bids';
+import Buyer from '../../model/users/Buyer';
+import { getBuyerBySession } from '../../model/Utilitaire';
+import { Stripe } from 'stripe';
+import Config from '../../model/Config';
+
+const article_id = parseInt(Astro.url.searchParams.get('article'));
+if (isNaN(article_id))
+	return new Response('Paramètre invalide', { status: 400 });
+
+const buyer: Buyer = await getBuyerBySession(Astro.request.headers).catch(
+	() => null
+);
+if (!buyer)
+	return new Response('Vous devez être connecté pour accéder à cette page', {
+		status: 401,
+	});
+
+const article: Article = await Article.get(article_id).catch(() => null);
+if (!article) return new Response('Article introuvable', { status: 404 });
+
+const fin = article.getFinVente();
+if (fin > new Date())
+	return new Response("L'enchère n'est toujours pas terminée", { status: 400 });
+
+const gagnant = await Bids.getEncherisseurGagnant(article);
+if (!gagnant)
+	return new Response("L'enchère n'a pas de gagnant", { status: 400 });
+
+if (gagnant.getId() !== buyer.getId())
+	return new Response("Vous n'êtes pas le gagnant de l'enchère", {
+		status: 400,
+	});
+
+const prix = await Bids.getEnchereMax(article);
+if (!prix) return new Response("L'enchère n'a pas de prix", { status: 400 });
+
+const stripe = new Stripe(Config.get().stripe.secretKey, {
+	apiVersion: '2022-11-15',
+});
+
+const images = article
+	.getImages()
+	.map(
+		(img) =>
+			`${import.meta.env.MODE == 'production' ? 'https://' : 'http://'}${
+				Astro.url.host
+			}${img}`
+	);
+const session = await stripe.checkout.sessions.create({
+	payment_method_types: ['card'],
+	line_items: [
+		{
+			price_data: {
+				currency: 'eur',
+				product_data: {
+					name: article.getName(),
+					images: images,
+				},
+				unit_amount: prix * 100,
+			},
+			quantity: 1,
+		},
+	],
+	mode: 'payment',
+	success_url: `${Astro.url.origin}/pay/success?article=${article.getId()}`,
+	cancel_url: `${Astro.url.origin}/pay/cancel?article=${article.getId()}`,
+});
+const poster = await article
+	.getPoster()
+	.catch(() => '/img/article/placeholder.jpg');
+
+const url = session.url;
 ---
 
 <Layout title="Paiement" no_searchbar>
@@ -11,21 +85,25 @@ import Layout from '../layouts/Layout.astro';
 		<div class="article">
 			<article>
 				<div class="img">
-					<img src="/img/article/sabre_laser.jpeg" alt="" />
+					<img src={poster} alt="" />
 				</div>
 				<div class="informations">
-					<h1>Casque de Dark Vador (1975)</h1>
+					<h1>{article.getName()}</h1>
 					<p></p>
-					<h3 style="margin-top: 15%;">Date fin enchères : 22/08/2022</h3>
-					<h3 style="margin-top: 10%;">Prix à payer : 50,000€</h3>
-					<form></form>
+					<h3 style="margin-top: 15%;">
+						Date fin de l'enchère : {
+							`${fin.getDate()}/${fin.getMonth() + 1}/${fin.getFullYear()}`
+						}
+					</h3>
+					<h3 style="margin-top: 10%;">Prix à payer : {prix} €</h3>
 				</div>
 			</article>
-			<h3 class="Description">Descriptions :</h3>
-			<p style="font-size: large;">Un beau casque de dark vador</p>
+			<h3 class="Description">Description :</h3>
+			<p style="font-size: large;">{article.getDescription()}</p>
 		</div>
-		<button type="button" class="buton_pay">Payer</button>
-
+		<div class="pay-button-container">
+			<a class="button_pay" href={url}>Payer</a>
+		</div>
 		<div class="container_info">
 			<div style="width:500px;margin-left: 30%;">
 				<h3 class="titre_payment">
@@ -74,7 +152,6 @@ import Layout from '../layouts/Layout.astro';
 					modifier.
 				</p>
 			</div>
-			<form method="get" action="/"></form>
 		</div>
 	</main>
 </Layout>
@@ -115,14 +192,17 @@ import Layout from '../layouts/Layout.astro';
 		text-decoration: none;
 		color: whitesmoke;
 	}
+
 	.note {
 		font-size: 12.7px;
 	}
+
 	.details {
 		text-align: center;
 	}
+
 	.container_info {
-		margin-top: 7%;
+		width: 100%;
 		padding-top: 1.5rem;
 		padding-bottom: 1.5rem;
 		padding-left: 3rem;
@@ -131,23 +211,33 @@ import Layout from '../layouts/Layout.astro';
 		background-color: var(--theme-button);
 		border-radius: 15px;
 	}
-	.buton_pay {
+
+	.pay-button-container {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 3rem;
+	}
+
+	.button_pay {
 		background-color: var(--theme-button);
 		border-radius: 5px;
 		font-family: Arial;
 		font-size: 20px;
 		width: 200px;
 		padding: 10px;
-		margin-top: 7%;
-		margin-left: 35%;
 		color: var(--theme-button-text);
 		border: none;
 		color: inherit;
+		text-align: center;
 	}
-	.buton_pay:hover {
+
+	.button_pay:hover {
 		filter: brightness(1.2);
 		cursor: pointer;
 	}
+
 	main {
 		margin: auto;
 		padding-top: 1.5rem;

@@ -5,15 +5,25 @@ import Article from '../components/Article.astro';
 import { default as ArticleModel } from '../model/Article';
 import Filter from '../components/Filter.astro';
 
-const PAGE_SIZE = 20;
-const search = Astro.url.searchParams.get('article') || '';
+const search = Astro.url.searchParams.get('search') || '';
+const minPrice = parseInt(Astro.url.searchParams.get('minPrice')) || 0;
+const maxPrice = parseInt(Astro.url.searchParams.get('maxPrice')) || 2147483647;
+let onGoingText = Astro.url.searchParams.get('enCours') || 'true';
+let onGoing = /true/i.test(onGoingText);
+
 const page = Math.max(parseInt(Astro.url.searchParams.get('page')) || 1, 1);
+let articles = await ArticleModel.getBySearchFilter(
+	search,
+	minPrice,
+	maxPrice,
+	onGoing,
+	{
+		limit: null,
+		offset: 0,
+	}
+);
 
-let articles = await ArticleModel.getBySearch(search, {
-	limit: null,
-	offset: 0,
-});
-
+const PAGE_SIZE = 20;
 const length = articles.length;
 const hasMore = articles.length > page * PAGE_SIZE;
 articles = articles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -31,7 +41,7 @@ const pages = [...Array(Math.ceil(length / PAGE_SIZE)).values()];
 			</div>
 		</div>
 		<div id="filter">
-			<Filter />
+			<Filter button_id="submit_button" />
 		</div>
 		<ul>
 			{
@@ -186,6 +196,7 @@ const pages = [...Array(Math.ceil(length / PAGE_SIZE)).values()];
 	}
 </style>
 <script>
+	// Affichage du filtre
 	const filterIcon = document.getElementById('filter-icon');
 	const filter = document.getElementById('filter');
 
@@ -196,4 +207,65 @@ const pages = [...Array(Math.ceil(length / PAGE_SIZE)).values()];
 			filter.classList.toggle('show');
 		}
 	});
+
+	// Gestion de la recherche
+	const filterButton = document.getElementById('submit_button');
+	const searchForm = document.getElementById('search_form');
+
+	filterButton.addEventListener('click', (e) => {
+		e.preventDefault();
+		updateSearch();
+	});
+
+	searchForm.addEventListener('submit', (e) => {
+		e.preventDefault();
+		updateSearch();
+	});
+
+	function updateSearch() {
+		const search_elem = document.getElementById('article') as HTMLInputElement;
+		const minPrice_elem = document.getElementById(
+			'minPrice'
+		) as HTMLInputElement;
+		const maxPrice_elem = document.getElementById(
+			'maxPrice'
+		) as HTMLInputElement;
+		const enCours_elem = document.getElementById('enCours') as HTMLInputElement;
+
+		if (!search_elem.value) {
+			search_elem.value = '';
+		}
+
+		const params = {
+			search: search_elem.value.trim(),
+			minPrice: minPrice_elem.value || 0,
+			maxPrice: maxPrice_elem.value || Number.MAX_SAFE_INTEGER,
+			enCours: enCours_elem.checked,
+		};
+
+		let error_msg;
+
+		if (params.minPrice > params.maxPrice) {
+			let error_msg = 'Le prix min doit être plus petit que le prix max';
+		}
+
+		if (!params.search) {
+			search_elem.setCustomValidity('Veuillez compléter ce champ');
+			search_elem.reportValidity();
+			search_elem.setCustomValidity('');
+		} else if (error_msg) {
+			document.location.href =
+				'/search?search=' + params.search + '&error_msg=' + error_msg;
+		} else {
+			document.location.href =
+				'/search?search=' +
+				params.search +
+				'&minPrice=' +
+				params.minPrice +
+				'&maxPrice=' +
+				params.maxPrice +
+				'&enCours=' +
+				params.enCours;
+		}
+	}
 </script>

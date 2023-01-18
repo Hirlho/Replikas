@@ -6,6 +6,7 @@ import path from 'path';
 import Config from './Config';
 import Notification from './Notification';
 import { scheduleMethod } from './Utilitaire';
+import Bids from './Bids';
 
 export default class Article {
 	static {
@@ -215,37 +216,58 @@ export default class Article {
 	): Promise<Article[]> {
 		const database = Database.get();
 		//const t0 = performance.now();
-		const result = await database`
-            SELECT 
-                    a.*, 
-                    rank_name,
-                    rank_description,
-                    rank_movie_title,
-                    similarity
-            FROM 
-                    article a INNER JOIN movie c ON a.m_id = c.m_id,
-                    to_tsvector(a.art_name || ' ' || a.art_description || ' ' || c.m_title) document,
-                    websearch_to_tsquery(${search}) query,
-                    NULLIF(ts_rank(to_tsvector(a.art_name), query), 0) rank_name,
-                    NULLIF(ts_rank(to_tsvector(a.art_description), query), 0) rank_description,
-                    NULLIF(ts_rank(to_tsvector(c.m_title), query), 0) rank_movie_title,
-                    SIMILARITY(${search}, a.art_name || a.art_description) similarity
-            WHERE
-                    document @@ query OR similarity > 0.08
-					AND ${
-						onGoing
-							? 'a.art_auction_start < now() AND a.art_auction_end > now() AND (SELECT max(bid) FROM bid b WHERE a.art_id = b.art_id) > ' +
-							  minPrice +
-							  ' AND (SELECT max(bid) FROM bid b WHERE a.art_id = b.art_id) < ' +
-							  maxPrice
-							: 'a.art_auction_start > now() AND a.art_price > ' +
-							  minPrice +
-							  ' AND a.art_price < ' +
-							  maxPrice
-					}
-            ORDER BY
-                    rank_name DESC, rank_description DESC, rank_movie_title DESC, similarity DESC
-			LIMIT ${params.limit || null} OFFSET ${params.offset || 0}`;
+		let result;
+		onGoing
+			? (result = await database`
+			SELECT a.* FROM 
+				(SELECT 
+						a.*, 
+						rank_name,
+						rank_description,
+						rank_movie_title,
+						similarity
+				FROM 
+						article a INNER JOIN movie c ON a.m_id = c.m_id,
+						to_tsvector(a.art_name || ' ' || a.art_description || ' ' || c.m_title) document,
+						websearch_to_tsquery(${search}) query,
+						NULLIF(ts_rank(to_tsvector(a.art_name), query), 0) rank_name,
+						NULLIF(ts_rank(to_tsvector(a.art_description), query), 0) rank_description,
+						NULLIF(ts_rank(to_tsvector(c.m_title), query), 0) rank_movie_title,
+						SIMILARITY(${search}, a.art_name || a.art_description) similarity
+				WHERE
+						document @@ query OR similarity > 0.08
+				ORDER BY
+						rank_name DESC, rank_description DESC, rank_movie_title DESC, similarity DESC
+				LIMIT ${params.limit || null} OFFSET ${
+					params.offset || 0
+			  }) b JOIN article a ON a.art_id = b.art_id
+				WHERE (SELECT max(amount) FROM bid NATURAL JOIN article WHERE art_id = a.art_id) BETWEEN ${minPrice}
+				AND ${maxPrice} AND now() BETWEEN a.art_auction_start AND a.art_auction_end `)
+			: (result = await database`
+			SELECT a.* FROM 
+				(SELECT 
+						a.*, 
+						rank_name,
+						rank_description,
+						rank_movie_title,
+						similarity
+				FROM 
+						article a INNER JOIN movie c ON a.m_id = c.m_id,
+						to_tsvector(a.art_name || ' ' || a.art_description || ' ' || c.m_title) document,
+						websearch_to_tsquery(${search}) query,
+						NULLIF(ts_rank(to_tsvector(a.art_name), query), 0) rank_name,
+						NULLIF(ts_rank(to_tsvector(a.art_description), query), 0) rank_description,
+						NULLIF(ts_rank(to_tsvector(c.m_title), query), 0) rank_movie_title,
+						SIMILARITY(${search}, a.art_name || a.art_description) similarity
+				WHERE
+						document @@ query OR similarity > 0.08
+				ORDER BY
+						rank_name DESC, rank_description DESC, rank_movie_title DESC, similarity DESC
+				LIMIT ${params.limit || null} OFFSET ${
+					params.offset || 0
+			  }) b JOIN article a ON a.art_id = b.art_id
+				WHERE a.art_auction_start > now() AND a.art_price BETWEEN
+				${minPrice} AND ${maxPrice}`);
 
 		const articles: Article[] = [];
 		for (const article of result) {
@@ -373,6 +395,17 @@ export default class Article {
 
 	private static async endAuction(article: Article): Promise<void> {
 		await Notification.notifyArticleEnd(article);
+		const database = Database.get();
+		const winner = await Bids.getEncherisseurGagnant(article);
+		if (winner) {
+			await database`
+				INSERT into aquired (b_id, art_id, is_paid) 
+				VALUES (${winner.getId()}, ${article.getId()}, FALSE)`.catch(() => {
+				throw new Error(
+					`Erreur lors de l'insertion de l'article ${article.getId()} dans la table aquired`
+				);
+			});
+		}
 	}
 
 	public getId(): number {
