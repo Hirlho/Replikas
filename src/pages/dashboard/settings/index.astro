@@ -1,14 +1,17 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import UserSetting from '../../components/UserSetting.astro';
-import { getBuyerBySession, getCompanyBySession } from '../../model/Utilitaire';
+import Layout from '../../../layouts/Layout.astro';
+import UserSetting from '../../../components/UserSetting.astro';
+import {
+	getBuyerBySession,
+	getCompanyBySession,
+} from '../../../model/Utilitaire';
 import {
 	AccountTypeMismatch,
 	SessionTokenInvalideError,
-} from '../../model/users/Account';
-import Company from '../../model/users/Company';
-import Notification from '../../model/Notification';
-import Notif from '../../components/Notif.astro';
+} from '../../../model/users/Account';
+import Company from '../../../model/users/Company';
+import Notification from '../../../model/Notification';
+import Notif from '../../../components/Notif.astro';
 
 let company: Company;
 try {

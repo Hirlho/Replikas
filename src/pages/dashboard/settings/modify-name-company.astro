@@ -1,14 +1,13 @@
 ---
-import Button from '../../components/Button.astro';
-import TextField from '../../components/TextField.astro';
-import Layout from '../../layouts/Layout.astro';
-import Account from '../../model/users/Account';
-import Company from '../../model/users/Company';
-import { EmailDejaUtiliseError } from '../../model/users/Account';
+import Button from '../../../components/Button.astro';
+import TextField from '../../../components/TextField.astro';
+import Layout from '../../../layouts/Layout.astro';
+import Company from '../../../model/users/Company';
+import { EmailDejaUtiliseError } from '../../../model/users/Account';
 import {
 	getAccountBySession,
 	getCompanyBySession,
-} from '../../model/Utilitaire';
+} from '../../../model/Utilitaire';
 
 const redirect = Astro.url.searchParams.get('redirect') || '';
 
