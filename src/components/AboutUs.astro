@@ -9,42 +9,36 @@ const { nom, image, description } = Astro.props;
 ---
 
 <li>
-	<section id="Description">
-		<div><img src={'/img/aboutus/' + image} alt="" /></div>
+	<div><img src={'/img/aboutus/' + image} alt="" /></div>
+	<div>
 		<h3>{nom}</h3>
 		<p>{description}</p>
-	</section>
+	</div>
 </li>
 
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		background-color: var(--theme-secondary);
-		width: 100%;
-	}
 	li {
-		width: 300px;
-		margin: 20px;
+		margin: 20px auto;
+		padding: 2rem;
 
 		display: flex;
-		flex-direction: column;
 
 		border-radius: 10px;
 		overflow: hidden;
+
+		background-color: var(--theme-secondary);
 	}
 
 	div,
 	img {
-		display: flex;
-		justify-content: center;
-		height: 50px;
+		height: 300px;
 		align-items: center;
-		padding-top: 7px;
+		padding: 7px;
 	}
 
 	h3,
 	p {
+		float: left;
 		margin: 0;
 		padding: 5px;
 		text-align: center;

@@ -6,61 +6,68 @@ import Breadcrumb from '../components/Breadcrumb.astro';
 
 <Layout title="about_us">
 	<main>
-		<div>			
+		<section class="aboutus">
 			<ul>
 				<div>
-
 					<AboutUs
 						nom="Gaspard Culis"
 						image="Elon_Musk_2015.jpg"
 						description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dui enim, iaculis vel mauris id, fermentum condimentum est. Curabitur posuere erat eu tincidunt suscipit. Nullam bibendum, felis in porttitor laoreet."
 					/>
+				</div>
+				<div>
 					<AboutUs
 						nom="Cedric Champeix"
 						image="Elon_Musk_2015.jpg"
 						description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dui enim, iaculis vel mauris id, fermentum condimentum est. Curabitur posuere erat eu tincidunt suscipit. Nullam bibendum, felis in porttitor laoreet."
 					/>
+				</div>
+				<div>
 					<AboutUs
 						nom="Ahmed Khairi"
 						image="Elon_Musk_2015.jpg"
 						description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dui enim, iaculis vel mauris id, fermentum condimentum est. Curabitur posuere erat eu tincidunt suscipit. Nullam bibendum, felis in porttitor laoreet."
 					/>
 				</div>
+
 				<div>
 					<AboutUs
 						nom="Mohammed BenAicha"
 						image="Elon_Musk_2015.jpg"
 						description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dui enim, iaculis vel mauris id, fermentum condimentum est. Curabitur posuere erat eu tincidunt suscipit. Nullam bibendum, felis in porttitor laoreet."
 					/>
+				</div>
+				<div>
 					<AboutUs
 						nom="Mohammed Friouichen"
 						image="Elon_Musk_2015.jpg"
 						description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dui enim, iaculis vel mauris id, fermentum condimentum est. Curabitur posuere erat eu tincidunt suscipit. Nullam bibendum, felis in porttitor laoreet."
 					/>
+				</div>
+				<div>
 					<AboutUs
 						nom="Matis Basso"
 						image="Elon_Musk_2015.jpg"
 						description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dui enim, iaculis vel mauris id, fermentum condimentum est. Curabitur posuere erat eu tincidunt suscipit. Nullam bibendum, felis in porttitor laoreet."
 					/>
 				</div>
+				
 			</ul>
-		</div>
+		</section>
 	</main>
 </Layout>
 
 <style>
-	ul {
+	section{
 		display: flex;
-		flex-direction: row;
-		justify-content: space-around;
+		justify-content: center;
 		align-items: center;
 		flex-wrap: wrap;
 	}
-	div {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-around;
-		align-items: center;
-		flex-wrap: wrap;
+
+	ul{
+		width: 90%;
+		padding: 0;
 	}
+
 </style>
