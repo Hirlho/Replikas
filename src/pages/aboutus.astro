@@ -10,13 +10,6 @@ import Breadcrumb from '../components/Breadcrumb.astro';
 			<ul>
 				<div>
 					<AboutUs
-						nom="Gaspard Culis"
-						image="Gaspard.jpg"
-						description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dui enim, iaculis vel mauris id, fermentum condimentum est. Curabitur posuere erat eu tincidunt suscipit. Nullam bibendum, felis in porttitor laoreet."
-					/>
-				</div>
-				<div>
-					<AboutUs
 						nom="Cedric Champeix"
 						image="Cedric.jpg"
 						description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dui enim, iaculis vel mauris id, fermentum condimentum est. Curabitur posuere erat eu tincidunt suscipit. Nullam bibendum, felis in porttitor laoreet."
@@ -51,23 +44,28 @@ import Breadcrumb from '../components/Breadcrumb.astro';
 						description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dui enim, iaculis vel mauris id, fermentum condimentum est. Curabitur posuere erat eu tincidunt suscipit. Nullam bibendum, felis in porttitor laoreet."
 					/>
 				</div>
-				
+				<div>
+					<AboutUs
+						nom="Gaspard Culis"
+						image="gaspard.png"
+						description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dui le meilleur pour la fin enim, iaculis vel mauris id, fermentum condimentum est. Curabitur posuere erat eu tincidunt suscipit. Nullam bibendum, felis in porttitor laoreet."
+					/>
+				</div>
 			</ul>
 		</section>
 	</main>
 </Layout>
 
 <style>
-	section{
+	section {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		flex-wrap: wrap;
 	}
 
-	ul{
+	ul {
 		width: 90%;
 		padding: 0;
 	}
-
 </style>

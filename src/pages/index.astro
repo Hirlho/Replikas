@@ -17,7 +17,6 @@ const mostAwaited = await ArticleModel.mostAwaited();
 		</ArticleContainer>
 		<ArticleContainer title="Les mieux référencés">
 			{mostBids.map((article) => <Article article={article} />)}
-			<!-- TODO: Mettre les bons atricles car la requete actuelle ne fonctionne pas -->
 		</ArticleContainer>
 	</section>
 </Layout>
