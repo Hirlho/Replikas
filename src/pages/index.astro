@@ -10,7 +10,7 @@ const mostAwaited = await ArticleModel.mostAwaited();
 ---
 
 <Layout title="Replikas">
-	<sectino>
+	<section>
 		<LayoutCarrousel articles={mostBids} />
 		<ArticleContainer title="Les plus attendus">
 			{mostAwaited.map((article) => <Article article={article} />)}
@@ -19,7 +19,7 @@ const mostAwaited = await ArticleModel.mostAwaited();
 			{mostBids.map((article) => <Article article={article} />)}
 			<!-- TODO: Mettre les bons atricles car la requete actuelle ne fonctionne pas -->
 		</ArticleContainer>
-	</sectino>
+	</section>
 </Layout>
 <style>
 	section {
