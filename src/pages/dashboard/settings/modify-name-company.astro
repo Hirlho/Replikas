@@ -24,7 +24,7 @@ if (Astro.request.method == 'POST') {
 	const formData = await Astro.request.formData();
 	const nom = formData.get('nom_textarea').toString() || '';
 	const nom_confirm = formData.get('nom_textarea2').toString() || '';
-
+	//Un nom d'entreprise peut etre un nombre, donc on ne vérifie pas si c'est un nombre ou pas
 	if (nom != nom_confirm) {
 		Astro.props.error = 'Les deux noms ne correspondent pas';
 	}
