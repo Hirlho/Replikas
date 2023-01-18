@@ -156,6 +156,24 @@ export default class Buyer extends Account {
 		return articles;
 	}
 
+	public async setNom(last_name: string): Promise<void> {
+		const database = Database.get();
+		const response = await database`
+			UPDATE buyer SET b_last_name = ${last_name} WHERE a_id = ${this.getId()}`;
+		if (response.count === 0) {
+			throw new Error("L'utilisateur n'existe pas alors qu'il devrait");
+		}
+	}
+
+	public async setPrenom(first_name: string): Promise<void> {
+		const database = Database.get();
+		const response = await database`
+			UPDATE buyer SET b_first_name = ${first_name} WHERE a_id = ${this.getId()}`;
+		if (response.count === 0) {
+			throw new Error("L'utilisateur n'existe pas alors qu'il devrait");
+		}
+	}
+
 	public getNom(): string {
 		return this.last_name;
 	}

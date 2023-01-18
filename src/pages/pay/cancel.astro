@@ -6,17 +6,15 @@ import Layout from '../../layouts/Layout.astro';
 <script>
 	import Swal from 'sweetalert2';
 
-	setTimeout(() => {
-		Swal.fire({
-			title: 'Paiment',
-			text: 'Le paiment à été annulé',
-			icon: 'error',
-			confirmButtonText: 'Ok',
-			confirmButtonColor: '#ff0000',
-		}).then((result) => {
-			if (result.isConfirmed) {
-				window.location.href = '/basket?pageName=À+payer';
-			}
-		});
-	}, 1000);
+	Swal.fire({
+		title: 'Paiment',
+		text: 'Le paiment à été annulé',
+		icon: 'error',
+		confirmButtonText: 'Ok',
+		confirmButtonColor: '#ff0000',
+	}).then((result) => {
+		if (result.isConfirmed) {
+			window.location.href = '/basket?pageName=À+payer';
+		}
+	});
 </script>
