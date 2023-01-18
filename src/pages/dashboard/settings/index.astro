@@ -41,7 +41,11 @@ const notifications = await Notification.getUserNotifications(company.getId());
 		</aside>
 		<article class="parameters">
 			<h2 id="monCompte">Mon compte</h2>
-			<UserSetting parametre="Nom" value={name} lien="/settings/modify-name/" />
+			<UserSetting
+				parametre="Nom"
+				value={name}
+				lien="/dashboard/settings/modify-name-company/"
+			/>
 			<UserSetting
 				parametre="Adresse mail"
 				value={mail}
