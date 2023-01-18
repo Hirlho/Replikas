@@ -75,6 +75,27 @@
 </style>
 
 <script>
+	// dictionary Pour changer l'affichage
+	const pathnameDictionary = {
+		'/': 'Home',
+		'/settings': 'Paramètres',
+		'/dashboard/settings': 'Paramètres',
+		'/dashboard': 'Tableau de bord',
+		'/login': 'Connexion',
+		'/register': 'Inscription',
+		'/recover-password': 'Réinitialiser le mot de passe',
+		'/settings/modify-name': 'Modifier le nom',
+		'/settings/modify-email': "Modifier l'email",
+		'/settings/modify-password': 'Modifier le mot de passe',
+		'/dashboard/settings/modify-name-company': 'Modifier le nom',
+		'/dashboard/settings/modify-email': "Modifier l'email",
+		'/dashboard/settings/modify-password': 'Modifier le mot de passe',
+		'/dashboard/create': 'Créer une enchère',
+		'/search': 'Recherche',
+		'/aboutus': 'À propos de nous',
+		'/contact': 'Contact',
+		'/privacy_policy': 'Politique de confidentialité',
+	};
 	const breadcrumb = document.getElementById('breadcrumb');
 	const currentPathname = window.location.pathname;
 
@@ -94,13 +115,12 @@
 
 	if (history.length > 0) {
 		let links = '';
-		// check if the first element is "/" and replace it with "Home" and link it to "/"
-		if (history[0] === '/') {
-			history[0] = 'Home';
-			links += `<a href="/">${history[0]}</a>`;
-		}
-		for (let i = 1; i < history.length; i++) {
-			links += `<a href=${history[i]}>${history[i]}</a>`;
+		for (let i = 0; i < history.length; i++) {
+			let displayName = pathnameDictionary[history[i]] || history[i];
+			if (history[i].match(/\/auction\/(\d+)/)) {
+				displayName = `Article ${RegExp.$1}`;
+			}
+			links += `<a href=${history[i]}>${displayName}</a>`;
 		}
 		breadcrumb.innerHTML = links;
 	}
