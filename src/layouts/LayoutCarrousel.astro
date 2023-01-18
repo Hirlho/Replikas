@@ -14,32 +14,32 @@ const { articles } = Astro.props;
 		<div class="slider">
 			{articles.map((article) => <CarrouselComponent article={article} />)}
 		</div>
-		<div class="arrow">
-			<div class="arrow-top"></div>
-			<div class="arrow-bottom"></div>
-		</div>
-		<div class="arrowprev">
-			<div class="arrow-top"></div>
-			<div class="arrow-bottom"></div>
-		</div>
+	</div>
+	<div class="arrow">
+		<div class="arrow-top"></div>
+		<div class="arrow-bottom"></div>
+	</div>
+	<div class="arrowprev">
+		<div class="arrow-top"></div>
+		<div class="arrow-bottom"></div>
 	</div>
 </div>
 
 <style>
 	/*------------Content---------------*/
 	.container {
-		width: 90%;
+		position: relative;
+		z-index: 1;
+		width: 85%;
 		height: 40rem;
 		padding: 1rem 0;
 		overflow: hidden;
 	}
 
 	.carrousel {
-		width: 90%;
-		margin: 0 auto;
+		width: 100%;
 		height: 100%;
 
-		/*border: 1px solid black;*/
 		border-radius: 3px;
 
 		display: flex;
@@ -51,7 +51,7 @@ const { articles } = Astro.props;
 	.slider {
 		display: flex;
 		height: 100%;
-		width: 550%;
+		width: 500%;
 		flex-shrink: 0;
 		transition: all 0.5s;
 	}
@@ -60,7 +60,7 @@ const { articles } = Astro.props;
 	.arrow {
 		cursor: pointer;
 		height: 120px;
-		right: -80px;
+		right: -10px;
 		position: absolute;
 		top: 50%;
 		transform: translateX(-50%) translateY(-50%);
@@ -71,12 +71,12 @@ const { articles } = Astro.props;
 	.arrowprev {
 		cursor: pointer;
 		height: 120px;
-		left: 0;
+		width: 80px;
+		left: 70px;
 		position: absolute;
 		top: 50%;
 		transform: translateX(-50%) translateY(-50%) scaleX(-1);
 		transition: transform 0.2s;
-		width: 80px;
 	}
 
 	.arrow-top,
@@ -89,9 +89,19 @@ const { articles } = Astro.props;
 		width: 100%;
 	}
 
-	.arrow-top:after,
-	.arrow-bottom:after {
-		background-color: #000;
+	.arrow .arrow-top:after,
+	.arrow .arrow-bottom:after {
+		background-color: red;
+		content: '';
+		height: 100%;
+		position: absolute;
+		top: 0;
+		transition: all 0.15s;
+	}
+
+	.arrowprev .arrow-top:after,
+	.arrowprev .arrow-bottom:after {
+		background-color: black;
 		content: '';
 		height: 100%;
 		position: absolute;

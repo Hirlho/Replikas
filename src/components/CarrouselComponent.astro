@@ -1,6 +1,7 @@
 ---
 import Article from '../model/Article';
 import Bids from '../model/Bids';
+import { dateDiff } from '../model/Utilitaire';
 
 export interface Props {
 	article: Article;
@@ -12,7 +13,9 @@ const id = article.getId();
 const titre = article.getName();
 const image = await article.getPoster();
 const finVente = article.getFinVente();
+const ends = dateDiff(finVente, new Date());
 const prix = await Bids.getEnchereMax(article);
+const description = article.getDescription();
 ---
 
 <article>
@@ -23,8 +26,9 @@ const prix = await Bids.getEnchereMax(article);
 		<aside>
 			<h1>{titre}</h1>
 			<p>Valeur actuelle : {prix} €</p>
-			<p>Description : dnejjdhjzqhnfjbhizbhfuibqhbfzbzqhbhjzqfbgqzgufvzqhb</p>
-			<p>Fin de la vente : {finVente}</p>
+			<p>Description : {description}</p>
+			<p>Se termine dans {ends.day}j, {ends.hour}h et {ends.min}min</p>
+			<a id="button" id="enchere" href={'/auction/' + id}> Enchérir</a>
 		</aside>
 	</div>
 </article>
@@ -93,6 +97,8 @@ const prix = await Bids.getEnchereMax(article);
 		flex-direction: column;
 		/*border: 2px solid green;*/
 		align-items: center;
+		justify-content: space-between;
+		padding: 0 15px;
 	}
 
 	h1 {
@@ -101,5 +107,23 @@ const prix = await Bids.getEnchereMax(article);
 
 	p {
 		font-size: 1.25em;
+	}
+
+	p:nth-child(4) {
+		color: red;
+	}
+
+	#button {
+		text-decoration: none;
+		font-size: 1.5rem;
+		padding: 0.5rem 1rem;
+		margin: 0.5rem;
+		border-radius: 0.5rem;
+		background-color: var(--theme-button);
+		color: var(--theme-button-text);
+	}
+
+	#button:hover {
+		filter: brightness(1.2);
 	}
 </style>
