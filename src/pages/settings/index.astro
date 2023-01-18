@@ -42,10 +42,22 @@ const notifications = await Notification.getUserNotifications(buyer.getId());
 		</aside>
 		<main class="parameters">
 			<h2 id="monCompte">Mon compte</h2>
-			<UserSetting parametre="Nom" value={lastName} lien="/modify-name" />
-			<UserSetting parametre="Prénom" value={firstName} lien="/modify-name" />
-			<UserSetting parametre="Adresse mail" value={mail} lien="/modify-email" />
-			<UserSetting parametre="Mot de passe" lien="recover_password" />
+			<UserSetting
+				parametre="Nom"
+				value={lastName}
+				lien="/settings/modify-name"
+			/>
+			<UserSetting
+				parametre="Prénom"
+				value={firstName}
+				lien="/settings/modify-name"
+			/>
+			<UserSetting
+				parametre="Adresse mail"
+				value={mail}
+				lien="/settings/modify-email"
+			/>
+			<UserSetting parametre="Mot de passe" lien="/settings/recover-password" />
 			<h2 id="accessibilite">Accessibilité</h2>
 			<UserSetting parametre="Taille de la police" value="x1" />
 			<p>
