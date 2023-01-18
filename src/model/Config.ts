@@ -2,9 +2,9 @@ import { config } from 'dotenv';
 import path from 'path';
 config();
 
-function getEnv(key: string): string {
+function getEnv(key: string, optional = false): string {
 	const value = process.env[key];
-	if (!value) {
+	if (!value && !optional) {
 		throw new UndefinedConfigEntry(key);
 	}
 	return value;
@@ -27,6 +27,10 @@ type ConfigType = {
 		password: string;
 		name: string;
 	};
+	stripe: {
+		secretKey: string;
+		publicKey: string;
+	};
 	uploads_dir: string;
 };
 
@@ -45,6 +49,10 @@ export default class Config {
 				user: getEnv('DB_USER'),
 				password: getEnv('DB_PASS'),
 				name: getEnv('DB_NAME'),
+			},
+			stripe: {
+				secretKey: getEnv('STRIPE_SECRET', true),
+				publicKey: getEnv('STRIPE_PUBLIC', true),
 			},
 			uploads_dir: path.join(path.resolve(), 'uploads'),
 		};

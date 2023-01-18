@@ -4,10 +4,18 @@ import Buyer from './users/Buyer';
 import fs from 'fs';
 import path from 'path';
 import Config from './Config';
+import Notification from './Notification';
+import { scheduleMethod } from './Utilitaire';
+import Bids from './Bids';
 
 export default class Article {
 	static {
 		Database.getInstance().on('clean', Article.clean);
+		Article.getAll().then((articles) => {
+			for (const article of articles) {
+				article.scheduleAuctionEvents();
+			}
+		});
 	}
 
 	private id: number;
@@ -130,7 +138,12 @@ export default class Article {
 		});
 
 		console.info(`Article ${result.art_id} créé`);
-		return this.getFromResult(result);
+		const article: Article = await this.getFromResult(result).catch(() => null);
+		if (article === null) {
+			throw new Error("Erreur lors de la création de l'article");
+		}
+		article.scheduleAuctionEvents();
+		return article;
 	}
 	/**
 	 * Retourne tous les articles de la base de données
@@ -368,6 +381,30 @@ export default class Article {
 				.catch(() => {
 					console.warn("Couldn't delete image " + img);
 				});
+		}
+	}
+
+	private async scheduleAuctionEvents(): Promise<void> {
+		scheduleMethod(Article.startAuction, this.getDebutVente(), this);
+		scheduleMethod(Article.endAuction, this.getFinVente(), this);
+	}
+
+	private static async startAuction(article: Article): Promise<void> {
+		await Notification.notifyArticleStart(article);
+	}
+
+	private static async endAuction(article: Article): Promise<void> {
+		await Notification.notifyArticleEnd(article);
+		const database = Database.get();
+		const winner = await Bids.getEncherisseurGagnant(article);
+		if (winner) {
+			await database`
+				INSERT into aquired (b_id, art_id, is_paid) 
+				VALUES (${winner.getId()}, ${article.getId()}, FALSE)`.catch(() => {
+				throw new Error(
+					`Erreur lors de l'insertion de l'article ${article.getId()} dans la table aquired`
+				);
+			});
 		}
 	}
 

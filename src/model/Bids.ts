@@ -62,15 +62,14 @@ export default class Bids {
 	/**
 	 * Recupère l'enchérisseur gagnant d'un article
 	 * @param article L'{@link Article} sur lequel on veut récupérer l'enchérisseur gagnant
-	 * @returns L'enchérisseur gagnant ({@link Buyer})
-	 * @throws RangeError si aucune enchère n'a été faite sur l'article
+	 * @returns L'enchérisseur gagnant ({@link Buyer}), ou null si aucune enchère n'a été faite
 	 */
 	public static async getEncherisseurGagnant(article: Article): Promise<Buyer> {
 		const database = Database.get();
 		const enchere =
-			await database`SELECT b_id FROM bid WHERE art_id = ${article.getId()} SORT BY amount DESC LIMIT 1`;
+			await database`SELECT b_id FROM bid WHERE art_id = ${article.getId()} ORDER BY amount DESC LIMIT 1`;
 		if (enchere.length === 0) {
-			throw new RangeError('Aucune enchère pour cet article');
+			return null;
 		}
 		return await Buyer.getById(enchere[0].b_id);
 	}

@@ -122,4 +122,9 @@ export default class Company extends Account {
 	public toString(): string {
 		return this.name;
 	}
+	public async setNom(first_name: string): Promise<void> {
+		const database = Database.get();
+		await database`UPDATE company SET c_name = ${first_name} WHERE a_id = ${this.id}`;
+		this.name = first_name;
+	}
 }

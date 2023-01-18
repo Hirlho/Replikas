@@ -1,10 +1,10 @@
 ---
-import Button from '../components/Button.astro';
-import TextField from '../components/TextField.astro';
-import Layout from '../layouts/Layout.astro';
-import Account from '../model/users/Account';
-import { EmailDejaUtiliseError } from '../model/users/Account';
-import { getAccountBySession } from '../model/Utilitaire';
+import Button from '../../components/Button.astro';
+import TextField from '../../components/TextField.astro';
+import Layout from '../../layouts/Layout.astro';
+import Account from '../../model/users/Account';
+import { EmailDejaUtiliseError } from '../../model/users/Account';
+import { getAccountBySession } from '../../model/Utilitaire';
 
 const redirect = Astro.url.searchParams.get('redirect') || '';
 
@@ -31,14 +31,10 @@ if (Astro.request.method == 'POST') {
 			email
 		)
 	)
-		return Astro.redirect(
-			'/modify_email?error=invalid_email&redirect=' + redirect
-		);
+		return Astro.redirect('?error=invalid_email&redirect=' + redirect);
 
 	if (email != email_confirm) {
-		return Astro.redirect(
-			'/modify_email?error=not_same_mail&redirect=' + redirect
-		);
+		return Astro.redirect('?error=not_same_mail&redirect=' + redirect);
 	} else {
 		try {
 			await account.setEmail(email);
@@ -46,16 +42,12 @@ if (Astro.request.method == 'POST') {
 			Astro.props.redirect = redirect;
 		} catch (e) {
 			if (e instanceof EmailDejaUtiliseError) {
-				return Astro.redirect(
-					'/modify_email?error=same_mail&redirect=' + redirect
-				);
+				return Astro.redirect('?error=same_mail&redirect=' + redirect);
 			} else {
 				Astro.props.error = 'Une erreur est survenue';
 			}
 		}
-		return Astro.redirect(
-			'/modify_email?success=mail_changed&redirect=' + redirect
-		);
+		return Astro.redirect('?success=mail_changed&redirect=' + redirect);
 	}
 }
 ---

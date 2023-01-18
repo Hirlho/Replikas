@@ -443,15 +443,12 @@ const description = article.getDescription();
 		) {
 			timeDiff.innerText = `Se termine dans ${ends.day}j ${ends.hour}h ${ends.min}min ${ends.sec}s`;
 		} else {
-			timeDiff.innerText = '';
+			timeDiff.innerText = 'Terminée';
 		}
 	}
 
-	// Wait for client to be idle, then update every second
-	setTimeout(() => {
-		setInterval(updatePriceAndBids, 1000);
-		setInterval(updateDates, 1000);
-	}, 5000);
+	setInterval(updatePriceAndBids, 1000);
+	setInterval(updateDates, 1000);
 
 	suggestionValues.forEach((suggestion) => {
 		suggestion.addEventListener('click', (e) => {

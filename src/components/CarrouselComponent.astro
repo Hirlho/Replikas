@@ -16,48 +16,90 @@ const prix = await Bids.getEnchereMax(article);
 ---
 
 <article>
-	<div>
-		<img src={image} alt={titre} />
+	<div class="gradient">
+		<div class="bigchungus">
+			<div class="img_container"><img src={image} alt={titre} /></div>
+		</div>
 		<aside>
 			<h1>{titre}</h1>
-			<p>Fin de la vente : {finVente}</p>
 			<p>Valeur actuelle : {prix} €</p>
+			<p>Description : dnejjdhjzqhnfjbhizbhfuibqhbfzbzqhbhjzqfbgqzgufvzqhb</p>
+			<p>Fin de la vente : {finVente}</p>
 		</aside>
-	</div>
-	<div class="description">
-		<p>Description : dnejjdhjzqhnfjbhizbhfuibqhbfzbzqhbhjzqfbgqzgufvzqhb</p>
 	</div>
 </article>
 <style>
 	article {
-		border: 3px solid red;
+		/*border: 2px solid black;*/
 		flex: 1;
 		flex-direction: column;
 		display: flex;
 		margin: 0 30px;
-		align-items: center;
 		justify-content: center;
-		padding: 0 10px;
+		padding: 1% 1%;
+		background: linear-gradient(
+			to right,
+			var(--theme-button) 45%,
+			rgba(0, 0, 0, 1) 55%
+		);
 	}
 
 	img {
-		height: 60%;
-		top: 50%;
+		border-image: radial-gradient(rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0) 100%);
+		border-radius: 5px;
+		outline-offset: -10px;
+		max-width: 100%;
+		max-height: 100%;
+		display: block;
+		margin: auto;
 	}
 
-	div {
+	.img_container {
+		outline: 20px solid rgba(0, 0, 0, 0.5);
+		background: radial-gradient(rgba(0, 0, 0, 0) 70%, rgba(0, 0, 255, 1) 100%);
+		outline-offset: -20px;
+		padding: 0;
+		max-width: 100%;
+		max-height: 100%;
+		display: block;
+	}
+
+	.bigchungus {
+		display: flex;
+		width: 40%;
+		flex-direction: column;
+		/*border: 2px solid green;*/
+		align-items: center;
+		justify-content: center;
+		padding: 10px;
+	}
+
+	.gradient {
 		display: flex;
 		flex-direction: row;
-		border: 2px solid blue;
+		justify-content: space-between;
+		height: 100%;
+		/*border: 2px solid blue;*/
+		background: linear-gradient(
+			to left,
+			var(--theme-primary) 40%,
+			rgba(0, 0, 0, 1) 60%
+		);
 	}
 
 	aside {
 		display: flex;
+		width: 45%;
 		flex-direction: column;
-		border: 2px solid green;
+		/*border: 2px solid green;*/
+		align-items: center;
 	}
 
-	div > * {
-		margin: 10px;
+	h1 {
+		font-size: 2em;
+	}
+
+	p {
+		font-size: 1.25em;
 	}
 </style>
