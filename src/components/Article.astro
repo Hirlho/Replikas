@@ -81,7 +81,9 @@ if (enCours) {
 			{
 				enCours
 					? 'Finit le ' + date.toLocaleDateString()
-					: 'Débute le ' + date.toLocaleDateString()
+					: dateFin > new Date()
+					? 'Débute le ' + date.toLocaleDateString()
+					: 'Terminée'
 			}
 		</p>
 		<p>{prix} €</p>
