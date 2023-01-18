@@ -199,14 +199,18 @@ async function uploadImage(file: File, file_path: string) {
  * @param method La méthode à appeler une fois le délai écoulé
  * @param date La date à laquelle appeler la méthode
  */
-export function scheduleMethod(method: () => void, date: Date) {
+export function scheduleMethod(
+	method: (...args: any) => any,
+	date: Date,
+	...args: any
+) {
 	const now = new Date();
 	if (date > now) {
 		const diff = date.getTime() - now.getTime();
 		if (diff > 2147483647) {
-			setTimeout(() => scheduleMethod(method, date), 2147483647);
+			setTimeout(() => scheduleMethod(method, date, ...args), 2147483647);
 		} else {
-			setTimeout(method, diff);
+			setTimeout(() => method(...args), diff);
 		}
 	} // Else do nothing
 }

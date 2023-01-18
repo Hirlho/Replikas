@@ -363,16 +363,16 @@ export default class Article {
 	}
 
 	private async scheduleAuctionEvents(): Promise<void> {
-		scheduleMethod(this.startAuction, this.getDebutVente());
-		scheduleMethod(this.endAuction, this.getFinVente());
+		scheduleMethod(Article.startAuction, this.getDebutVente(), this);
+		scheduleMethod(Article.endAuction, this.getFinVente(), this);
 	}
 
-	private async startAuction(): Promise<void> {
-		await Notification.notifyArticleStart(this);
+	private static async startAuction(article: Article): Promise<void> {
+		await Notification.notifyArticleStart(article);
 	}
 
-	private async endAuction(): Promise<void> {
-		await Notification.notifyArticleEnd(this);
+	private static async endAuction(article: Article): Promise<void> {
+		await Notification.notifyArticleEnd(article);
 	}
 
 	public getId(): number {
