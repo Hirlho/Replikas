@@ -4,12 +4,13 @@ import TextField from '../../components/TextField.astro';
 import Layout from '../../layouts/Layout.astro';
 import Account from '../../model/users/Account';
 import { EmailDejaUtiliseError } from '../../model/users/Account';
-import { getAccountBySession } from '../../model/Utilitaire';
+import Buyer from '../../model/users/Buyer';
+import { getAccountBySession, getBuyerBySession } from '../../model/Utilitaire';
 
 const redirect = Astro.url.searchParams.get('redirect') || '';
 
 //Get Account
-const account: Account = await getAccountBySession(Astro.request.headers).catch(
+const account: Buyer = await getBuyerBySession(Astro.request.headers).catch(
 	(err) => null
 );
 
@@ -34,10 +35,10 @@ if (Astro.request.method == 'POST') {
 		} else if (nom == '' || prenom == '' || (nom != '' && prenom != '')) {
 			//un seul est modifié
 			if (nom != '' && nom == nom_confirm) {
-				if (nom != (await account.getLastName())) {
+				if (nom != account.getNom()) {
 					//nom modifié
 					try {
-						await account.setLastName(nom);
+						await account.setNom(nom);
 						Astro.props.error = 'Votre nom a été modifié';
 						Astro.redirect('/settings?redirect=' + redirect);
 					} catch (err) {
@@ -53,10 +54,10 @@ if (Astro.request.method == 'POST') {
 				}
 			}
 			if (prenom != '' && prenom == prenom_confirm) {
-				if (prenom != (await account.getFirstName())) {
+				if (prenom != (await account.getPrenom())) {
 					//nom modifié
 					try {
-						await account.setFirstName(prenom);
+						await account.setPrenom(prenom);
 						Astro.props.error = 'Votre prenom a été modifié';
 						Astro.redirect('/settings?redirect=' + redirect);
 					} catch (err) {

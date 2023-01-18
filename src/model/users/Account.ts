@@ -231,55 +231,6 @@ export default class Account {
 	}
 
 	/**
-	 * Change le nom de l'utilisateur et le met à jour dans la base de données
-	 * @param last_name Le nouveau nom
-	 */
-	public async getLastName(): Promise<string> {
-		const database = Database.get();
-		//name in buyer table
-		const response = await database`
-			SELECT b_last_name FROM account INNER JOIN buyer ON account.a_id = buyer.a_id WHERE account.a_id = ${this.getId()}`;
-		if (response.count === 0) {
-			throw new Error("L'utilisateur n'existe pas alors qu'il devrait");
-		}
-		return response[0].b_last_name;
-	}
-
-	public async setLastName(last_name: string): Promise<void> {
-		const database = Database.get();
-		//update name in buyer table
-		const response = await database`
-			UPDATE buyer SET b_last_name = ${last_name} FROM account WHERE account.a_id = ${this.getId()} AND account.a_id = buyer.a_id RETURNING buyer.b_last_name`;
-		if (response.count === 0) {
-			throw new Error("L'utilisateur n'existe pas alors qu'il devrait");
-		}
-	}
-
-	/**
-	 * Change le prénom de l'utilisateur et le met à jour dans la base de données
-	 * @param first_name Le nouveau prénom
-	 */
-	public async getFirstName(): Promise<string> {
-		const database = Database.get();
-		//name in buyer table
-		const response = await database`
-			SELECT b_first_name FROM account INNER JOIN buyer ON account.a_id = buyer.a_id WHERE account.a_id = ${this.getId()}`;
-		if (response.count === 0) {
-			throw new Error("L'utilisateur n'existe pas alors qu'il devrait");
-		}
-		return response[0].b_first_name;
-	}
-	public async setFirstName(first_name: string): Promise<void> {
-		const database = Database.get();
-		//name in buyer table
-		const response = await database`
-			UPDATE buyer SET b_first_name = ${first_name} FROM account WHERE account.a_id = ${this.getId()} AND account.a_id = buyer.a_id RETURNING buyer.b_first_name`;
-		if (response.count === 0) {
-			throw new Error("L'utilisateur n'existe pas alors qu'il devrait");
-		}
-	}
-
-	/**
 	 * Supprime l'utilisateur de la base de données
 	 */
 	public async delete(): Promise<void> {

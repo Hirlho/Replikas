@@ -80,9 +80,7 @@ export default class Notification {
 				'Votre article "' +
 				article.getName() +
 				'" a été vendu à ' +
-				winner.getFirstName() +
-				' ' +
-				winner.getLastName() +
+				winner.toString() +
 				' pour ' +
 				(await Bids.getEnchereMax(article)) +
 				'€ !\n' +
