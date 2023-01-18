@@ -26,7 +26,7 @@ const firstName = buyer.getPrenom();
 const notifications = await Notification.getUserNotifications(buyer.getId());
 ---
 
-<Layout title="Replikas" no_searchbar>
+<Layout title="Paramètres" no_searchbar>
 	<div class="main-wrapper">
 		<aside class="sideBar">
 			<div>
@@ -60,7 +60,6 @@ const notifications = await Notification.getUserNotifications(buyer.getId());
 			<UserSetting parametre="Mot de passe" lien="/settings/recover-password" />
 			<h2 id="accessibilite">Accessibilité</h2>
 			<UserSetting parametre="Taille de la police" value="x1" />
-
 		</main>
 		<aside class="notifications">
 			<h2>Notifications</h2>
