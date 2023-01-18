@@ -375,6 +375,7 @@ const description = article.getDescription();
 		return diff;
 	}
 
+	// FIXME Ne prend pas en compte si la machine n'est pas a la bonne heure
 	async function updatePriceAndBids() {
 		await fetch(`/api/article/${id}/info`)
 			.then((res) => res.json())
