@@ -202,6 +202,8 @@ export default class Account {
 		const hash = shajs('sha256')
 			.update(password + Account.SALT_BAE)
 			.digest('hex');
+
+		await Account.clean();
 		const response = await database`
 			UPDATE account SET a_password = ${hash} WHERE a_id = (SELECT a_id FROM password_recovery WHERE pr_token = ${token})`;
 		if (response.count === 0) {
@@ -209,7 +211,6 @@ export default class Account {
 		}
 		// Consuming the token
 		await database`DELETE FROM password_recovery WHERE pr_token = ${token}`;
-		// TODO: Check if the token is still valid
 	}
 
 	/**
