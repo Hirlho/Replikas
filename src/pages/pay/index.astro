@@ -22,7 +22,8 @@ if (!buyer)
 const article: Article = await Article.get(article_id).catch(() => null);
 if (!article) return new Response('Article introuvable', { status: 404 });
 
-if (article.getFinVente() > new Date())
+const fin = article.getFinVente();
+if (fin > new Date())
 	return new Response("L'enchère n'est toujours pas terminée", { status: 400 });
 
 const gagnant = await Bids.getEncherisseurGagnant(article);
@@ -41,7 +42,14 @@ const stripe = new Stripe(Config.get().stripe.secretKey, {
 	apiVersion: '2022-11-15',
 });
 
-const images = article.getImages().map((img) => `${Astro.url.origin}${img}`);
+const images = article
+	.getImages()
+	.map(
+		(img) =>
+			`${import.meta.env.MODE == 'production' ? 'https://' : 'http://'}${
+				Astro.url.host
+			}${img}`
+	);
 const session = await stripe.checkout.sessions.create({
 	payment_method_types: ['card'],
 	line_items: [
@@ -61,6 +69,9 @@ const session = await stripe.checkout.sessions.create({
 	success_url: `${Astro.url.origin}/pay/success?article=${article.getId()}`,
 	cancel_url: `${Astro.url.origin}/pay/cancel?article=${article.getId()}`,
 });
+const poster = await article
+	.getPoster()
+	.catch(() => '/img/article/placeholder.jpg');
 
 const url = session.url;
 ---
@@ -74,21 +85,25 @@ const url = session.url;
 		<div class="article">
 			<article>
 				<div class="img">
-					<img src="/img/article/sabre_laser.jpeg" alt="" />
+					<img src={poster} alt="" />
 				</div>
 				<div class="informations">
-					<h1>Casque de Dark Vador (1975)</h1>
+					<h1>{article.getName()}</h1>
 					<p></p>
-					<h3 style="margin-top: 15%;">Date fin enchères : 22/08/2022</h3>
-					<h3 style="margin-top: 10%;">Prix à payer : 50,000€</h3>
-					<form></form>
+					<h3 style="margin-top: 15%;">
+						Date fin de l'enchère : {
+							`${fin.getDate()}/${fin.getMonth() + 1}/${fin.getFullYear()}`
+						}
+					</h3>
+					<h3 style="margin-top: 10%;">Prix à payer : {prix} €</h3>
 				</div>
 			</article>
-			<h3 class="Description">Descriptions :</h3>
-			<p style="font-size: large;">Un beau casque de dark vador</p>
+			<h3 class="Description">Description :</h3>
+			<p style="font-size: large;">{article.getDescription()}</p>
 		</div>
-		<a class="button_pay" href={url}>Payer</a>
-
+		<div class="pay-button-container">
+			<a class="button_pay" href={url}>Payer</a>
+		</div>
 		<div class="container_info">
 			<div style="width:500px;margin-left: 30%;">
 				<h3 class="titre_payment">
@@ -177,14 +192,17 @@ const url = session.url;
 		text-decoration: none;
 		color: whitesmoke;
 	}
+
 	.note {
 		font-size: 12.7px;
 	}
+
 	.details {
 		text-align: center;
 	}
+
 	.container_info {
-		margin-top: 7%;
+		width: 100%;
 		padding-top: 1.5rem;
 		padding-bottom: 1.5rem;
 		padding-left: 3rem;
@@ -193,6 +211,15 @@ const url = session.url;
 		background-color: var(--theme-button);
 		border-radius: 15px;
 	}
+
+	.pay-button-container {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 3rem;
+	}
+
 	.button_pay {
 		background-color: var(--theme-button);
 		border-radius: 5px;
@@ -200,16 +227,17 @@ const url = session.url;
 		font-size: 20px;
 		width: 200px;
 		padding: 10px;
-		margin-top: 7%;
-		margin-left: 35%;
 		color: var(--theme-button-text);
 		border: none;
 		color: inherit;
+		text-align: center;
 	}
+
 	.button_pay:hover {
 		filter: brightness(1.2);
 		cursor: pointer;
 	}
+
 	main {
 		margin: auto;
 		padding-top: 1.5rem;
