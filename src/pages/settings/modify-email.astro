@@ -42,7 +42,7 @@ if (Astro.request.method == 'POST') {
 			Astro.props.redirect = redirect;
 		} catch (e) {
 			if (e instanceof EmailDejaUtiliseError) {
-				return Astro.redirect('?error=same_mail&redirect=' + redirect);
+				return Astro.redirect('?error=mail_already_used&redirect=' + redirect);
 			} else {
 				Astro.props.error = 'Une erreur est survenue';
 			}
@@ -50,11 +50,38 @@ if (Astro.request.method == 'POST') {
 		return Astro.redirect('?success=mail_changed&redirect=' + redirect);
 	}
 }
+let error_msg = '';
+let success_msg = '';
+if (Astro.url.searchParams.has('error')) {
+	switch (Astro.url.searchParams.get('error')) {
+		case 'invalid_email':
+			error_msg = "L'adresse mail n'est pas valide";
+			break;
+		case 'not_same_mail':
+			error_msg = 'Les adresses mail ne sont pas identiques';
+			break;
+		case 'mail_already_used':
+			error_msg = 'Cette adresse mail est déjà utilisée';
+			break;
+		default:
+			error_msg = 'Une erreur est survenue';
+			break;
+	}
+}
+if (Astro.url.searchParams.has('success')) {
+	switch (Astro.url.searchParams.get('success')) {
+		case 'mail_changed':
+			success_msg = 'Votre adresse mail a bien été modifiée';
+			break;
+	}
+}
 ---
 
 <Layout title="Modifier votre adresse mail" no_searchbar>
 	<main>
 		<h1>Modifier votre adresse mail</h1>
+		{error_msg && <p class="error_msg">{error_msg}</p>}
+		{success_msg && <p class="success_msg">{success_msg}</p>}
 		<form method="post" class="formlist">
 			<table>
 				<th>Nouvelle adresse mail :</th>
@@ -88,6 +115,14 @@ if (Astro.request.method == 'POST') {
 </Layout>
 
 <style>
+	.error_msg {
+		color: red;
+		text-align: center;
+	}
+	.success_msg {
+		color: green;
+		text-align: center;
+	}
 	#btn {
 		/* centre le bouton */
 		text-align: center;
