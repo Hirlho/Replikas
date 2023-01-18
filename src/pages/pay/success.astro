@@ -1,0 +1,22 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Paiment" />
+<script>
+	import Swal from 'sweetalert2';
+
+	setTimeout(() => {
+		Swal.fire({
+			title: 'Paiment',
+			text: 'Paiment effectué avec succès',
+			icon: 'success',
+			confirmButtonText: 'Ok',
+			heightAuto: false,
+		}).then((result) => {
+			if (result.isConfirmed) {
+				window.location.href = '/basket';
+			}
+		});
+	}, 1000);
+</script>

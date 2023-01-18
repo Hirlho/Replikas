@@ -42,14 +42,10 @@ const stripe = new Stripe(Config.get().stripe.secretKey, {
 	apiVersion: '2022-11-15',
 });
 
+const protocol = import.meta.env.MODE == 'production' ? 'https://' : 'http://';
 const images = article
 	.getImages()
-	.map(
-		(img) =>
-			`${import.meta.env.MODE == 'production' ? 'https://' : 'http://'}${
-				Astro.url.host
-			}${img}`
-	);
+	.map((img) => `${protocol}${Astro.url.host}${img}`);
 const session = await stripe.checkout.sessions.create({
 	payment_method_types: ['card'],
 	line_items: [
@@ -66,8 +62,12 @@ const session = await stripe.checkout.sessions.create({
 		},
 	],
 	mode: 'payment',
-	success_url: `${Astro.url.origin}/pay/success?article=${article.getId()}`,
-	cancel_url: `${Astro.url.origin}/pay/cancel?article=${article.getId()}`,
+	success_url: `${protocol}${
+		Astro.url.host
+	}/pay/success?article=${article.getId()}`,
+	cancel_url: `${protocol}${
+		Astro.url.host
+	}/pay/cancel?article=${article.getId()}`,
 });
 const poster = await article
 	.getPoster()
