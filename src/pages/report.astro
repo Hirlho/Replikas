@@ -1,40 +1,82 @@
 ---
+import sgMail from '@sendgrid/mail';
 import Button from '../components/Button.astro';
 import Layout from '../layouts/Layout.astro';
 import Article from '../model/Article';
+import Config from '../model/Config';
 import Buyer from '../model/users/Buyer';
 import Company from '../model/users/Company';
 import { getAccountBySession, getBuyerBySession } from '../model/Utilitaire';
-
 // email deFrom pour send email
 const account = await getAccountBySession(Astro.request.headers).catch(
 	() => null
 );
 const emailFrom = account.getEmail();
 
-//
-const article_id = parseInt(Astro.url.searchParams.get('article'));
+// récupération des données de l'article
+const article = Astro.url.searchParams.get('article');
+const article_id = parseInt(article);
 
 const articleName_: Article = await Article.get(article_id).catch(() => null);
-const companyID = articleName_.getSellingCompanyId();
-const company = await Company.getById(companyID);
+
+const company_id = await articleName_.getSellingCompanyId();
+const company = await Company.getById(company_id).catch(() => null);
 const companyName = await company.getNom();
 const articleName = articleName_.getName();
 const dateDAchat = articleName_.getFinVente();
 const purchased = dateDAchat.toLocaleDateString('fr');
-//
-//if (isNaN(article_id))
-//	return new Response('Paramètre invalide', { status: 400 });
 
+//
+if (isNaN(article_id))
+	return new Response('Paramètre invalide', { status: 400 });
 const buyer: Buyer = await getBuyerBySession(Astro.request.headers).catch(
 	() => null
 );
+const buyerName = await buyer.getNom();
 if (!buyer)
 	return new Response('Vous devez être connecté pour accéder à cette page', {
 		status: 401,
 	});
 if (Astro.request.method == 'POST') {
 	const formData = await Astro.request.formData();
+
+	if (formData.get('motif') == '1') {
+		return Astro.redirect(
+			`/report?article=${article_id}&error=motif_not_selected`
+		);
+	}
+	if (formData.get('comment') == '') {
+		return Astro.redirect(
+			`/report?article=${article_id}&error=comment_not_filled`
+		);
+	}
+	const motif = formData.get('motif');
+	const comment = formData.get('comment');
+	sgMail.setApiKey(Config.get().sendgrid.apiKey);
+	const msg = {
+		to: 'med.friouichen@gmail.com',
+		from: 'contact.replikas@gmail.com',
+		subject: 'Signalement de ' + { companyName } + ' par ' + { buyerName },
+		text:
+			'Motif: ' +
+			{ motif } +
+			' Commentaire: ' +
+			{ comment } +
+			' <br />Article: ' +
+			{ articleName } +
+			'<br />Acheté le ' +
+			{ purchased },
+	};
+	try {
+		await sgMail.send(msg);
+		return Astro.redirect(`/report?article=${article_id}&success=true`);
+	} catch (error) {
+		console.error(error);
+		if (error.response) {
+			console.error(error.response.body);
+		}
+		return Astro.redirect(`/report?article=${article_id}&error=sendgrid`);
+	}
 }
 ---
 
@@ -47,15 +89,16 @@ if (Astro.request.method == 'POST') {
 		<form>
 			<h2>Motif de signalement</h2>
 			<select name="motif">
-				<option value="first">Entrez un motif de signalement...</option>
-				<option value="">Pratique frauduleuse</option>
-				<option value="">Pratique discriminatoire</option>
-				<option value=""></option>
-				<option value=""></option>
-				<option value=""></option>
+				<option value="1">Entrez un motif de signalement...</option>
+				<option value="2">Pratique frauduleuse</option>
+				<option value="3">Pratique discriminatoire</option>
+				<option value="4"></option>
+				<option value="5"></option>
+				<option value="6"></option>
 			</select>
 			<h2>Commentaire</h2>
-			<textarea placeholder="Entrez un commentaire..."></textarea>
+			<textarea placeholder="Entrez un commentaire..." name="comment"
+			></textarea>
 			<br />
 			<Button text="Envoyer" />
 		</form>
