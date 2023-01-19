@@ -30,11 +30,13 @@ let dyslexie = false;
 <Layout title="Paramètres" no_searchbar>
 	<div class="main-wrapper">
 		<aside class="sideBar">
-			<div>
+			<div id="user-param">
 				<h2>Paramètres utilisateur</h2>
 				<ul>
 					<li><a href="#monCompte">Mon compte</a></li>
-					<li><a href="#accessibilite">Accessibilité</a></li>
+					<li>
+						<a href="#accessibilite">Accessibilité</a>
+					</li>
 				</ul>
 				<form action="/action/disconnect">
 					<input id="deconnection" type="submit" value="Se déconnecter" />
@@ -99,6 +101,10 @@ let dyslexie = false;
 		text-align: center;
 	}
 
+	h2 {
+		font-size: 1.75rem;
+	}
+
 	/*-------------------Side bar---------------------*/
 
 	.sideBar {
@@ -119,9 +125,10 @@ let dyslexie = false;
 	#deconnection {
 		background-color: transparent;
 		border: none;
+		margin-top: 20px;
 
 		color: var(--theme-button);
-		font-size: 22px;
+		font-size: 1.6rem;
 		font-weight: bold;
 	}
 	#deconnection:hover {
@@ -133,13 +140,21 @@ let dyslexie = false;
 
 	.parameters {
 		grid-area: main;
-
 		padding: 0 20% 50px 20%;
 	}
+
+	ul li {
+		font-size: 1.25rem;
+	}
+
 	ul li:hover {
 		color: red;
 		transition: 0.5s ease;
 		scale: 1.2;
+	}
+
+	#user-param {
+		overflow: hidden;
 	}
 
 	/*-------------------Notifications---------------------*/
@@ -223,6 +238,7 @@ let dyslexie = false;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		font-size: 1.2rem;
 	}
 </style>
 <script>
