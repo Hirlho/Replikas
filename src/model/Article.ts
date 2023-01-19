@@ -18,6 +18,8 @@ export default class Article {
 		});
 	}
 
+	static MAX_PRICE = 900000;
+
 	private id: number;
 	private name: string;
 	private description: string;
@@ -170,55 +172,21 @@ export default class Article {
 	 */
 	public static async getBySearch(
 		search: string,
-		params = { limit: 20, offset: 0 }
+		params = {
+			onGoing: false,
+			minPrice: 0,
+			maxPrice: Article.MAX_PRICE,
+			limit: 20,
+			offset: 0,
+		}
 	): Promise<Article[]> {
 		if (search == '@all') {
 			return this.getAll();
 		}
 		const database = Database.get();
-		const t0 = performance.now();
-		// Cherche les articles dont le nom, la description ou le nom de film contient le mot recherché (ts_query, ts_vector, plainto_tsquery), triés par pertinence (ts_rank)
-		const result = await database`
-            SELECT 
-                    a.*, 
-                    rank_name,
-                    rank_description,
-                    rank_movie_title,
-                    similarity
-            FROM 
-                    article a INNER JOIN movie c ON a.m_id = c.m_id,
-                    to_tsvector(a.art_name || ' ' || a.art_description || ' ' || c.m_title) document,
-                    websearch_to_tsquery(${search}) query,
-                    NULLIF(ts_rank(to_tsvector(a.art_name), query), 0) rank_name,
-                    NULLIF(ts_rank(to_tsvector(a.art_description), query), 0) rank_description,
-                    NULLIF(ts_rank(to_tsvector(c.m_title), query), 0) rank_movie_title,
-                    SIMILARITY(${search}, a.art_name || a.art_description) similarity
-            WHERE
-                    document @@ query OR similarity > 0.08
-            ORDER BY
-                    rank_name DESC, rank_description DESC, rank_movie_title DESC, similarity DESC
-			LIMIT ${params.limit || null} OFFSET ${params.offset || 0}`;
-
-		const articles: Article[] = [];
-		for (const article of result) {
-			articles.push(await this.getFromResult(article));
-		}
-		const t1 = performance.now();
-		console.info(`Search took ${t1 - t0} milliseconds.`);
-		return articles;
-	}
-
-	public static async getBySearchFilter(
-		search: string,
-		minPrice: number,
-		maxPrice: number,
-		onGoing: boolean,
-		params = { limit: 20, offset: 0 }
-	): Promise<Article[]> {
-		const database = Database.get();
 		//const t0 = performance.now();
 		let result;
-		onGoing
+		params.onGoing
 			? (result = await database`
 			SELECT a.* FROM 
 				(SELECT 
@@ -242,8 +210,12 @@ export default class Article {
 				LIMIT ${params.limit || null} OFFSET ${
 					params.offset || 0
 			  }) b JOIN article a ON a.art_id = b.art_id
-				WHERE (SELECT max(amount) FROM bid NATURAL JOIN article WHERE art_id = a.art_id) BETWEEN ${minPrice}
-				AND ${maxPrice} AND now() BETWEEN a.art_auction_start AND a.art_auction_end `)
+				WHERE (SELECT max(amount) FROM bid NATURAL JOIN article WHERE art_id = a.art_id) BETWEEN ${
+					params.minPrice || 0
+				}
+				AND ${
+					params.maxPrice || Article.MAX_PRICE
+				} AND now() BETWEEN a.art_auction_start AND a.art_auction_end `)
 			: (result = await database`
 			SELECT a.* FROM 
 				(SELECT 
@@ -268,7 +240,7 @@ export default class Article {
 					params.offset || 0
 			  }) b JOIN article a ON a.art_id = b.art_id
 				WHERE a.art_price BETWEEN
-				${minPrice} AND ${maxPrice}`);
+				${params.minPrice || 0} AND ${params.maxPrice || Article.MAX_PRICE}`);
 
 		const articles: Article[] = [];
 		for (const article of result) {
@@ -365,6 +337,9 @@ export default class Article {
 		await database`DELETE FROM article_image WHERE art_id = ${this.id}`;
 	}
 
+	/**
+	 * Supprime les images uploadées qui ne sont pas utilisées
+	 */
 	static async clean(): Promise<void> {
 		const database = Database.get();
 		// Supprime les images uploadées si elles ne sont pas utilisées
@@ -386,15 +361,26 @@ export default class Article {
 		}
 	}
 
+	/**
+	 * Planifie les évènements de début et de fin d'enchère des articles
+	 */
 	private async scheduleAuctionEvents(): Promise<void> {
 		scheduleMethod(Article.startAuction, this.getDebutVente(), this);
 		scheduleMethod(Article.endAuction, this.getFinVente(), this);
 	}
 
+	/**
+	 * Appelé lors d'un evenement de début d'une enchère
+	 * @param article Article concerné par l'évènement
+	 */
 	private static async startAuction(article: Article): Promise<void> {
 		await Notification.notifyArticleStart(article);
 	}
 
+	/**
+	 * Appelé lors d'un evenement de fin d'une enchère
+	 * @param article Article concerné par l'évènement
+	 */
 	private static async endAuction(article: Article): Promise<void> {
 		await Notification.notifyArticleEnd(article);
 		const database = Database.get();

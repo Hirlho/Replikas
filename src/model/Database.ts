@@ -24,6 +24,7 @@ export default class Database extends (EventEmitter as new () => TypedEmitter<Da
 		});
 
 		setInterval(() => {
+			// Clean the database every minute
 			Database.getInstance().emit('clean');
 		}, 60 * 1000);
 	}
