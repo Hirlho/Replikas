@@ -34,8 +34,6 @@ if (Astro.request.method == 'POST') {
 	} = Object.fromEntries(formData) as { [key: string]: any };
 
 	const start = new Date(`${startDate} ${startHour}`);
-	// Fix pour le fuseau horaire
-	start.setHours(start.getHours() + 1);
 	const end = new Date(`${endDate} ${endHour}`);
 	name = name ? name.trim() : '';
 	description = description ? description.trim() : '';
