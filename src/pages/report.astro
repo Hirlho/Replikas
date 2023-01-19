@@ -8,7 +8,11 @@ import Buyer from '../model/users/Buyer';
 import Company from '../model/users/Company';
 import { getBuyerBySession } from '../model/Utilitaire';
 
-const report_reasons = ['Pratique frauduleuse', 'Pratique discriminatoire'];
+const report_reasons = [
+	'Pratique frauduleuse',
+	'Pratique discriminatoire',
+	'Autre',
+];
 
 const buyer: Buyer = await getBuyerBySession(Astro.request.headers).catch(
 	() => null
