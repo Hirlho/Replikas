@@ -30,7 +30,7 @@ if (article == null)
 	return new Response('Article introuvable', { status: 404 });
 
 if (
-	(await buyer.getAquiredArticles()).map((a) => a.getId()).includes(article_id)
+	!(await buyer.getAquiredArticles()).map((a) => a.getId()).includes(article_id)
 )
 	return new Response(
 		'Vous ne pouvez signaler que les articles que vous avez acheté',
