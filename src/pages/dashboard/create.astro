@@ -37,8 +37,6 @@ if (Astro.request.method == 'POST') {
 	// Fix pour le fuseau horaire
 	start.setHours(start.getHours() + 1);
 	const end = new Date(`${endDate} ${endHour}`);
-	// Fix pour le fuseau horaire
-	end.setHours(end.getHours() + 1);
 	name = name ? name.trim() : '';
 	description = description ? description.trim() : '';
 	movie_id = parseInt(movie_id);
