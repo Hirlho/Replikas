@@ -1,12 +1,12 @@
-import Database from './Database';
-import TMDB from './TMDB';
-import Buyer from './users/Buyer';
 import fs from 'fs';
 import path from 'path';
-import Config from './Config';
-import Notification from './Notification';
-import { scheduleMethod } from './Utilitaire';
 import Bids from './Bids';
+import Config from './Config';
+import Database from './Database';
+import Notification from './Notification';
+import TMDB from './TMDB';
+import Buyer from './users/Buyer';
+import { scheduleMethod } from './Utilitaire';
 
 export default class Article {
 	static {

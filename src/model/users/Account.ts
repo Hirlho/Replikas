@@ -1,5 +1,5 @@
-import Database from '../Database';
 import shajs from 'sha.js';
+import Database from '../Database';
 
 export default class Account {
 	static SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days

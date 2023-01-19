@@ -1,10 +1,7 @@
 import Article from '../Article';
 import Database from '../Database';
 import { EtatInnatenduError } from '../Utilitaire';
-import Account, {
-	UtilisateurOuMotDePasseInvalideError,
-	AccountTypeMismatch,
-} from './Account';
+import Account, { AccountTypeMismatch } from './Account';
 
 export default class Company extends Account {
 	private name: string;

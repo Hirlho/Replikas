@@ -2,10 +2,9 @@
 import Button from '../../components/Button.astro';
 import TextField from '../../components/TextField.astro';
 import Layout from '../../layouts/Layout.astro';
-import Account from '../../model/users/Account';
 import { EmailDejaUtiliseError } from '../../model/users/Account';
 import Buyer from '../../model/users/Buyer';
-import { getAccountBySession, getBuyerBySession } from '../../model/Utilitaire';
+import { getBuyerBySession } from '../../model/Utilitaire';
 
 const redirect = Astro.url.searchParams.get('redirect') || '';
 

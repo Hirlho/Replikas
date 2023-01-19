@@ -1,9 +1,9 @@
 ---
-import Layout from '../layouts/Layout.astro';
 import Article from '../components/Article.astro';
-import { default as ArticleModel } from '../model/Article';
 import ArticleContainer from '../layouts/ArticleContainer.astro';
+import Layout from '../layouts/Layout.astro';
 import LayoutCarrousel from '../layouts/LayoutCarrousel.astro';
+import { default as ArticleModel } from '../model/Article';
 
 const mostBids = await ArticleModel.mostBids({ limit: 5, offset: 0 });
 const mostAwaited = await ArticleModel.mostAwaited();
