@@ -29,69 +29,71 @@ if (cookies) {
 ---
 
 <header>
-	<a id="logo" href="/" aria-label="Retour au menu principal"><Logo /></a>
-
-	<h2>{page_name}</h2>
-
-	<nav>
-		<slot />
-	</nav>
-
 	<div id="right">
-		{
-			account && account.isCompany() ? (
-				<ul class="pages">
-					<li>
-						<a class="pageLink" href="/dashboard">
-							Mes articles
-						</a>
-					</li>
-					<li>
-						<a class="pageLink" href="/dashboard/create">
-							Ajout d'article
-						</a>
-					</li>
-				</ul>
-			) : account ? (
-				<ul class="pages">
-					<li>
-						<a class="pageLink" href="/basket">
-							Mes Articles
-						</a>
-					</li>
-				</ul>
-			) : (
-				<div />
-			)
-		}
+		<div id="logo">
+			<a href="/" aria-label="Retour au menu principal"><Logo /></a>
+		</div>
+		<h2>{page_name}</h2>
 
-		{search_bar && <SearchBar />}
-		{
-			account ? ( // Si l'utilisateur est connecte
-				<a
-					class="button hbox"
-					href={account.isCompany() ? '/dashboard/settings' : '/settings'}
-					style="align-items: center;"
-				>
-					<div class="user_icon_container">
-						<img src="/img/icons/user.svg" alt="User" />
+		<nav>
+			<slot />
+		</nav>
+		<div id="navi">
+			{
+				account && account.isCompany() ? (
+					<ul class="pages">
+						<li>
+							<a class="pageLink" href="/dashboard">
+								Mes articles
+							</a>
+						</li>
+						<li>
+							<a class="pageLink" href="/dashboard/create">
+								Ajout d'article
+							</a>
+						</li>
+					</ul>
+				) : account ? (
+					<ul class="pages">
+						<li>
+							<a class="pageLink" href="/basket">
+								Mes Articles
+							</a>
+						</li>
+					</ul>
+				) : (
+					<div />
+				)
+			}
+
+			{search_bar && <SearchBar />}
+			{
+				account ? ( // Si l'utilisateur est connecte
+					<a
+						class="button hbox"
+						href={account.isCompany() ? '/dashboard/settings' : '/settings'}
+						style="align-items: center;"
+					>
+						<div class="user_icon_container">
+							<img src="/img/icons/user.svg" alt="User" />
+						</div>
+						<p id="name">{account.toString()}</p>
+					</a>
+				) : (
+					// Si l'utilisateur n'est pas connecte
+					<div>
+						<a class="button" id="signup" href="/register">
+							{' '}
+							Creer un compte
+						</a>
+						<a class="button" id="login" href="/login">
+							{' '}
+							Connectez-vous
+						</a>
 					</div>
-					{account.toString()}
-				</a>
-			) : (
-				// Si l'utilisateur n'est pas connecte
-				<div>
-					<a class="button" id="signup" href="/register">
-						{' '}
-						Creer un compte
-					</a>
-					<a class="button" id="login" href="/login">
-						{' '}
-						Connectez-vous
-					</a>
-				</div>
-			)
-		}
+				)
+			}
+		</div>
 	</div>
 </header>
 
@@ -116,6 +118,11 @@ if (cookies) {
 		border-bottom: 1px solid #222;
 	}
 
+	#navi {
+		display: flex;
+		align-items: center;
+	}
+
 	/*-----------Logo-------------*/
 	#logo {
 		scale: 0.9;
@@ -125,7 +132,7 @@ if (cookies) {
 	/*------------Navigation---------------*/
 	#right {
 		display: flex;
-		justify-content: flex-end;
+		justify-content: space-between;
 		align-items: center;
 
 		width: 100%;
@@ -162,6 +169,12 @@ if (cookies) {
 		justify-content: flex-end;
 		align-items: center;
 	}
+
+	ul li {
+		display: flex;
+		justify-content: center;
+	}
+
 	ul li:hover {
 		transition: 0.5s ease;
 		scale: 1.2;
@@ -185,21 +198,24 @@ if (cookies) {
 	}
 
 	.user_icon_container {
-		width: 50px;
-		height: 50px;
+		position: absolute;
+		width: 40px;
+		height: 40px;
 		border-radius: 50%;
 		background-color: whitesmoke;
 		display: block;
-		align-items: center;
-		justify-content: center;
 		margin-right: 1rem;
 		overflow: hidden;
 		resize: none;
 	}
 
 	.user_icon_container img {
-		width: 50px;
-		height: 50px;
+		width: 40px;
+		height: 40px;
 		transform: translateY(8px);
+	}
+
+	#name {
+		margin-left: 50px;
 	}
 </style>
