@@ -66,7 +66,7 @@ if (Astro.request.method == 'POST') {
 
 	sgMail.setApiKey(Config.get().sendgrid.apiKey);
 	const msg = {
-		to: 'med.friouichen@gmail.com',
+		to: 'contact.replikas@gmail.com',
 		from: 'contact.replikas@gmail.com',
 		subject: 'Signalement de ' + companyName + ' par ' + buyer.toString(),
 		text:
