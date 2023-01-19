@@ -63,9 +63,10 @@ if (Astro.request.method == 'POST') {
 
 // Si on a reçu un paramètre "error"
 let error_msg = '';
+let error: string;
 if (Astro.url.searchParams.has('error')) {
+	error = Astro.url.searchParams.get('error');
 	// On affiche un message d'erreur
-	const error = Astro.url.searchParams.get('error');
 	if (error == 'missing_field') {
 		error_msg = 'Veuillez remplir tous les champs';
 	} else if (error == 'password_mismatch') {
@@ -146,11 +147,15 @@ if (Astro.url.searchParams.has('error')) {
 				</tr>
 			</table>
 
-			<p>
-				Le mot de passe doit contenir au moins 12 caractères, une majuscule, une
-				minuscule, un chiffre et un caractère spécial
-			</p>
-
+			{
+				error != 'weak_password' && (
+					<p>
+						Le mot de passe doit contenir au moins 12 caractères, une majuscule,
+						une minuscule, un chiffre et un caractère spécial
+					</p>
+				)
+			}
+			{error_msg && <p class="error_msg">{error_msg}</p>}
 			<div id="button">
 				<div>
 					<input type="checkbox" required />
@@ -160,7 +165,6 @@ if (Astro.url.searchParams.has('error')) {
 					>
 				</div>
 				<Button text="S'inscrire" />
-				{error_msg && <p class="error_msg">{error_msg}</p>}
 			</div>
 		</form>
 	</main>
