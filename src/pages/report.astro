@@ -33,7 +33,7 @@ if (
 	(await buyer.getAquiredArticles()).map((a) => a.getId()).includes(article_id)
 )
 	return new Response(
-		'Vous ne pouvez pas signaler un article que vous avez acheté',
+		'Vous ne pouvez signaler que les articles que vous avez acheté',
 		{ status: 403 }
 	);
 
@@ -89,11 +89,26 @@ if (Astro.request.method == 'POST') {
 		return Astro.redirect(`/report?art_id=${article_id}&error=sendgrid`);
 	}
 }
+let error_msg = '';
+let success_msg = '';
+if (Astro.url.searchParams.get('error') == 'motif_not_filled') {
+	error_msg = 'Veuillez entrer un motif de signalement';
+} else if (Astro.url.searchParams.get('error') == 'comment_not_filled') {
+	error_msg = 'Veuillez entrer un commentaire';
+} else if (Astro.url.searchParams.get('error') == 'sendgrid') {
+	error_msg = "Une erreur est survenue lors de l'envoi du mail";
+} else if (Astro.url.searchParams.get('success') == 'true') {
+	success_msg = 'Votre signalement a bien été envoyé';
+} else if (Astro.url.searchParams.get('success') == 'true') {
+	success_msg = 'Votre signalement a bien été envoyé';
+}
 ---
 
 <Layout title="Signalement" no_searchbar>
 	<main>
 		<h1>Vous vous apprêtez à signaler {companyName} à propos de l'article :</h1>
+		{error_msg && <p class="error_msg">{error_msg}</p>}
+		{success_msg && <p class="success_msg">{success_msg}</p>}
 		<p>
 			{articleName}
 		</p>
@@ -119,6 +134,14 @@ if (Astro.request.method == 'POST') {
 </Layout>
 
 <style>
+	.error_msg {
+		color: red;
+		text-align: center;
+	}
+	.success_msg {
+		color: green;
+		text-align: center;
+	}
 	main {
 		background-color: var(--theme-secondary);
 		border-radius: 5px;
