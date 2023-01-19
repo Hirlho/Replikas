@@ -20,7 +20,6 @@ const { title, no_searchbar } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="preload" href="/fonts/Larsseit.otf" as="font" />
 		<link rel="preload" href="/fonts/Larsseit-Bold.otf" as="font" />
-		<link rel="preload" href="/fonts/OpenDyslexic-Regular.otf" as="font" />
 		<link rel="preload" href="/fonts/OpenDyslexic-Bold.otf" as="font" />
 		<meta name="generator" content={Astro.generator} />
 		<meta
@@ -45,6 +44,7 @@ const { title, no_searchbar } = Astro.props;
 							sécurité du site. Ces cookies ne collectent aucune information
 							personnelle et sont uniquement utilisés pour améliorer
 							l'expérience utilisateur.
+							<a href="/privacy_policy">En savoir plus</a>
 						</p>
 						<div class="bannerbutton">
 							<p>J'accepte les cookies</p>
@@ -115,6 +115,11 @@ const { title, no_searchbar } = Astro.props;
 			}
 		</style>
 		<style>
+			@font-face {
+				font-family: dyslexia;
+				src: url('/fonts/OpenDyslexic-Regular.ttf');
+			}
+
 			html,
 			body {
 				box-sizing: border-box;
@@ -122,10 +127,11 @@ const { title, no_searchbar } = Astro.props;
 				padding: 0;
 				margin: 0;
 			}
+
 			body {
 				background-color: var(--theme-primary);
 				color: var(--theme-text);
-				font-family: Larsseit, system-ui, sans-serif, OpenDyslexic-Regular;
+				font-family: Larsseit, system-ui, sans-serif;
 			}
 			main {
 				box-sizing: border-box;

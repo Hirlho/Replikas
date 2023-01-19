@@ -60,11 +60,13 @@ const notifications = await Notification.getUserNotifications(buyer.getId());
 			<UserSetting parametre="Mot de passe" lien="/settings/modify-password" />
 			<h2 id="accessibilite">Accessibilité</h2>
 			<UserSetting parametre="Taille de la police" value="x1" />
-			<UserSetting parametre="Dyslexie" />
-			<label class="switch">
-				{(<input id="enCours" type="checkbox" />)}
-				<span class="slider round"></span>
-			</label>
+			<div id="dyslexie">
+				<p>Dyslexie</p>
+				<label class="switch">
+					{(<input id="enCours" type="checkbox" />)}
+					<span class="slider round"></span>
+				</label>
+			</div>
 		</section>
 		<aside class="notifications">
 			<h2>Notifications</h2>
@@ -215,18 +217,24 @@ const notifications = await Notification.getUserNotifications(buyer.getId());
 	.slider.round:before {
 		border-radius: 50%;
 	}
+
+	#dyslexie {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
 </style>
 <script>
 	const body = document.querySelector('body') as HTMLBodyElement;
 	const enCours = document.getElementById('enCours') as HTMLInputElement;
 
-	if (body.style.fontFamily === 'OpenDyslexic-Regular') {
+	if (body.style.fontFamily === 'dyslexia') {
 		enCours.checked = true;
 	}
 
 	enCours.addEventListener('click', () => {
 		if (enCours.checked) {
-			body.style.fontFamily = 'OpenDyslexic-Regular';
+			body.style.fontFamily = 'dyslexia';
 		} else {
 			body.style.fontFamily = 'Larsseit';
 		}
