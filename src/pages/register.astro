@@ -158,10 +158,10 @@ if (Astro.url.searchParams.has('error')) {
 			{error_msg && <p class="error_msg">{error_msg}</p>}
 			<div id="button">
 				<div>
-					<input type="checkbox" required />
-					<span>
+					<input type="checkbox" id="accept_cgu" required />
+					<label for="accept_cgu">
 						J'accepte les <a href="cgu">conditions générales d'utilisation</a
-						></span
+						></label
 					>
 				</div>
 				<Button text="S'inscrire" />
