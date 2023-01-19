@@ -73,10 +73,10 @@ if (Astro.request.method == 'POST') {
 		to: 'contact.replikas@gmail.com',
 		from: 'contact.replikas@gmail.com',
 		subject: 'Signalement de ' + companyName + ' par ' + buyer.toString(),
-		text:
+		html:
 			'Motif: ' +
 			report_reasons[motif_id] +
-			' Commentaire: ' +
+			' <br />Commentaire: ' +
 			comment +
 			' <br />Article: ' +
 			articleName,
