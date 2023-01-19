@@ -1,6 +1,7 @@
 ---
 import Breadcrumb from '../components/Breadcrumb.astro';
 import Footer from '../components/Footer.astro';
+import Logo from '../components/Logo.astro';
 import Navbar from '../components/Navbar.astro';
 
 export interface Props {
@@ -33,12 +34,26 @@ const { title, no_searchbar } = Astro.props;
 			<Breadcrumb />
 			<section>
 				<slot />
+				<div class="banner">
+					<div class="bannertext">
+						<div><Logo /></div>
+						<p>
+							En utilisant notre site web, vous acceptez l'utilisation de
+							cookies essentiels pour assurer la bonne performance et la
+							sécurité du site. Ces cookies ne collectent aucune information
+							personnelle et sont uniquement utilisés pour améliorer
+							l'expérience utilisateur.
+						</p>
+						<div class="bannerbutton">
+							<p>J'accepte les cookies</p>
+						</div>
+					</div>
+				</div>
+				<Footer />
 			</section>
-			<Footer />
 		</main>
-	</body>
-	<style is:global>
-		/*:root {
+		<style is:global>
+			/*:root {
 			--theme-primary: white;
 			--theme-secondary: #f5f5f5;
 			--theme-button: #7d53de;
@@ -49,19 +64,19 @@ const { title, no_searchbar } = Astro.props;
 			--theme-search-bar: white;
 		}
 		*/
-		:root {
-			--theme-primary: #222;
-			--theme-secondary: #000;
-			--theme-button: #d60808;
-			--theme-button-text: whitesmoke;
-			--theme-text: whitesmoke;
-			--theme-link: #d60808;
-			--theme-input: whitesmoke;
-			--theme-input-text: black;
-			--theme-search-bar: whitesmoke;
-		}
+			:root {
+				--theme-primary: #222;
+				--theme-secondary: #000;
+				--theme-button: #d60808;
+				--theme-button-text: whitesmoke;
+				--theme-text: whitesmoke;
+				--theme-link: #d60808;
+				--theme-input: whitesmoke;
+				--theme-input-text: black;
+				--theme-search-bar: whitesmoke;
+			}
 
-		/* THEMES
+			/* THEMES
 		// "Rustic Charm" 
 		:root {
 			--theme-primary: #7b5e57;
@@ -82,43 +97,102 @@ const { title, no_searchbar } = Astro.props;
 		
 		*/
 
-		.hbox {
-			display: flex;
-			flex-direction: row;
-		}
+			.hbox {
+				display: flex;
+				flex-direction: row;
+			}
 
-		.filter-whitesmoke {
-			filter: invert(96%) sepia(88%) saturate(13%) hue-rotate(315deg)
-				brightness(112%) contrast(92%);
-		}
+			.filter-whitesmoke {
+				filter: invert(96%) sepia(88%) saturate(13%) hue-rotate(315deg)
+					brightness(112%) contrast(92%);
+			}
 
-		.filter-crimson {
-			filter: invert(12%) sepia(98%) saturate(5633%) hue-rotate(343deg)
-				brightness(91%) contrast(89%);
-		}
-	</style>
-	<style>
-		html,
-		body {
-			box-sizing: border-box;
-			height: 100%;
-			padding: 0;
-			margin: 0;
-		}
-		body {
-			background-color: var(--theme-primary);
-			color: var(--theme-text);
-			font-family: Larsseit, system-ui, sans-serif;
-		}
-		main {
-			box-sizing: border-box;
-			min-height: 100%;
-			display: flex;
-			flex-direction: column;
-		}
-		section {
-			flex-grow: 1;
-			padding: 2rem 0;
-		}
-	</style>
+			.filter-crimson {
+				filter: invert(12%) sepia(98%) saturate(5633%) hue-rotate(343deg)
+					brightness(91%) contrast(89%);
+			}
+		</style>
+		<style>
+			html,
+			body {
+				box-sizing: border-box;
+				height: 100%;
+				padding: 0;
+				margin: 0;
+			}
+			body {
+				background-color: var(--theme-primary);
+				color: var(--theme-text);
+				font-family: Larsseit, system-ui, sans-serif;
+			}
+			main {
+				box-sizing: border-box;
+				min-height: 100%;
+				display: flex;
+				flex-direction: column;
+			}
+			section {
+				flex-grow: 1;
+				padding: 2rem 0;
+			}
+
+			/* Les cookies */
+
+			.banner {
+				position: fixed;
+				bottom: 0;
+				width: 100%;
+				background-color: var(--theme-secondary);
+				color: var(--theme-text);
+				padding: 1rem;
+				margin: auto;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				align-items: center;
+				z-index: 100;
+			}
+
+			.bannertext div {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin-bottom: 1rem;
+			}
+
+			.banner p {
+				margin: 0;
+				font-size: 1.5rem;
+				text-align: center;
+			}
+
+			.bannerbutton p {
+				color: var(--theme-button);
+				text-decoration: none;
+			}
+
+			.bannerbutton p:hover {
+				text-decoration: underline;
+			}
+
+			.bannerbutton {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+			}
+
+			.bannerbutton p {
+				cursor: pointer;
+				margin: 10px 0;
+				padding: 0.5rem 1rem;
+				border-radius: 0.5rem;
+				background-color: var(--theme-button);
+				color: var(--theme-button-text);
+				font-size: 2rem;
+				text-decoration: none;
+			}
+		</style>
+
+		<script></script>
+	</body>
 </html>
