@@ -43,16 +43,17 @@ const { title, no_searchbar } = Astro.props;
 							cookies essentiels pour assurer la bonne performance et la
 							sécurité du site. Ces cookies ne collectent aucune information
 							personnelle et sont uniquement utilisés pour améliorer
-							l'expérience utilisateur.
-							<a href="/privacy_policy">En savoir plus</a>
+							l'expérience utilisateur. Veuillez vous réferer à notre
+							<a href="/privacy-policy"> politique de confidentialité</a> pour plus
+							d'informations.
 						</p>
 						<div class="bannerbutton">
 							<p>J'accepte les cookies</p>
 						</div>
 					</div>
 				</div>
-				<Footer />
 			</section>
+			<Footer />
 		</main>
 		<style is:global>
 			/*:root {
@@ -168,10 +169,27 @@ const { title, no_searchbar } = Astro.props;
 				margin-bottom: 1rem;
 			}
 
+			.bannertext p {
+				padding-inline: 4rem;
+			}
+
+			.bannertext p a {
+				color: var(--theme-link);
+				text-decoration: none;
+			}
+
+			.bannertext p a:hover {
+				text-decoration: underline;
+			}
+
 			#cookie-banner p {
 				margin: 0;
 				font-size: 1.5rem;
 				text-align: center;
+			}
+
+			.bannerbutton {
+				margin: 2rem;
 			}
 
 			.bannerbutton p {
