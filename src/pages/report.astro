@@ -4,7 +4,13 @@ import Layout from '../layouts/Layout.astro';
 import Article from '../model/Article';
 import Buyer from '../model/users/Buyer';
 import Company from '../model/users/Company';
-import { getBuyerBySession } from '../model/Utilitaire';
+import { getAccountBySession, getBuyerBySession } from '../model/Utilitaire';
+
+// email deFrom pour send email
+const account = await getAccountBySession(Astro.request.headers).catch(
+	() => null
+);
+const emailFrom = account.getEmail();
 
 //
 const article_id = parseInt(Astro.url.searchParams.get('article'));
@@ -27,6 +33,9 @@ if (!buyer)
 	return new Response('Vous devez être connecté pour accéder à cette page', {
 		status: 401,
 	});
+if (Astro.request.method == 'POST') {
+	const formData = await Astro.request.formData();
+}
 ---
 
 <Layout title="Signalement" no_searchbar>
