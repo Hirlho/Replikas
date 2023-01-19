@@ -4,12 +4,13 @@ import TextField from '../../components/TextField.astro';
 import Layout from '../../layouts/Layout.astro';
 import Account from '../../model/users/Account';
 import { EmailDejaUtiliseError } from '../../model/users/Account';
-import { getAccountBySession } from '../../model/Utilitaire';
+import Buyer from '../../model/users/Buyer';
+import { getAccountBySession, getBuyerBySession } from '../../model/Utilitaire';
 
 const redirect = Astro.url.searchParams.get('redirect') || '';
 
 //Get Account
-const account: Account = await getAccountBySession(Astro.request.headers).catch(
+const account: Buyer = await getBuyerBySession(Astro.request.headers).catch(
 	(err) => null
 );
 
@@ -17,6 +18,7 @@ const account: Account = await getAccountBySession(Astro.request.headers).catch(
 if (!account) {
 	return Astro.redirect('/login?redirect=' + redirect);
 }
+let error_msg = '';
 
 if (Astro.request.method == 'POST') {
 	const formData = await Astro.request.formData();
@@ -24,20 +26,38 @@ if (Astro.request.method == 'POST') {
 	const prenom = formData.get('prenom_textarea').toString() || '';
 	const nom_confirm = formData.get('nom_textarea2').toString() || '';
 	const prenom_confirm = formData.get('prenom_textarea2').toString() || '';
+
+	//Vérification si nom et/ou prenom ont des caractères spéciaux ou chiffres .test() renvoie true si il y a des caractères spéciaux ou chiffres
+	if (
+		/[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(nom) ||
+		/[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(prenom)
+	) {
+		console.log(
+			'nom et/ou prenom contient des caractères spéciaux ou des chiffres'
+		);
+		Astro.props.error =
+			'Votre nom et/ou prénom ne doit pas contenir de caractères spéciaux ou de chiffres';
+		return Astro.redirect(
+			'/settings/modify-name?error=caractere_speciaux_ou_chiffres&redirect=' +
+				redirect
+		);
+	}
 	// Vérification si meme nom
 	if (nom == nom_confirm || prenom == prenom_confirm) {
 		// Vérification si nom == ""
 		if (nom == '' && prenom == '') {
 			//rien n'est modifié
 			Astro.props.error = "Aucune modification n'a été effectuée";
-			Astro.redirect('/settings?redirect=' + redirect);
+			return Astro.redirect(
+				'/settings/modify-name?error=aucune_modification&redirect=' + redirect
+			);
 		} else if (nom == '' || prenom == '' || (nom != '' && prenom != '')) {
 			//un seul est modifié
 			if (nom != '' && nom == nom_confirm) {
-				if (nom != (await account.getLastName())) {
+				if (nom != account.getNom()) {
 					//nom modifié
 					try {
-						await account.setLastName(nom);
+						await account.setNom(nom);
 						Astro.props.error = 'Votre nom a été modifié';
 						Astro.redirect('/settings?redirect=' + redirect);
 					} catch (err) {
@@ -53,10 +73,10 @@ if (Astro.request.method == 'POST') {
 				}
 			}
 			if (prenom != '' && prenom == prenom_confirm) {
-				if (prenom != (await account.getFirstName())) {
+				if (prenom != (await account.getPrenom())) {
 					//nom modifié
 					try {
-						await account.setFirstName(prenom);
+						await account.setPrenom(prenom);
 						Astro.props.error = 'Votre prenom a été modifié';
 						Astro.redirect('/settings?redirect=' + redirect);
 					} catch (err) {
@@ -78,11 +98,23 @@ if (Astro.request.method == 'POST') {
 		}
 	}
 }
+//error_msg
+if (Astro.url.searchParams.has('error')) {
+	// On affiche un message d'erreur
+	const error = Astro.url.searchParams.get('error');
+	if (error == 'caractere_speciaux_ou_chiffres') {
+		error_msg =
+			'Votre nom et/ou prénom ne doit pas contenir de caractères spéciaux ou de chiffres';
+	} else if (error == 'aucune_modification') {
+		error_msg = 'Veuillez remplir au moins un des champs';
+	}
+}
 ---
 
 <Layout title="Modifier vos informations générales" no_searchbar>
 	<main>
 		<h1>Modifier votre nom et/ou prénom</h1>
+		{error_msg && <p class="error_msg">{error_msg}</p>}
 		<form method="post" class="formlist">
 			<table>
 				<div class="options">
@@ -187,6 +219,7 @@ if (Astro.request.method == 'POST') {
 		const prenomTextArea2 = document.getElementById(
 			'prenom_textarea2'
 		) as HTMLInputElement;
+		const btn = document.getElementById('btn') as HTMLInputElement;
 
 		nomCheckbox.addEventListener('change', function () {
 			if (nomCheckbox.checked) {
@@ -238,6 +271,7 @@ if (Astro.request.method == 'POST') {
 				prenomTextArea2.value = '';
 			}
 		});
+		//Bouton de validation non fonctionnel si cb_nom coché et que nom_textarea est vide ou si cb_prenom coché et que prenom_textarea est vide
 	</script>
 
 	<style>
@@ -275,6 +309,10 @@ if (Astro.request.method == 'POST') {
 		}
 		h1 {
 			margin-top: 0rem;
+		}
+		.error_msg {
+			color: red;
+			text-align: center;
 		}
 	</style>
 </Layout>

@@ -55,6 +55,16 @@ export default class Company extends Account {
 		const account = await super.getById(id);
 		return this.getFromAccount(account);
 	}
+	public static async setPassword(
+		token: string,
+		password: string
+	): Promise<void> {
+		const account = await super.getBySession(token);
+		if (!account.isCompany()) {
+			throw new AccountTypeMismatch('company');
+		}
+		await super.setPassword(token, password);
+	}
 
 	/**
 	 * Crée une entreprise et son compte correspondant

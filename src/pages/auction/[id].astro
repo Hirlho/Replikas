@@ -71,7 +71,7 @@ const images = article.getImages().length
 const description = article.getDescription();
 ---
 
-<Layout title="Replikas" no_searchbar>
+<Layout title="Enchère" no_searchbar>
 	<section>
 		<div
 			id="data"
@@ -113,20 +113,6 @@ const description = article.getDescription();
 					<h3 class="left-margin">Description :</h3>
 					<p>
 						{description}
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet laudantium
-						dolorem illum recusandae, suscipit, voluptate a ipsa molestias possimus
-						omnis aspernatur, totam molestiae quam iste! Deserunt mollitia ipsum
-						rerum dolore consectetur sunt quod doloribus culpa et? Labore itaque
-						eius, molestiae voluptatibus architecto veniam consequuntur iure aliquid
-						quos ipsum eligendi, assumenda amet quis consequatur culpa quae reiciendis
-						adipisci eos nesciunt, provident voluptas est? Adipisci nihil sit sunt
-						doloribus, sapiente mollitia! Ea ad magni assumenda quas numquam voluptatum
-						animi, quo ipsa molestias modi. Eaque asperiores maxime, quia tempora
-						dolorum neque sunt numquam illum laborum minus dolore, perspiciatis optio!
-						Dolorem nesciunt at minus ipsum iste ratione nam nemo earum quibusdam
-						placeat eum explicabo rem sapiente veniam aspernatur laborum error corrupti
-						cumque illo repellat, ea quasi! Quod a necessitatibus accusamus! Neque,
-						nisi.
 					</p>
 					<div class="company-info hbox" style="align-items: center;">
 						<h3 class="left-margin">Vendu par :</h3>
@@ -389,6 +375,7 @@ const description = article.getDescription();
 		return diff;
 	}
 
+	// FIXME Ne prend pas en compte si la machine n'est pas a la bonne heure
 	async function updatePriceAndBids() {
 		await fetch(`/api/article/${id}/info`)
 			.then((res) => res.json())

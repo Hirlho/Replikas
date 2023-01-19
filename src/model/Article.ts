@@ -295,7 +295,8 @@ export default class Article {
 					GROUP BY art_id
 					ORDER BY count(art_id) DESC
 					LIMIT ${params.limit || 8} OFFSET ${params.offset || 0}
-					)`;
+					)
+				AND art_auction_end > CURRENT_TIMESTAMP`;
 		const articles: Article[] = [];
 		for (const article of result) {
 			articles.push(await this.getFromResult(article));

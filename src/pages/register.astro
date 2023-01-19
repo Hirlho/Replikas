@@ -81,7 +81,7 @@ if (Astro.url.searchParams.has('error')) {
 }
 ---
 
-<Layout title="Register" no_searchbar>
+<Layout title="Créer un compte" no_searchbar>
 	<main>
 		<form method="post" class="formlist">
 			<h1>Créer votre compte</h1>
@@ -145,6 +145,11 @@ if (Astro.url.searchParams.has('error')) {
 					</td>
 				</tr>
 			</table>
+
+			<p>
+				Le mot de passe doit contenir au moins 12 caractères, une majuscule, une
+				minuscule, un chiffre et un caractère spécial
+			</p>
 
 			<div id="button">
 				<div>
@@ -215,5 +220,11 @@ if (Astro.url.searchParams.has('error')) {
 	}
 	a:hover {
 		filter: hue-rotate(20deg);
+	}
+
+	p {
+		width: 80%;
+		text-align: center;
+		margin: 1rem auto;
 	}
 </style>
