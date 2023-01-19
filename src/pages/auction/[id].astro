@@ -119,7 +119,7 @@ const description = article.getDescription();
 						<p class="center left-margin">{company.getNom()}</p>
 					</div>
 				</div>
-				<div class="bid">
+				<div id="bid" style={{ display: enCours ? 'block' : 'none' }}>
 					<div>
 						<h3 class="left-margin">Placer une offre :</h3>
 						<form>
@@ -245,7 +245,7 @@ const description = article.getDescription();
 	}
 
 	/*------------Formulaire d'enchérissement---------------*/
-	.bid {
+	#bid {
 		padding: 2rem;
 		flex-grow: 0.4;
 		flex-basis: 0;
@@ -258,6 +258,14 @@ const description = article.getDescription();
 		overflow-y: auto;
 		-ms-overflow-style: none;
 		scrollbar-width: none;
+	}
+
+	.bid-entry {
+		color: var(--theme-text);
+		border-left: 2px solid var(--theme-text);
+		padding-left: 1rem;
+		margin: 0.5rem 0;
+		font-size: 1.5rem;
 	}
 
 	form {
@@ -351,6 +359,7 @@ const description = article.getDescription();
 		'manual-bid'
 	) as HTMLInputElement;
 	const form = document.querySelector('form');
+	const bid_container = document.getElementById('bid');
 	const bids_history = document.getElementById('bids-history');
 
 	/**
@@ -422,6 +431,8 @@ const description = article.getDescription();
 			starts.day >= 0
 		) {
 			timeDiff.innerText = `Débute dans ${starts.day}j ${starts.hour}h ${starts.min}min ${starts.sec}s`;
+			bid_container.style.display = 'none';
+			return false;
 		} else if (
 			ends.sec >= 0 &&
 			ends.min >= 0 &&
@@ -429,13 +440,22 @@ const description = article.getDescription();
 			ends.day >= 0
 		) {
 			timeDiff.innerText = `Se termine dans ${ends.day}j ${ends.hour}h ${ends.min}min ${ends.sec}s`;
+			bid_container.style.display = 'block';
+			return true;
 		} else {
 			timeDiff.innerText = 'Terminée';
+			bid_container.style.display = 'none';
+			return false;
 		}
 	}
 
-	setInterval(updatePriceAndBids, 1000);
-	setInterval(updateDates, 1000);
+	function update() {
+		if (updateDates()) {
+			updatePriceAndBids();
+		}
+	}
+
+	setInterval(update, 1000);
 
 	suggestionValues.forEach((suggestion) => {
 		suggestion.addEventListener('click', (e) => {

@@ -166,6 +166,7 @@ export default class Article {
 	 * @param search Les mots clés de la recherche
 	 * @param params Les paramètres de la recherche
 	 * @returns Les articles correspondant à la recherche
+	 * @deprecated
 	 */
 	public static async getBySearch(
 		search: string,
