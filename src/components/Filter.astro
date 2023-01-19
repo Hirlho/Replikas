@@ -7,11 +7,10 @@ export interface Props {
 
 const button_id = Astro.props.button_id;
 
-const search = Astro.url.searchParams.get('article') || '';
 const minPrice = parseInt(Astro.url.searchParams.get('minPrice')) || 0;
 const maxPrice = parseInt(Astro.url.searchParams.get('maxPrice')) || 2147483647;
-let onGoingText = Astro.url.searchParams.get('enCours') || 'true';
-let onGoing = /true/i.test(onGoingText);
+let onGoingText = Astro.url.searchParams.get('enCours') || 'false';
+let onGoing = onGoingText === 'true';
 ---
 
 <form>

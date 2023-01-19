@@ -1,16 +1,40 @@
 ---
 import Button from '../components/Button.astro';
 import Layout from '../layouts/Layout.astro';
+import Article from '../model/Article';
+import Buyer from '../model/users/Buyer';
+import Company from '../model/users/Company';
+import { getBuyerBySession } from '../model/Utilitaire';
 
-const companyName = 'NOM_DE_L_ENTREPRISE';
-const articleName = 'NOM_DE_L_ARTICLE';
-const dateDAchat = 'DATE';
+//
+const article_id = parseInt(Astro.url.searchParams.get('article'));
+
+const articleName_: Article = await Article.get(article_id).catch(() => null);
+const companyID = articleName_.getSellingCompanyId();
+const company = await Company.getById(companyID);
+const companyName = await company.getNom();
+const articleName = articleName_.getName();
+const dateDAchat = articleName_.getFinVente();
+const purchased = dateDAchat.toLocaleDateString('fr');
+//
+//if (isNaN(article_id))
+//	return new Response('Paramètre invalide', { status: 400 });
+
+const buyer: Buyer = await getBuyerBySession(Astro.request.headers).catch(
+	() => null
+);
+if (!buyer)
+	return new Response('Vous devez être connecté pour accéder à cette page', {
+		status: 401,
+	});
 ---
 
 <Layout title="Signalement" no_searchbar>
 	<main>
 		<h1>Vous vous apprêtez à signaler {companyName}</h1>
-		<p>{articleName}<br />Acheté le {dateDAchat}</p>
+		<p>
+			{articleName}<br />Acheté le {purchased}
+		</p>
 		<form>
 			<h2>Motif de signalement</h2>
 			<select name="motif">
