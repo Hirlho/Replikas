@@ -46,7 +46,11 @@ if (enCours) {
 							<div class="icons" id="icon">
 								<img src="/img/icons/3dots.png" alt="" />
 							</div>
-							<form class="dropdown-content" method="get" action="/report">
+							<form
+								class="dropdown-content"
+								method="get"
+								action="/action/report"
+							>
 								<input type="submit" value="Signaler" />
 								<input type="hidden" name="art_id" value={article.getId()} />
 							</form>
