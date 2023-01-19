@@ -18,6 +18,7 @@ if (!account) {
 	return Astro.redirect('/login?redirect=' + redirect);
 }
 let error_msg = '';
+let success_msg = '';
 
 if (Astro.request.method == 'POST') {
 	const formData = await Astro.request.formData();
@@ -25,6 +26,28 @@ if (Astro.request.method == 'POST') {
 	const prenom = formData.get('prenom_textarea').toString() || '';
 	const nom_confirm = formData.get('nom_textarea2').toString() || '';
 	const prenom_confirm = formData.get('prenom_textarea2').toString() || '';
+	const nomCheckbox = formData.get('nom_checkbox') || false;
+	const prenomCheckbox = formData.get('prenom_checkbox') || false;
+	//Vérification si nom et prenom sont vides
+	if (nom == '' && prenom == '' && nomCheckbox && prenomCheckbox) {
+		Astro.props.error = 'Veuillez remplir au moins un champ';
+		return Astro.redirect(
+			'/settings/modify-name?error=champ_vide&redirect=' + redirect
+		);
+	}
+	//Vérification si nom ou prenom sont vides
+	if (nom == '' && nom_confirm == '' && nomCheckbox) {
+		Astro.props.error = 'Veuillez remplir le champ nom';
+		return Astro.redirect(
+			'/settings/modify-name?error=champ_nom_vide&redirect=' + redirect
+		);
+	}
+	if (prenom == '' && prenom_confirm == '' && prenomCheckbox) {
+		Astro.props.error = 'Veuillez remplir le champ prénom';
+		return Astro.redirect(
+			'/settings/modify-name?error=champ_prenom_vide&redirect=' + redirect
+		);
+	}
 
 	//Vérification si nom et/ou prenom ont des caractères spéciaux ou chiffres .test() renvoie true si il y a des caractères spéciaux ou chiffres
 	if (
@@ -57,18 +80,23 @@ if (Astro.request.method == 'POST') {
 					//nom modifié
 					try {
 						await account.setNom(nom);
-						Astro.props.error = 'Votre nom a été modifié';
-						Astro.redirect('/settings?redirect=' + redirect);
+						Astro.props.success = 'Votre nom a été modifié';
+						return Astro.redirect(
+							'/settings/modify-name?success=nom_modifie' + redirect
+						);
 					} catch (err) {
 						if (err instanceof EmailDejaUtiliseError) {
 							Astro.props.error = 'Email déjà utilisé';
-							Astro.redirect('/settings?redirect=' + redirect);
-						} else {
-							throw err;
+							return Astro.redirect(
+								'/settings/modify-name?error=mail_deja_utilise&redirect=' +
+									redirect
+							);
 						}
 					}
-					Astro.props.error = 'Votre nom a été modifié';
-					Astro.redirect('/settings?redirect=' + redirect);
+					Astro.props.success = 'Votre nom a été modifié';
+					return Astro.redirect(
+						'/settings/modify-name?success=nom_modifie&redirect=' + redirect
+					);
 				}
 			}
 			if (prenom != '' && prenom == prenom_confirm) {
@@ -76,23 +104,28 @@ if (Astro.request.method == 'POST') {
 					//nom modifié
 					try {
 						await account.setPrenom(prenom);
-						Astro.props.error = 'Votre prenom a été modifié';
-						Astro.redirect('/settings?redirect=' + redirect);
 					} catch (err) {
 						if (err instanceof EmailDejaUtiliseError) {
 							Astro.props.error = 'Email déjà utilisé';
-							Astro.redirect('/settings?redirect=' + redirect);
+							return Astro.redirect(
+								'/settings/modify-name?error=mail_deja_utilise&redirect=' +
+									redirect
+							);
 						} else {
 							throw err;
 						}
 					}
-					Astro.props.error = 'Votre prenom a été modifié';
-					Astro.redirect('/settings?redirect=' + redirect);
+					Astro.props.success = 'Votre prenom a été modifié';
+					return Astro.redirect(
+						'/settings/modify-name?success=?redirect=' + redirect
+					);
 				}
 			} else {
 				//erreur
 				Astro.props.error = 'Erreur lors de la modification';
-				Astro.redirect('/settings?redirect=' + redirect);
+				return Astro.redirect(
+					'/settings/modify-name?error=erreur_modification&redirect=' + redirect
+				);
 			}
 		}
 	}
@@ -106,6 +139,24 @@ if (Astro.url.searchParams.has('error')) {
 			'Votre nom et/ou prénom ne doit pas contenir de caractères spéciaux ou de chiffres';
 	} else if (error == 'aucune_modification') {
 		error_msg = 'Veuillez remplir au moins un des champs';
+	} else if (error == 'erreur_modification') {
+		error_msg = 'Erreur lors de la modification';
+	} else if (error == 'mail_deja_utilise') {
+		error_msg = 'Email déjà utilisé';
+	} else if (error == 'champ_nom_vide') {
+		error_msg = 'Veuillez remplir le champ nom';
+	} else if (error == 'champ_prenom_vide') {
+		error_msg = 'Veuillez remplir le champ prénom';
+	} else if (error == 'champ_vide') {
+		error_msg =
+			'Veuillez remplir les champs pour leqels vous avez cochés les cases';
+	}
+	if (Astro.url.searchParams.has('success')) {
+		// On affiche un message de succès
+		const success = Astro.url.searchParams.get('success');
+		if (success == 'nom_modifie') {
+			success_msg = 'Votre nom a été modifié';
+		}
 	}
 }
 ---
@@ -114,6 +165,7 @@ if (Astro.url.searchParams.has('error')) {
 	<main>
 		<h1>Modifier votre nom et/ou prénom</h1>
 		{error_msg && <p class="error_msg">{error_msg}</p>}
+		{success_msg && <p class="success_msg">{success_msg}</p>}
 		<form method="post" class="formlist">
 			<table>
 				<div class="options">
@@ -270,10 +322,17 @@ if (Astro.url.searchParams.has('error')) {
 				prenomTextArea2.value = '';
 			}
 		});
-		//Bouton de validation non fonctionnel si cb_nom coché et que nom_textarea est vide ou si cb_prenom coché et que prenom_textarea est vide
 	</script>
 
 	<style>
+		.error_msg {
+			color: red;
+			text-align: center;
+		}
+		.success_msg {
+			color: green;
+			text-align: center;
+		}
 		#options-th {
 			padding-left: 4rem;
 		}
