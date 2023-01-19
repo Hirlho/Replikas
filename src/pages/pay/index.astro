@@ -69,6 +69,19 @@ const session = await stripe.checkout.sessions.create({
 		Astro.url.host
 	}/pay/cancel?article=${article.getId()}`,
 });
+
+// Stripe payment element
+stripe.paymentIntents
+	.confirm(session.payment_intent.toString(), {
+		receipt_email: buyer.getEmail(),
+	})
+	.then(() => {
+		console.log('Payment confirmed');
+	})
+	.catch((err) => {
+		console.log(err);
+	});
+
 const poster = await article
 	.getPoster()
 	.catch(() => '/img/article/placeholder.jpg');

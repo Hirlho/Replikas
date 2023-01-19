@@ -46,7 +46,7 @@ CREATE TABLE article (
     art_min_bidding INTEGER NOT NULL,
     art_auction_start TIMESTAMP NOT NULL,
     art_auction_end TIMESTAMP NOT NULL,
-    c_id INTEGER REFERENCES company (a_id),
+    c_id INTEGER REFERENCES company (a_id) ON DELETE CASCADE,
     m_id INTEGER REFERENCES movie (m_id)
 );
 
