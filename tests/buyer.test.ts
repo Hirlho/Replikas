@@ -2,7 +2,6 @@ import Article from '../src/model/Article';
 import Database from '../src/model/Database';
 import { UtilisateurOuMotDePasseInvalideError } from '../src/model/users/Account';
 import Buyer from '../src/model/users/Buyer';
-import Company from '../src/model/users/Company';
 
 test('Crée un utilisateur et lui assigne un id automatiquement', async () => {
 	const user = await Buyer.createBuyer(

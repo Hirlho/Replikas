@@ -1,8 +1,9 @@
-import Database from '../Database';
 import shajs from 'sha.js';
+import Database from '../Database';
 
 export default class Account {
-	static SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days
+	static SESSION_DURATION = 60 * 60 * 24 * 7; // secs, 7 days
+	static RECOVERY_DURATION = 60 * 30 * 1000; // ms, 30 minutes
 	static SALT_BAE = "g4cO#'=%sn{*Y?3v";
 
 	static {
@@ -177,7 +178,7 @@ export default class Account {
 	): Promise<string> {
 		const database = Database.get();
 		const token = shajs('sha256')
-			.update('' + email + Date.now())
+			.update(email + Date.now())
 			.digest('hex');
 		const dateCreation = new Date();
 		const response = await database`
@@ -185,7 +186,7 @@ export default class Account {
 		if (response.count === 0) {
 			throw new EmailInconnuError();
 		}
-		return token;
+		return response[0].pr_token;
 	}
 
 	/**
@@ -211,6 +212,19 @@ export default class Account {
 		}
 		// Consuming the token
 		await database`DELETE FROM password_recovery WHERE pr_token = ${token}`;
+	}
+
+	public async setPassword(password: string): Promise<void> {
+		const database = Database.get();
+		const hash = shajs('sha256')
+			.update(password + Account.SALT_BAE)
+			.digest('hex');
+
+		const response = await database`
+			UPDATE account SET a_password = ${hash} WHERE a_id = ${this.getId()}`;
+		if (response.count === 0) {
+			throw new Error("L'utilisateur n'existe pas alors qu'il devrait");
+		}
 	}
 
 	/**
@@ -258,14 +272,25 @@ export default class Account {
 		for (const token of tokens) {
 			if (new Date(token.s_expires_at) < new Date()) {
 				await Account.deleteSession(token.s_token);
+				console.info(
+					'Suppression du token de session pour le compte ' + token.a_id
+				);
 			}
 		}
 		// Clear password recovery tokens
 		const passwordRecoveryTokens =
 			await database`SELECT * FROM password_recovery;`;
 		for (const token of passwordRecoveryTokens) {
-			if (new Date(token.pr_created_at) < new Date()) {
+			const creationDate = new Date(token.pr_created_at);
+			const expirationDate = new Date(
+				creationDate.getTime() + Account.RECOVERY_DURATION
+			);
+			if (expirationDate < new Date()) {
 				await database`DELETE FROM password_recovery WHERE pr_token = ${token.pr_token}`;
+				console.info(
+					'Suppression du token de password recovery pour le compte ' +
+						token.a_id
+				);
 			}
 		}
 	}

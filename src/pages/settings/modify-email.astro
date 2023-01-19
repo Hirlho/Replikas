@@ -2,11 +2,8 @@
 import Button from '../../components/Button.astro';
 import TextField from '../../components/TextField.astro';
 import Layout from '../../layouts/Layout.astro';
-import Account from '../../model/users/Account';
-import { EmailDejaUtiliseError } from '../../model/users/Account';
+import Account, { EmailDejaUtiliseError } from '../../model/users/Account';
 import { getAccountBySession } from '../../model/Utilitaire';
-
-const redirect = Astro.url.searchParams.get('redirect') || '';
 
 //Get Account
 const account: Account = await getAccountBySession(Astro.request.headers).catch(
@@ -14,7 +11,7 @@ const account: Account = await getAccountBySession(Astro.request.headers).catch(
 );
 // Vérification de la connexion
 if (!account) {
-	return Astro.redirect('/login?redirect=' + redirect);
+	return Astro.redirect('/login');
 }
 
 if (Astro.request.method == 'POST') {
@@ -31,23 +28,22 @@ if (Astro.request.method == 'POST') {
 			email
 		)
 	)
-		return Astro.redirect('?error=invalid_email&redirect=' + redirect);
+		return Astro.redirect('?error=invalid_email');
 
 	if (email != email_confirm) {
-		return Astro.redirect('?error=not_same_mail&redirect=' + redirect);
+		return Astro.redirect('?error=not_same_mail');
 	} else {
 		try {
 			await account.setEmail(email);
 			Astro.props.success = 'Votre adresse mail a bien été modifiée';
-			Astro.props.redirect = redirect;
 		} catch (e) {
 			if (e instanceof EmailDejaUtiliseError) {
-				return Astro.redirect('?error=mail_already_used&redirect=' + redirect);
+				return Astro.redirect('?error=mail_already_used');
 			} else {
 				Astro.props.error = 'Une erreur est survenue';
 			}
 		}
-		return Astro.redirect('?success=mail_changed&redirect=' + redirect);
+		return Astro.redirect('?success=mail_changed');
 	}
 }
 let error_msg = '';

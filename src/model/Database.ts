@@ -1,7 +1,7 @@
-import postgres from 'postgres';
-import Config from './Config';
 import { EventEmitter } from 'events';
+import postgres from 'postgres';
 import TypedEmitter from 'typed-emitter';
+import Config from './Config';
 
 type DatabaseEvents = {
 	clean: () => void;

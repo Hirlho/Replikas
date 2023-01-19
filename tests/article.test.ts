@@ -1,9 +1,9 @@
-import Article from '../src/model/Article';
-import Database from '../src/model/Database';
-import TMDB from '../src/model/TMDB';
 import fs from 'fs';
 import path from 'path';
+import Article from '../src/model/Article';
 import Config from '../src/model/Config';
+import Database from '../src/model/Database';
+import TMDB from '../src/model/TMDB';
 
 test('Crée un article et lui assigne un id automatiquement', async () => {
 	const article = await Article.create(

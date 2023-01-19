@@ -4,8 +4,8 @@ import Layout from '../layouts/Layout.astro';
 import LikedPage from '../components/basketPages/LikedPage.astro';
 import NotPayedPage from '../components/basketPages/NotPayedPage.astro';
 import PossessedPage from '../components/basketPages/PossessedPage.astro';
-import { getBuyerBySession } from '../model/Utilitaire';
 import Buyer from '../model/users/Buyer';
+import { getBuyerBySession } from '../model/Utilitaire';
 
 const buyer: Buyer = await getBuyerBySession(Astro.request.headers).catch(
 	(err) => null

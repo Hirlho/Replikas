@@ -1,8 +1,6 @@
 import Article from './Article';
 import Bids from './Bids';
 import Database from './Database';
-import Buyer from './users/Buyer';
-import Company from './users/Company';
 
 export default class Notification {
 	private id: number;

@@ -1,14 +1,14 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import Notif from '../../components/Notif.astro';
 import UserSetting from '../../components/UserSetting.astro';
-import Buyer from '../../model/users/Buyer';
-import { getBuyerBySession } from '../../model/Utilitaire';
+import Layout from '../../layouts/Layout.astro';
+import Notification from '../../model/Notification';
 import {
 	AccountTypeMismatch,
 	SessionTokenInvalideError,
 } from '../../model/users/Account';
-import Notification from '../../model/Notification';
-import Notif from '../../components/Notif.astro';
+import Buyer from '../../model/users/Buyer';
+import { getBuyerBySession } from '../../model/Utilitaire';
 
 let buyer: Buyer;
 try {
@@ -57,7 +57,7 @@ const notifications = await Notification.getUserNotifications(buyer.getId());
 				value={mail}
 				lien="/settings/modify-email"
 			/>
-			<UserSetting parametre="Mot de passe" lien="/settings/recover-password" />
+			<UserSetting parametre="Mot de passe" lien="/settings/modify-password" />
 			<h2 id="accessibilite">Accessibilité</h2>
 			<UserSetting parametre="Taille de la police" value="x1" />
 		</main>

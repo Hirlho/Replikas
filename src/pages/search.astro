@@ -1,9 +1,9 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import SearchBar from '../components/SearchBar.astro';
 import Article from '../components/Article.astro';
-import { default as ArticleModel } from '../model/Article';
 import Filter from '../components/Filter.astro';
+import SearchBar from '../components/SearchBar.astro';
+import Layout from '../layouts/Layout.astro';
+import { default as ArticleModel } from '../model/Article';
 
 const search = Astro.url.searchParams.get('search') || '';
 const minPrice = parseInt(Astro.url.searchParams.get('minPrice')) || 0;

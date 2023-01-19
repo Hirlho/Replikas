@@ -1,11 +1,11 @@
 ---
+import { Stripe } from 'stripe';
 import Layout from '../../layouts/Layout.astro';
 import Article from '../../model/Article';
 import Bids from '../../model/Bids';
+import Config from '../../model/Config';
 import Buyer from '../../model/users/Buyer';
 import { getBuyerBySession } from '../../model/Utilitaire';
-import { Stripe } from 'stripe';
-import Config from '../../model/Config';
 
 const article_id = parseInt(Astro.url.searchParams.get('article'));
 if (isNaN(article_id))
