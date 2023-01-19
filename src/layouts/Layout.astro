@@ -34,7 +34,7 @@ const { title, no_searchbar } = Astro.props;
 			<Breadcrumb />
 			<section>
 				<slot />
-				<div class="banner">
+				<div id="cookie-banner">
 					<div class="bannertext">
 						<div><Logo /></div>
 						<p>
@@ -138,7 +138,7 @@ const { title, no_searchbar } = Astro.props;
 
 			/* Les cookies */
 
-			.banner {
+			#cookie-banner {
 				position: fixed;
 				bottom: 0;
 				width: 100%;
@@ -146,7 +146,7 @@ const { title, no_searchbar } = Astro.props;
 				color: var(--theme-text);
 				padding: 1rem;
 				margin: auto;
-				display: flex;
+				display: none;
 				flex-direction: column;
 				justify-content: space-between;
 				align-items: center;
@@ -160,7 +160,7 @@ const { title, no_searchbar } = Astro.props;
 				margin-bottom: 1rem;
 			}
 
-			.banner p {
+			#cookie-banner p {
 				margin: 0;
 				font-size: 1.5rem;
 				text-align: center;
@@ -193,6 +193,41 @@ const { title, no_searchbar } = Astro.props;
 			}
 		</style>
 
-		<script></script>
+		<script>
+			const cookieButton = document.querySelector('.bannerbutton p');
+			const cookieBanner = document.getElementById(
+				'cookie-banner'
+			) as HTMLDivElement;
+
+			cookieButton.addEventListener('click', () => {
+				acceptCookies();
+			});
+
+			function setCookie() {
+				localStorage.setItem('acceptCookies', 'true');
+			}
+
+			function getCookie(name: string) {
+				return localStorage.getItem(name);
+			}
+
+			function acceptCookies() {
+				setCookie();
+				cookieBanner.style.display = 'flex';
+			}
+
+			function checkCookies() {
+				var acceptCookies = getCookie('acceptCookies');
+				if (acceptCookies != 'true') {
+					cookieBanner.style.display = 'flex';
+				} else {
+					cookieBanner.style.display = 'none';
+				}
+			}
+
+			window.onload = function () {
+				checkCookies();
+			};
+		</script>
 	</body>
 </html>
