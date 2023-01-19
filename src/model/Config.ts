@@ -31,6 +31,9 @@ type ConfigType = {
 		secretKey: string;
 		publicKey: string;
 	};
+	sendgrid: {
+		apiKey: string;
+	};
 	uploads_dir: string;
 };
 
@@ -53,6 +56,9 @@ export default class Config {
 			stripe: {
 				secretKey: getEnv('STRIPE_SECRET', true),
 				publicKey: getEnv('STRIPE_PUBLIC', true),
+			},
+			sendgrid: {
+				apiKey: getEnv('SENDGRID_API_KEY', false),
 			},
 			uploads_dir: path.join(path.resolve(), 'uploads'),
 		};
