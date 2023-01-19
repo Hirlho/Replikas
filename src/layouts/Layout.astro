@@ -251,8 +251,18 @@ const { title, no_searchbar } = Astro.props;
 				}
 			}
 
+			function checkDyslexie() {
+				var dyslexie = getCookie('dyslexie');
+				if (dyslexie == 'true') {
+					document.body.style.fontFamily = 'dyslexia, system-ui, sans-serif';
+				} else {
+					document.body.style.fontFamily = 'Larsseit, system-ui, sans-serif';
+				}
+			}
+
 			window.onload = function () {
 				checkCookies();
+				checkDyslexie();
 			};
 		</script>
 	</body>

@@ -20,7 +20,7 @@ const description = article.getDescription();
 
 <article>
 	<div class="gradient">
-		<div class="bigchungus">
+		<div class="groscontainer">
 			<div class="img_container"><img src={image} alt={titre} /></div>
 		</div>
 		<aside>
@@ -29,7 +29,7 @@ const description = article.getDescription();
 				Se termine dans {ends.day}j, {ends.hour}h et {ends.min}min
 			</p>
 			<p>Valeur actuelle : {prix} €</p>
-			<p>Description : {description}</p>
+			<p id="desc">Description : {description}</p>
 			<a id="button" id="enchere" href={'/auction/' + id}> Enchérir</a>
 		</aside>
 	</div>
@@ -68,7 +68,7 @@ const description = article.getDescription();
 		display: block;
 	}
 
-	.bigchungus {
+	.groscontainer {
 		display: flex;
 		width: 40%;
 		flex-direction: column;
@@ -95,9 +95,20 @@ const description = article.getDescription();
 		flex-direction: column;
 		align-items: center;
 		padding: 0 15px;
+		height: fit-content;
 	}
 
-	h1 {
+	aside p {
+		margin: 0.5rem;
+	}
+
+	#desc {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-height: 160px;
+	}
+
+	aside h1 {
 		font-size: 2em;
 		margin: 1rem auto;
 	}

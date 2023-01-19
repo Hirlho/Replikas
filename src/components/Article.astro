@@ -7,12 +7,14 @@ import { getBuyerBySession } from '../model/Utilitaire';
 export interface Props {
 	article: Article;
 	comingSoonPage?: boolean;
+	possessedPage?: boolean;
 	link?: string;
 }
 
 const link = Astro.props.link;
 const article = Astro.props.article || Article.getFallback(null);
 const comingSoonPage = Astro.props.comingSoonPage;
+const possessedPage = Astro.props.possessedPage;
 
 const id = article.getId();
 const titre = article.getName();
@@ -38,22 +40,36 @@ if (enCours) {
 	<a href={link || '/auction/' + id}>
 		{
 			buyer ? (
-				<>
-					<script is:inline src="/src/like.js" />
-					<div class="like-area">
-						<div class="like-container">
-							<img
-								src="/img/icons/heart.svg"
-								onclick="likeArticle(this, event)"
-								onload="updateColor(this)"
-								data-id={id}
-								data-liked={'' + liked}
-								class="filter-whitesmoke"
-								alt="like-icon"
-							/>
+				possessedPage ? (
+					<div class="dropdown-area">
+						<div class="dropdown-container">
+							<div class="icons" id="icon">
+								<img src="/img/icons/3dots.png" alt="" />
+							</div>
+							<form class="dropdown-content" method="post">
+								<input type="submit" value="Signaler" formaction="/report" />
+								<input type="hidden" name="art_id" value={article.getId()} />
+							</form>
 						</div>
 					</div>
-				</>
+				) : (
+					<>
+						<script is:inline src="/src/like.js" />
+						<div class="like-area">
+							<div class="like-container">
+								<img
+									src="/img/icons/heart.svg"
+									onclick="likeArticle(this, event)"
+									onload="updateColor(this)"
+									data-id={id}
+									data-liked={'' + liked}
+									class="filter-whitesmoke"
+									alt="like-icon"
+								/>
+							</div>
+						</div>
+					</>
+				)
 			) : (
 				comingSoonPage && (
 					<div class="dropdown-area">

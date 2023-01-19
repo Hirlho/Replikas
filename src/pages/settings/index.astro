@@ -24,6 +24,7 @@ const mail = buyer.getEmail();
 const lastName = buyer.getNom();
 const firstName = buyer.getPrenom();
 const notifications = await Notification.getUserNotifications(buyer.getId());
+let dyslexie = false;
 ---
 
 <Layout title="Paramètres" no_searchbar>
@@ -228,15 +229,13 @@ const notifications = await Notification.getUserNotifications(buyer.getId());
 	const body = document.querySelector('body') as HTMLBodyElement;
 	const enCours = document.getElementById('enCours') as HTMLInputElement;
 
-	if (body.style.fontFamily === 'dyslexia') {
-		enCours.checked = true;
-	}
-
 	enCours.addEventListener('click', () => {
 		if (enCours.checked) {
-			body.style.fontFamily = 'dyslexia';
+			localStorage.setItem('dyslexie', 'true');
+			document.body.style.fontFamily = 'dyslexia, system-ui, sans-serif';
 		} else {
-			body.style.fontFamily = 'Larsseit';
+			localStorage.setItem('dyslexie', 'false');
+			document.body.style.fontFamily = 'Larsseit, system-ui, sans-serif';
 		}
 	});
 </script>
