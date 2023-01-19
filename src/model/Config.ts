@@ -30,6 +30,7 @@ type ConfigType = {
 	stripe: {
 		secretKey: string;
 		publicKey: string;
+		webhookSecret: string;
 	};
 	sendgrid: {
 		apiKey: string;
@@ -56,6 +57,7 @@ export default class Config {
 			stripe: {
 				secretKey: getEnv('STRIPE_SECRET', true),
 				publicKey: getEnv('STRIPE_PUBLIC', true),
+				webhookSecret: getEnv('STRIPE_WEBHOOK_SECRET', true),
 			},
 			sendgrid: {
 				apiKey: getEnv('SENDGRID_API_KEY', false),

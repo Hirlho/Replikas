@@ -68,7 +68,12 @@ const session = await stripe.checkout.sessions.create({
 	cancel_url: `${protocol}${
 		Astro.url.host
 	}/pay/cancel?article=${article.getId()}`,
+	metadata: {
+		article_id: article.getId(),
+		buyer_id: buyer.getId(),
+	},
 });
+
 const poster = await article
 	.getPoster()
 	.catch(() => '/img/article/placeholder.jpg');

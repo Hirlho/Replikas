@@ -20,6 +20,7 @@ const { title, no_searchbar } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="preload" href="/fonts/Larsseit.otf" as="font" />
 		<link rel="preload" href="/fonts/Larsseit-Bold.otf" as="font" />
+		<link rel="preload" href="/fonts/OpenDyslexic-Bold.otf" as="font" />
 		<meta name="generator" content={Astro.generator} />
 		<meta
 			name="description"
@@ -34,7 +35,7 @@ const { title, no_searchbar } = Astro.props;
 			<Breadcrumb />
 			<section>
 				<slot />
-				<div class="banner">
+				<div id="cookie-banner">
 					<div class="bannertext">
 						<div><Logo /></div>
 						<p>
@@ -42,15 +43,17 @@ const { title, no_searchbar } = Astro.props;
 							cookies essentiels pour assurer la bonne performance et la
 							sécurité du site. Ces cookies ne collectent aucune information
 							personnelle et sont uniquement utilisés pour améliorer
-							l'expérience utilisateur.
+							l'expérience utilisateur. Veuillez vous réferer à notre
+							<a href="/privacy-policy"> politique de confidentialité</a> pour plus
+							d'informations.
 						</p>
 						<div class="bannerbutton">
 							<p>J'accepte les cookies</p>
 						</div>
 					</div>
 				</div>
-				<Footer />
 			</section>
+			<Footer />
 		</main>
 		<style is:global>
 			/*:root {
@@ -113,6 +116,11 @@ const { title, no_searchbar } = Astro.props;
 			}
 		</style>
 		<style>
+			@font-face {
+				font-family: dyslexia;
+				src: url('/fonts/OpenDyslexic-Regular.ttf');
+			}
+
 			html,
 			body {
 				box-sizing: border-box;
@@ -120,6 +128,7 @@ const { title, no_searchbar } = Astro.props;
 				padding: 0;
 				margin: 0;
 			}
+
 			body {
 				background-color: var(--theme-primary);
 				color: var(--theme-text);
@@ -138,7 +147,7 @@ const { title, no_searchbar } = Astro.props;
 
 			/* Les cookies */
 
-			.banner {
+			#cookie-banner {
 				position: fixed;
 				bottom: 0;
 				width: 100%;
@@ -146,7 +155,7 @@ const { title, no_searchbar } = Astro.props;
 				color: var(--theme-text);
 				padding: 1rem;
 				margin: auto;
-				display: flex;
+				display: none;
 				flex-direction: column;
 				justify-content: space-between;
 				align-items: center;
@@ -160,10 +169,27 @@ const { title, no_searchbar } = Astro.props;
 				margin-bottom: 1rem;
 			}
 
-			.banner p {
+			.bannertext p {
+				padding-inline: 4rem;
+			}
+
+			.bannertext p a {
+				color: var(--theme-link);
+				text-decoration: none;
+			}
+
+			.bannertext p a:hover {
+				text-decoration: underline;
+			}
+
+			#cookie-banner p {
 				margin: 0;
 				font-size: 1.5rem;
 				text-align: center;
+			}
+
+			.bannerbutton {
+				margin: 2rem;
 			}
 
 			.bannerbutton p {
@@ -193,6 +219,41 @@ const { title, no_searchbar } = Astro.props;
 			}
 		</style>
 
-		<script></script>
+		<script>
+			const cookieButton = document.querySelector('.bannerbutton p');
+			const cookieBanner = document.getElementById(
+				'cookie-banner'
+			) as HTMLDivElement;
+
+			cookieButton.addEventListener('click', () => {
+				acceptCookies();
+			});
+
+			function setCookie() {
+				localStorage.setItem('acceptCookies', 'true');
+			}
+
+			function getCookie(name: string) {
+				return localStorage.getItem(name);
+			}
+
+			function acceptCookies() {
+				setCookie();
+				cookieBanner.style.display = 'none';
+			}
+
+			function checkCookies() {
+				var acceptCookies = getCookie('acceptCookies');
+				if (acceptCookies != 'true') {
+					cookieBanner.style.display = 'flex';
+				} else {
+					cookieBanner.style.display = 'none';
+				}
+			}
+
+			window.onload = function () {
+				checkCookies();
+			};
+		</script>
 	</body>
 </html>
