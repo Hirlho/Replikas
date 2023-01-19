@@ -40,7 +40,7 @@ const notifications = await Notification.getUserNotifications(buyer.getId());
 				</form>
 			</div>
 		</aside>
-		<main class="parameters">
+		<section class="parameters">
 			<h2 id="monCompte">Mon compte</h2>
 			<UserSetting
 				parametre="Nom"
@@ -60,7 +60,12 @@ const notifications = await Notification.getUserNotifications(buyer.getId());
 			<UserSetting parametre="Mot de passe" lien="/settings/modify-password" />
 			<h2 id="accessibilite">Accessibilité</h2>
 			<UserSetting parametre="Taille de la police" value="x1" />
-		</main>
+			<UserSetting parametre="Dyslexie" />
+			<label class="switch">
+				{(<input id="enCours" type="checkbox" />)}
+				<span class="slider round"></span>
+			</label>
+		</section>
 		<aside class="notifications">
 			<h2>Notifications</h2>
 			{notifications.map((notif) => <Notif notif={notif} />)}
@@ -145,4 +150,85 @@ const notifications = await Notification.getUserNotifications(buyer.getId());
 
 		max-height: 100vh;
 	}
+
+	/*-------------------Switch---------------------*/
+
+	.switch {
+		position: relative;
+		display: inline-block;
+		width: 60px;
+		height: 34px;
+		scale: 0.8;
+	}
+
+	/* Hide default HTML checkbox */
+	.switch input {
+		opacity: 0;
+		width: 0;
+		height: 0;
+	}
+
+	/* The slider */
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #ccc;
+		-webkit-transition: 0.4s;
+		transition: 0.4s;
+	}
+
+	.slider:before {
+		position: absolute;
+		content: '';
+		height: 26px;
+		width: 26px;
+		left: 4px;
+		bottom: 4px;
+		background-color: white;
+		-webkit-transition: 0.4s;
+		transition: 0.4s;
+	}
+
+	input:checked + .slider {
+		background-color: var(--theme-button);
+	}
+
+	input:focus + .slider {
+		box-shadow: 0 0 1px var(--theme-button);
+	}
+
+	input:checked + .slider:before {
+		-webkit-transform: translateX(26px);
+		-ms-transform: translateX(26px);
+		transform: translateX(26px);
+	}
+
+	/* Rounded sliders */
+	.slider.round {
+		border-radius: 34px;
+	}
+
+	.slider.round:before {
+		border-radius: 50%;
+	}
 </style>
+<script>
+	const body = document.querySelector('body') as HTMLBodyElement;
+	const enCours = document.getElementById('enCours') as HTMLInputElement;
+
+	if (body.style.fontFamily === 'OpenDyslexic-Regular') {
+		enCours.checked = true;
+	}
+
+	enCours.addEventListener('click', () => {
+		if (enCours.checked) {
+			body.style.fontFamily = 'OpenDyslexic-Regular';
+		} else {
+			body.style.fontFamily = 'Larsseit';
+		}
+	});
+</script>
