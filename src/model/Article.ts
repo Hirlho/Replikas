@@ -267,7 +267,7 @@ export default class Article {
 				LIMIT ${params.limit || null} OFFSET ${
 					params.offset || 0
 			  }) b JOIN article a ON a.art_id = b.art_id
-				WHERE a.art_auction_start > now() AND a.art_price BETWEEN
+				WHERE a.art_price BETWEEN
 				${minPrice} AND ${maxPrice}`);
 
 		const articles: Article[] = [];
