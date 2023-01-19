@@ -96,7 +96,7 @@ const description = article.getDescription();
 				</div>
 			</aside>
 			<article>
-				<div class="informations">
+				<div class="informations" style={{ 'flex-grow': enCours ? 0.6 : 1 }}>
 					<h1 class="center">{nom}</h1>
 					{
 						enCours && (
@@ -104,19 +104,19 @@ const description = article.getDescription();
 								<h3 class="left-margin">
 									{enCours ? 'Enchère actuelle :' : 'Prix de départ : '}
 								</h3>
-								<h2 id="current-price" class="left-margin">
+								<h3 id="current-price" class="left-margin">
 									{prix} €
-								</h2>
+								</h3>
 							</div>
 						)
 					}
-					<h3 class="left-margin">Description :</h3>
+					<h3 class="left-margin" style="margin-block: 2rem;">Description :</h3>
 					<p>
 						{description}
 					</p>
 					<div class="company-info hbox" style="align-items: center;">
-						<h3 class="left-margin">Vendu par :</h3>
-						<p class="center left-margin">{company.getNom()}</p>
+						<h3>Vendu par :</h3>
+						<p class="left-margin">{company.getNom()}</p>
 					</div>
 				</div>
 				<div id="bid" style={{ display: enCours ? 'block' : 'none' }}>
@@ -166,7 +166,6 @@ const description = article.getDescription();
 								))
 							}
 						</div>
-						<style is:inline></style>
 					</div>
 				</div>
 			</article>
