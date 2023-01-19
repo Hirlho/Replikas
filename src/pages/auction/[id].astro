@@ -110,18 +110,18 @@ const description = article.getDescription();
 							</div>
 						)
 					}
-					<h3 class="left-margin" style="margin-block: 2rem;">Description :</h3>
+					<h2 class="left-margin" style="margin-block: 2rem;">Description :</h2>
 					<p>
 						{description}
 					</p>
 					<div class="company-info hbox" style="align-items: center;">
-						<h3>Vendu par :</h3>
+						<h2>Vendu par :</h2>
 						<p class="left-margin">{company.getNom()}</p>
 					</div>
 				</div>
 				<div id="bid" style={{ display: enCours ? 'block' : 'none' }}>
 					<div>
-						<h3 class="left-margin">Placer une offre :</h3>
+						<h2 class="left-margin">Placer une offre :</h2>
 						<form>
 							<div>
 								{
@@ -155,7 +155,7 @@ const description = article.getDescription();
 								/>
 							</div>
 						</form>
-						<h3 class="margin-left">Encheres actuelles :</h3>
+						<h2 class="margin-left">Encheres actuelles :</h2>
 						<div id="bids-history">
 							{
 								encheres.map((bid) => (
