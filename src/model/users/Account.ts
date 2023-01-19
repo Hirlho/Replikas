@@ -2,8 +2,8 @@ import shajs from 'sha.js';
 import Database from '../Database';
 
 export default class Account {
-	static SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days
-	static RECOVERY_DURATION = 60 * 30; // 30 minutes
+	static SESSION_DURATION = 60 * 60 * 24 * 7; // secs, 7 days
+	static RECOVERY_DURATION = 60 * 30 * 1000; // ms, 30 minutes
 	static SALT_BAE = "g4cO#'=%sn{*Y?3v";
 
 	static {
