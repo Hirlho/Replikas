@@ -20,6 +20,11 @@ export default class Notification {
 		this.text = text;
 	}
 
+	/**
+	 * Récupère les notifications d'un utilisateur
+	 * @param user_id L'id de l'utilisateur dont on veut récupérer les notifications
+	 * @returns Une liste des notifications de l'utilisateur
+	 */
 	public static async getUserNotifications(
 		user_id: number
 	): Promise<Notification[]> {
@@ -35,6 +40,10 @@ export default class Notification {
 		return notifications;
 	}
 
+	/**
+	 * Envoie les notifications nécessaires à envoyer au début d'une enchère (Acheteurs intéressés et entreprise qui a mis l'article en vente)
+	 * @param article L'article concerné
+	 */
 	public static async notifyArticleStart(article: Article): Promise<void> {
 		const database = Database.get();
 		// Notifier les acheteurs intéressés
@@ -58,6 +67,10 @@ export default class Notification {
 		})`;
 	}
 
+	/**
+	 * Envoie les notifications nécessaires à envoyer à la fin d'une enchère (Acheteur gagnant et entreprise qui a mis l'article en vente)
+	 * @param article L'article concerné
+	 */
 	public static async notifyArticleEnd(article: Article): Promise<void> {
 		const database = Database.get();
 		const winner = await Bids.getEncherisseurGagnant(article);

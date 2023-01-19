@@ -214,6 +214,10 @@ export default class Account {
 		await database`DELETE FROM password_recovery WHERE pr_token = ${token}`;
 	}
 
+	/**
+	 * Change le mot de passe de l'instance d'utilisateur et le met à jour dans la base de données
+	 * @param password Le mot de passe à modifier
+	 */
 	public async setPassword(password: string): Promise<void> {
 		const database = Database.get();
 		const hash = shajs('sha256')
