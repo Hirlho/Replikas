@@ -14,16 +14,21 @@ const account = await getAccountBySession(Astro.request.headers).catch(
 const emailFrom = account.getEmail();
 
 // récupération des données de l'article
-const article = Astro.url.searchParams.get('article');
-const article_id = parseInt(article);
+const article_id = parseInt(Astro.url.searchParams.get('article'));
 
-const articleName_: Article = await Article.get(article_id).catch(() => null);
+if (isNaN(article_id))
+	return new Response('Paramètre invalide', { status: 400 });
 
-const company_id = await articleName_.getSellingCompanyId();
+const article: Article = await Article.get(article_id).catch(() => null);
+
+if (article == null)
+	return new Response('Article introuvable', { status: 404 });
+
+const company_id = await article.getSellingCompanyId();
 const company = await Company.getById(company_id).catch(() => null);
 const companyName = await company.getNom();
-const articleName = articleName_.getName();
-const dateDAchat = articleName_.getFinVente();
+const articleName = article.getName();
+const dateDAchat = article.getFinVente();
 const purchased = dateDAchat.toLocaleDateString('fr');
 
 //
