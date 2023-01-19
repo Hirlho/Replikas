@@ -24,19 +24,21 @@ const description = article.getDescription();
 			<div class="img_container"><img src={image} alt={titre} /></div>
 		</div>
 		<aside>
-			<h1>{titre}</h1>
-			<p id="time">
-				Se termine dans {ends.day}j, {ends.hour}h et {ends.min}min
-			</p>
-			<p>Valeur actuelle : {prix} €</p>
-			<p id="desc">Description : {description}</p>
-			<a id="button" id="enchere" href={'/auction/' + id}> Enchérir</a>
+			<div id="infos">
+				<h1>{titre}</h1>
+				<p id="time">
+					Se termine dans {ends.day}j, {ends.hour}h et {ends.min}min
+				</p>
+				<p>Valeur actuelle : {prix} €</p>
+				<p id="desc">Description : {description}</p>
+			</div>
+
+			<a id="button" id="enchere" href={'/auction/' + id}>Enchérir</a>
 		</aside>
 	</div>
 </article>
 <style>
 	article {
-		/*border: 2px solid black;*/
 		flex: 1;
 		flex-direction: column;
 		display: flex;
@@ -48,6 +50,10 @@ const description = article.getDescription();
 			var(--theme-button) 45%,
 			rgba(0, 0, 0, 1) 55%
 		);
+	}
+
+	#infos h1 {
+		font-size: 2.25rem;
 	}
 
 	img {
@@ -91,11 +97,11 @@ const description = article.getDescription();
 
 	aside {
 		display: flex;
+		justify-content: space-between;
 		width: 45%;
 		flex-direction: column;
 		align-items: center;
 		padding: 0 15px;
-		height: fit-content;
 	}
 
 	aside p {
@@ -122,10 +128,11 @@ const description = article.getDescription();
 	}
 
 	#button {
+		display: flex;
 		text-decoration: none;
-		font-size: 1.5rem;
+		font-size: 2.25rem;
 		padding: 0.5rem 1rem;
-		margin: 0.5rem;
+		margin: 2rem;
 		border-radius: 0.5rem;
 		background-color: var(--theme-button);
 		color: var(--theme-button-text);
@@ -133,5 +140,12 @@ const description = article.getDescription();
 
 	#button:hover {
 		filter: brightness(1.2);
+	}
+
+	#infos {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 	}
 </style>

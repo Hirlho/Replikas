@@ -81,15 +81,19 @@ if (cookies) {
 					</a>
 				) : (
 					// Si l'utilisateur n'est pas connecte
-					<div>
-						<a class="button" id="signup" href="/register">
-							{' '}
-							Creer un compte
-						</a>
-						<a class="button" id="login" href="/login">
-							{' '}
-							Connectez-vous
-						</a>
+					<div class="deconnect">
+						<div class="button">
+							<a id="signup" href="/register">
+								{' '}
+								Creer un compte
+							</a>
+						</div>
+						<div class="button">
+							<a id="login" href="/login">
+								{' '}
+								Connectez-vous
+							</a>
+						</div>
 					</div>
 				)
 			}
@@ -181,14 +185,23 @@ if (cookies) {
 	}
 
 	/*-----------User account buton && disconnected buttons-------------*/
+	.deconnect {
+		display: flex;
+	}
 
 	.button {
-		text-decoration: none;
+		display: flex;
+		text-align: center;
 		font-size: 1.5rem;
 		padding: 0.5rem 1rem;
 		margin: 0.5rem;
 		border-radius: 0.5rem;
 		background-color: var(--theme-button);
+		color: var(--theme-button-text);
+	}
+
+	.button a {
+		text-decoration: none;
 		color: var(--theme-button-text);
 	}
 
