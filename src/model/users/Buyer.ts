@@ -153,6 +153,12 @@ export default class Buyer extends Account {
 		return articles;
 	}
 
+	public static async payArticle(b_id: number, art_id: number): Promise<void> {
+		const database = Database.get();
+		await database`
+			UPDATE aquired SET is_paid = true WHERE b_id = ${b_id} AND art_id = ${art_id}`;
+	}
+
 	public async setNom(last_name: string): Promise<void> {
 		const database = Database.get();
 		const response = await database`
