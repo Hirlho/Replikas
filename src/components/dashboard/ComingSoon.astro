@@ -25,7 +25,7 @@ const articles = await company.getComingSoonSales();
 		<SearchBar />
 	</section>
 	<div class="articles">
-		{articles.map((article) => <Article article={article} comingSoonPage />)}
+		{articles.map((article) => <Article article={article} canDelete />)}
 	</div>
 </section>
 

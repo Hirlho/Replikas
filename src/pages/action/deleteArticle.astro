@@ -23,6 +23,7 @@ if (formData.has('art_id')) {
 	if (article.getSellingCompanyId() !== company.getId()) {
 		return new Response('Unauthorized', { status: 401 });
 	}
+	// TODO: Verifier si l'article est bien à venir pour pouvoir le supprimer
 
 	article.delete();
 } else {
