@@ -34,7 +34,7 @@ if (Astro.request.method == 'POST') {
 		) &&
 		!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(
 			email
-		)
+	)
 	)
 		return Astro.redirect('/register?error=invalid_email&redirect=' + redirect);
 	// Mot de passe fort https://www.section.io/engineering-education/password-strength-checker-javascript/
@@ -56,8 +56,8 @@ if (Astro.request.method == 'POST') {
 			// Si une autre erreur non prevue est survenue
 			console.error(e);
 			return new Response('Internal server error', { status: 500 }); // FIXME : Rip bastien scapin
+				}
 		}
-	}
 	return Astro.redirect('/login?info=account_created&redirect=' + redirect);
 }
 
@@ -124,25 +124,37 @@ if (Astro.url.searchParams.has('error')) {
 				<tr>
 					<th>Mot de passe :</th>
 					<td>
-						<TextField
-							text=""
-							placeholder="Entrez votre mot de passe"
-							type="password"
-							length="15rem"
-							name="password"
-						/>
+						<div class="pwdTextField">
+							<TextField
+								text=""
+								placeholder="Entrez votre mot de passe"
+								type="password"
+								length="15rem"
+								name="password"
+								id="pwd"
+							/>
+							<button type="button" id="eye">
+								<img src="/img/icons/hide.png" id="eyeImg"/>
+							</button>
+						</div>
 					</td>
 				</tr>
 				<tr>
 					<th>Confirmer le mot de passe :</th>
 					<td>
-						<TextField
-							text=""
-							placeholder="Confirmer le mot de passe"
-							type="password"
-							length="15rem"
-							name="password_confirm"
-						/>
+						<div class="pwdTextField">
+							<TextField
+								text=""
+								placeholder="Confirmer le mot de passe"
+								type="password"
+								length="15rem"
+								name="password_confirm"
+								id="pwdConfirm"
+							/>
+							<button type="button" id="eyeConfirm">
+								<img src="/img/icons/hide.png" id="eyeImgConfirm"/>
+							</button>
+						</div>
 					</td>
 				</tr>
 			</table>
@@ -231,4 +243,58 @@ if (Astro.url.searchParams.has('error')) {
 		text-align: center;
 		margin: 1rem auto;
 	}
+	.pwdTextField {
+		display: flex;
+	}
+	button {
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+		margin-left: -1rem;
+		width: 3rem;
+		height: 3rem;
+	}
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+	#pwd {
+		margin-right: 0;
+	}
+	#pwdConfirm {
+		margin-right: 0;
+	}
 </style>
+<script>
+	const eye=document.getElementById('eye');
+	const pwd=document.getElementById('pwd');
+	const eyeImg=document.getElementById('eyeImg');
+	const eyeConfirm=document.getElementById('eyeConfirm');
+	const pwdConfirm=document.getElementById('pwdConfirm');
+	const eyeImgConfirm=document.getElementById('eyeImgConfirm');
+	let visible=false;
+	let visibleConfirm=false;
+	
+	eye.addEventListener('click',()=>{
+		if(visible){
+			pwd.setAttribute('type','password');
+			eyeImg.setAttribute('src','/img/icons/hide.png');
+			visible=false;
+		}else{
+			pwd.setAttribute('type','text');
+			eyeImg.setAttribute('src','/img/icons/show.png');
+			visible=true;
+		}
+
+	});
+	eyeConfirm.addEventListener('click',()=>{
+		if(visibleConfirm){
+			pwdConfirm.setAttribute('type','password');
+			eyeImgConfirm.setAttribute('src','/img/icons/hide.png');
+			visibleConfirm=false;
+		}else{
+			pwdConfirm.setAttribute('type','text');
+			eyeImgConfirm.setAttribute('src','/img/icons/show.png');
+			visibleConfirm=true;
+		}
+	});
+</script>
