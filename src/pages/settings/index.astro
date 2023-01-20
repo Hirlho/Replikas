@@ -244,6 +244,7 @@ let dyslexie = false;
 <script>
 	const body = document.querySelector('body') as HTMLBodyElement;
 	const enCours = document.getElementById('enCours') as HTMLInputElement;
+	const span = document.querySelector('.slider') as HTMLSpanElement;
 
 	enCours.addEventListener('click', () => {
 		if (enCours.checked) {
@@ -254,4 +255,12 @@ let dyslexie = false;
 			document.body.style.fontFamily = 'Larsseit, system-ui, sans-serif';
 		}
 	});
+
+	if (localStorage.getItem('dyslexie') === 'true') {
+		enCours.checked = true;
+		document.body.style.fontFamily = 'dyslexia, system-ui, sans-serif';
+	} else {
+		enCours.checked = false;
+		document.body.style.fontFamily = 'Larsseit, system-ui, sans-serif';
+	}
 </script>

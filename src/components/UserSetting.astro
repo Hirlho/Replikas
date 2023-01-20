@@ -9,7 +9,7 @@ const { parametre, value, lien } = Astro.props;
 console.log(parametre, value, lien);
 ---
 
-<div>
+<div class="user-settings">
 	<p>{parametre}{value ? ' : ' + value : ''}</p>
 	<a href={lien}>modifier</a>
 </div>
@@ -27,5 +27,9 @@ console.log(parametre, value, lien);
 
 	p {
 		font-size: 1.2rem;
+	}
+
+	.user-settings {
+		text-align: left;
 	}
 </style>
