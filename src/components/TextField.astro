@@ -22,6 +22,7 @@ const {
 	readonly,
 	required,
 	minNumber,
+	maxLength,
 } = Astro.props;
 ---
 
@@ -34,12 +35,13 @@ const {
 	required={required}
 	min={minNumber}
 	readonly={readonly}
-	maxlength={Astro.props.maxLength || 64}
+	maxlength={maxLength || 64}
+	class="textfield"
 />
 
 <br />
 <style define:vars={{ length }}>
-	input {
+	.textfield {
 		border: none;
 		background-color: var(--theme-input);
 
@@ -50,7 +52,7 @@ const {
 		padding: 0.7rem;
 		width: var(--length);
 	}
-	input:focus {
+	.textfield:focus {
 		outline: none;
 	}
 </style>

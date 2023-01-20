@@ -6,14 +6,14 @@ import { getBuyerBySession } from '../model/Utilitaire';
 
 export interface Props {
 	article: Article;
-	comingSoonPage?: boolean;
+	canDelete?: boolean;
 	possessedPage?: boolean;
 	link?: string;
 }
 
 const link = Astro.props.link;
 const article = Astro.props.article || Article.getFallback(null);
-const comingSoonPage = Astro.props.comingSoonPage;
+const canDelete = Astro.props.canDelete;
 const possessedPage = Astro.props.possessedPage;
 
 const id = article.getId();
@@ -75,7 +75,7 @@ if (enCours) {
 					</>
 				)
 			) : (
-				comingSoonPage && (
+				canDelete && (
 					<div class="dropdown-area">
 						<div class="dropdown-container">
 							<div class="icons" id="icon">
