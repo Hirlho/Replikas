@@ -2,8 +2,8 @@
 import Button from '../components/Button.astro';
 import TextField from '../components/TextField.astro';
 import Layout from '../layouts/Layout.astro';
-import Account, {
-	UtilisateurOuMotDePasseInvalideError,
+import Account,{
+UtilisateurOuMotDePasseInvalideError
 } from '../model/users/Account';
 import { addCookie } from '../model/Utilitaire';
 
@@ -89,15 +89,18 @@ if (Astro.url.searchParams.has('error')) {
 				<tr>
 					<th>Mot de passe :</th>
 					<td>
-						<TextField
-							placeholder="Entrez votre mot de passe"
-							name="password"
-							type="password"
-							length="20rem"
-						/>
-					</td>
-					<td>
-						<img src="/img/icons/heart.svg" alt="oeil" />
+						<div class="pwdTextField">
+							<TextField
+								placeholder="Entrez votre mot de passe"
+								name="password"
+								type="password"
+								id="pwd"
+								length="17rem"
+							/>
+							<button type="button" id="eye">
+								<img src="/img/icons/hide.png" id="eyeImg" />
+							</button>
+						</div>
 					</td>
 				</tr>
 				<tr>
@@ -182,4 +185,41 @@ if (Astro.url.searchParams.has('error')) {
 	a:hover {
 		filter: hue-rotate(20deg);
 	}
+	.pwdTextField {
+		display: flex;
+	}
+
+	#eye {
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+		margin-left: -0.5rem;
+		border-radius: 4px;
+		border: 2px solid var(--theme-button);
+	}
+	img {
+		width: 1.5rem;
+		height: auto;
+	}
+	#pwd {
+		margin-right: 0;
+	}
 </style>
+
+<script>
+	const eye = document.getElementById('eye');
+	const pwd = document.getElementById('pwd');
+	const eyeImg = document.getElementById('eyeImg');
+	let visible = false;
+
+	eye.addEventListener('click', () => {
+		if (visible) {
+			pwd.setAttribute('type', 'password');
+			eyeImg.setAttribute('src', '/img/icons/hide.png');
+			visible = false;
+		} else {
+			pwd.setAttribute('type', 'text');
+			eyeImg.setAttribute('src', '/img/icons/show.png');
+			visible = true;
+		}
+	});
+</script>

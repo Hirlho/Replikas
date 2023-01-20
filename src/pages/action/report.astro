@@ -1,12 +1,12 @@
 ---
 import sgMail from '@sendgrid/mail';
-import Button from '../components/Button.astro';
-import Layout from '../layouts/Layout.astro';
-import Article from '../model/Article';
-import Config from '../model/Config';
-import Buyer from '../model/users/Buyer';
-import Company from '../model/users/Company';
-import { getBuyerBySession } from '../model/Utilitaire';
+import Button from '../../components/Button.astro';
+import Layout from '../../layouts/Layout.astro';
+import Article from '../../model/Article';
+import Config from '../../model/Config';
+import Buyer from '../../model/users/Buyer';
+import Company from '../../model/users/Company';
+import { getBuyerBySession } from '../../model/Utilitaire';
 
 const report_reasons = [
 	'Pratique frauduleuse',
@@ -57,14 +57,14 @@ if (Astro.request.method == 'POST') {
 	const motif_id = parseInt(formData.get('motif') as string);
 	if (isNaN(motif_id)) {
 		return Astro.redirect(
-			`/report?article=${article_id}&error=motif_not_filled`
+			`/action/report?article=${article_id}&error=motif_not_filled`
 		);
 	}
 
 	const comment = formData.get('comment');
 	if (comment == '') {
 		return Astro.redirect(
-			`/report?article=${article_id}&error=comment_not_filled`
+			`/action/report?article=${article_id}&error=comment_not_filled`
 		);
 	}
 
@@ -84,13 +84,13 @@ if (Astro.request.method == 'POST') {
 	try {
 		await sgMail.send(msg);
 		console.info('Report email sent');
-		return Astro.redirect(`/report?art_id=${article_id}&success=true`);
+		return Astro.redirect(`/action/report?art_id=${article_id}&success=true`);
 	} catch (error) {
 		console.error(error);
 		if (error.response) {
 			console.error(error.response.body);
 		}
-		return Astro.redirect(`/report?art_id=${article_id}&error=sendgrid`);
+		return Astro.redirect(`/action/report?art_id=${article_id}&error=sendgrid`);
 	}
 }
 let error_msg = '';
