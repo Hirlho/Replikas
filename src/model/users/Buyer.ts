@@ -153,6 +153,21 @@ export default class Buyer extends Account {
 		return articles;
 	}
 
+	/**
+	 * Marque un article comme payé (aquired::is_paid=true), n'effectue aucune vérification
+	 * @param b_id L'id de l'acheteur
+	 * @param art_id L'id de l'article
+	 */
+	public static async payArticle(b_id: number, art_id: number): Promise<void> {
+		const database = Database.get();
+		await database`
+			UPDATE aquired SET is_paid = true WHERE b_id = ${b_id} AND art_id = ${art_id}`;
+	}
+
+	/**
+	 * Change le nom de famille de l'acheteur et le met à jour dans la base de données
+	 * @param last_name Le nouveau nom de famille de l'acheteur
+	 */
 	public async setNom(last_name: string): Promise<void> {
 		const database = Database.get();
 		const response = await database`
@@ -162,6 +177,10 @@ export default class Buyer extends Account {
 		}
 	}
 
+	/**
+	 * Change le prénom de l'acheteur et le met à jour dans la base de données
+	 * @param first_name Le nouveau prénom de l'acheteur
+	 */
 	public async setPrenom(first_name: string): Promise<void> {
 		const database = Database.get();
 		const response = await database`

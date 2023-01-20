@@ -14,15 +14,15 @@ const { text } = Astro.props;
 		type="text"
 		placeholder="Rechercher un article..."
 		value={text}
-		name="article"
+		name="search"
 		id="article"
 		required
 	/>
 </form>
 <script>
-	const articleInput = document.getElementById('article') as HTMLInputElement;
-	const article = new URLSearchParams(window.location.search).get('article');
-	if (article) articleInput.value = article;
+	const searchInput = document.getElementById('search') as HTMLInputElement;
+	const search = new URLSearchParams(window.location.search).get('search');
+	if (search) searchInput.value = search;
 </script>
 <style>
 	form {

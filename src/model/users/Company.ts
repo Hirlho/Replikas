@@ -98,6 +98,10 @@ export default class Company extends Account {
 		return this.getFromAccount(account);
 	}
 
+	/**
+	 * Récupère les ventes en cours de l'entreprise
+	 * @returns Les ventes en cours de l'entreprise
+	 */
 	public async getOnGoingSales(): Promise<Article[]> {
 		const database = Database.get();
 		const result = await database`
@@ -110,6 +114,10 @@ export default class Company extends Account {
 		return articles;
 	}
 
+	/**
+	 * Récupère les ventes à venir de l'entreprise
+	 * @returns Les ventes à venir de l'entreprise
+	 */
 	public async getComingSoonSales(): Promise<Article[]> {
 		const database = Database.get();
 		const result = await database`
@@ -122,6 +130,10 @@ export default class Company extends Account {
 		return articles;
 	}
 
+	/**
+	 * Récupère les ventes passées de l'entreprise
+	 * @returns Les ventes passées de l'entreprise
+	 */
 	public async getPastSales(): Promise<Article[]> {
 		const database = Database.get();
 		const result = await database`
@@ -141,6 +153,11 @@ export default class Company extends Account {
 	public toString(): string {
 		return this.name;
 	}
+
+	/**
+	 * Modifie le nom de l'entreprise et le met à jour dans la base de données
+	 * @param first_name Le nouveau nom de l'entreprise
+	 */
 	public async setNom(first_name: string): Promise<void> {
 		const database = Database.get();
 		await database`UPDATE company SET c_name = ${first_name} WHERE a_id = ${this.id}`;

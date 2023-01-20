@@ -96,7 +96,7 @@ const description = article.getDescription();
 				</div>
 			</aside>
 			<article>
-				<div class="informations">
+				<div class="informations" style={{ 'flex-grow': enCours ? 0.6 : 1 }}>
 					<h1 class="center">{nom}</h1>
 					{
 						enCours && (
@@ -104,24 +104,24 @@ const description = article.getDescription();
 								<h3 class="left-margin">
 									{enCours ? 'Enchère actuelle :' : 'Prix de départ : '}
 								</h3>
-								<h2 id="current-price" class="left-margin">
+								<h3 id="current-price" class="left-margin">
 									{prix} €
-								</h2>
+								</h3>
 							</div>
 						)
 					}
-					<h3 class="left-margin">Description :</h3>
+					<h2 class="left-margin" style="margin-block: 2rem;">Description :</h2>
 					<p>
 						{description}
 					</p>
 					<div class="company-info hbox" style="align-items: center;">
-						<h3 class="left-margin">Vendu par :</h3>
-						<p class="center left-margin">{company.getNom()}</p>
+						<h2>Vendu par :</h2>
+						<p class="left-margin">{company.getNom()}</p>
 					</div>
 				</div>
-				<div class="bid">
+				<div id="bid" style={{ display: enCours ? 'block' : 'none' }}>
 					<div>
-						<h3 class="left-margin">Placer une offre :</h3>
+						<h2 class="left-margin">Placer une offre :</h2>
 						<form>
 							<div>
 								{
@@ -155,7 +155,7 @@ const description = article.getDescription();
 								/>
 							</div>
 						</form>
-						<h3 class="margin-left">Encheres actuelles :</h3>
+						<h2 class="margin-left">Encheres actuelles :</h2>
 						<div id="bids-history">
 							{
 								encheres.map((bid) => (
@@ -166,7 +166,6 @@ const description = article.getDescription();
 								))
 							}
 						</div>
-						<style is:inline></style>
 					</div>
 				</div>
 			</article>
@@ -245,7 +244,7 @@ const description = article.getDescription();
 	}
 
 	/*------------Formulaire d'enchérissement---------------*/
-	.bid {
+	#bid {
 		padding: 2rem;
 		flex-grow: 0.4;
 		flex-basis: 0;
@@ -258,6 +257,14 @@ const description = article.getDescription();
 		overflow-y: auto;
 		-ms-overflow-style: none;
 		scrollbar-width: none;
+	}
+
+	.bid-entry {
+		color: var(--theme-text);
+		border-left: 2px solid var(--theme-text);
+		padding-left: 1rem;
+		margin: 0.5rem 0;
+		font-size: 1.5rem;
 	}
 
 	form {
@@ -351,6 +358,7 @@ const description = article.getDescription();
 		'manual-bid'
 	) as HTMLInputElement;
 	const form = document.querySelector('form');
+	const bid_container = document.getElementById('bid');
 	const bids_history = document.getElementById('bids-history');
 
 	/**
@@ -422,6 +430,8 @@ const description = article.getDescription();
 			starts.day >= 0
 		) {
 			timeDiff.innerText = `Débute dans ${starts.day}j ${starts.hour}h ${starts.min}min ${starts.sec}s`;
+			bid_container.style.display = 'none';
+			return false;
 		} else if (
 			ends.sec >= 0 &&
 			ends.min >= 0 &&
@@ -429,13 +439,22 @@ const description = article.getDescription();
 			ends.day >= 0
 		) {
 			timeDiff.innerText = `Se termine dans ${ends.day}j ${ends.hour}h ${ends.min}min ${ends.sec}s`;
+			bid_container.style.display = 'block';
+			return true;
 		} else {
 			timeDiff.innerText = 'Terminée';
+			bid_container.style.display = 'none';
+			return false;
 		}
 	}
 
-	setInterval(updatePriceAndBids, 1000);
-	setInterval(updateDates, 1000);
+	function update() {
+		if (updateDates()) {
+			updatePriceAndBids();
+		}
+	}
+
+	setInterval(update, 1000);
 
 	suggestionValues.forEach((suggestion) => {
 		suggestion.addEventListener('click', (e) => {
