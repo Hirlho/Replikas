@@ -267,9 +267,9 @@ export default class Article {
 					FROM bid
 					GROUP BY art_id
 					ORDER BY count(art_id) DESC
-					LIMIT ${params.limit || 8} OFFSET ${params.offset || 0}
 					)
-				AND art_auction_end > CURRENT_TIMESTAMP`;
+				AND art_auction_end > CURRENT_TIMESTAMP
+				LIMIT ${params.limit || 8} OFFSET ${params.offset || 0}`;
 		const articles: Article[] = [];
 		for (const article of result) {
 			articles.push(await this.getFromResult(article));

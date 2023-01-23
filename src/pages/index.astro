@@ -5,13 +5,13 @@ import Layout from '../layouts/Layout.astro';
 import LayoutCarrousel from '../layouts/LayoutCarrousel.astro';
 import { default as ArticleModel } from '../model/Article';
 
-const mostBids = await ArticleModel.mostBids({ limit: 5, offset: 0 });
+const mostBids = await ArticleModel.mostBids();
 const mostAwaited = await ArticleModel.mostAwaited();
 ---
 
 <Layout title="Replikas">
 	<section>
-		<LayoutCarrousel articles={mostBids} />
+		<LayoutCarrousel articles={mostBids.slice(0, 5)} />
 		<ArticleContainer title="Les plus attendus">
 			{mostAwaited.map((article) => <Article article={article} />)}
 		</ArticleContainer>

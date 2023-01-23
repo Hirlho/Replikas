@@ -100,9 +100,9 @@ if (enCours) {
 		<p>
 			{
 				enCours
-					? 'Finit le ' + date.toLocaleDateString()
+					? 'Finit le ' + date.toLocaleDateString('fr-FR')
 					: dateFin > new Date()
-					? 'Débute le ' + date.toLocaleDateString()
+					? 'Débute le ' + date.toLocaleDateString('fr-FR')
 					: 'Terminée'
 			}
 		</p>
