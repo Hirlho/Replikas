@@ -28,6 +28,18 @@ const { title, no_searchbar } = Astro.props;
 		/>
 		<title>{title}</title>
 	</head>
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-C10NH54T5W"
+	></script>
+	<script is:inline>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag('js', new Date());
+
+		gtag('config', 'G-C10NH54T5W');
+	</script>
 	<body>
 		<main>
 			{no_searchbar ? <Navbar /> : <Navbar search_bar />}
