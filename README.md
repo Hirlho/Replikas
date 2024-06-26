@@ -1,4 +1,4 @@
-# Bienvenue sur le GitLab de [Replikas](https://replikas.gasdev.fr)
+# Bienvenue sur le Github de [Replikas](https://replikas.gasdev.fr)
 
 > [!WARNING]  
 > Website no longer online
@@ -45,7 +45,7 @@ Il a pour but de permettre aux membres de la communauté cinématographique de s
 
 ## Equipe
 
-- [**Ahmed Khairi**](https://gricad-gitlab.univ-grenoble-alpes.fr/khairia)
+- [**Ahmed Khairi**](https://github.com/hirlho)
 - [**Cedric Champeix**](https://gricad-gitlab.univ-grenoble-alpes.fr/champeic)
 - [**Gaspard Culis**](https://github.com/GaspardCulis)
 - [**Matis Basso**](https://gricad-gitlab.univ-grenoble-alpes.fr/bassom)
